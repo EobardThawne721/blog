@@ -16,7 +16,7 @@ export default navbar([
     ]
   },
 
-  //服务器相关配置
+  //服务器笔记相关
   {
     text: "Linux相关",
     icon: "book",
@@ -27,6 +27,22 @@ export default navbar([
       { text: "Minio文件存储", link: "Minio文件系统" },
     ]
   },
+
+  //人工智能笔记相关
+  {
+    text: "AI人工智能",
+    icon: "book",
+    prefix: "/ai/",
+    children: [
+      { text: "Python基础", link: "Python基础" },
+      {
+        text: "神经网络", icon: "book", prefix: "NeuralNetwork/", children: [
+          { text: "CNN卷积神经网络", icon: "pen-to-square", link: "CNN卷积神经网络" },
+        ]
+      }
+    ]
+  },
+
 
 
   // {
@@ -41,25 +57,6 @@ export default navbar([
   //       children: [
   //         { text: "苹果1", icon: "pen-to-square", link: "1" },
   //         { text: "苹果2", icon: "pen-to-square", link: "2" },
-  //         "3",
-  //         "4",
-  //       ],
-  //     },
-  //     {
-  //       text: "香蕉",
-  //       icon: "pen-to-square",
-  //       prefix: "banana/",
-  //       children: [
-  //         {
-  //           text: "香蕉 1",
-  //           icon: "pen-to-square",
-  //           link: "1",
-  //         },
-  //         {
-  //           text: "香蕉 2",
-  //           icon: "pen-to-square",
-  //           link: "2",
-  //         },
   //         "3",
   //         "4",
   //       ],

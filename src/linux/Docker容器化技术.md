@@ -73,19 +73,19 @@ docker -v
    sudo systemctl restart docker
    ```
 
-![image-20220213111853789](Docker容器化技术_images/image-20220213111853789.png)
+![](Docker容器化技术_images/image-20220213111853789.png)
 
 
 
 2. 选择操作文档中的CentOS，复制里面的代码到Linux终端中执行并回车
 
-![image-20220213112000451](Docker容器化技术_images/image-20220213112000451.png)
+![](Docker容器化技术_images/image-20220213112000451.png)
 
 
 
 3. 再次查看是否存在地址
 
-![image-20220213112307254](Docker容器化技术_images/image-20220213112307254.png)
+![](Docker容器化技术_images/image-20220213112307254.png)
 
 
 
@@ -195,7 +195,7 @@ docker run -it/id --name=自定义容器名 REPOSITORY(镜像名):TAG(版本名)
 #可以通过docker images查看
 ```
 
-![image-20220214183554713](Docker容器化技术_images/image-20220214183554713.png) 
+![](Docker容器化技术_images/image-20220214183554713.png) 
 
 * -it：`交互式容器`；保持容器运行，容器创建后自动加入容器中，退出容器后，容器自动关闭
 * -id：`守护式容器`；**后台模式运行容器**，创建一个容器后，**需要通过命令进入容器；退出容器后，容器不会关闭**
@@ -272,7 +272,7 @@ docker inspect 自定义容器名
 
 > 该命令可以查看容器挂载数据卷配置
 
-![image-20220214200608533](Docker容器化技术_images/image-20220214200608533.png) 
+![](Docker容器化技术_images/image-20220214200608533.png) 
 
 
 
@@ -346,9 +346,9 @@ docker run -it -v /宿主机绝对路径目录:/容器内目录 --name=自定义
 
 2. 开启新的一个会话，查看目录
 
-![image-20220214193300837](Docker容器化技术_images/image-20220214193300837.png)
+![](Docker容器化技术_images/image-20220214193300837.png)
 
-![image-20220214193328344](Docker容器化技术_images/image-20220214193328344.png)
+![](Docker容器化技术_images/image-20220214193328344.png)
 
 
 
@@ -356,15 +356,15 @@ docker run -it -v /宿主机绝对路径目录:/容器内目录 --name=自定义
 
    * 在linux系统创建
 
-   ![image-20220214193901100](Docker容器化技术_images/image-20220214193901100.png)
+   ![](Docker容器化技术_images/image-20220214193901100.png)
 
-   ![image-20220214194013772](Docker容器化技术_images/image-20220214194013772.png)
+   ![](Docker容器化技术_images/image-20220214194013772.png)
 
    * 在容器中创建
 
    <img src="Docker容器化技术_images/image-20220214194220686.png" alt="image-20220214194220686"  />
 
-   ![image-20220214194927779](Docker容器化技术_images/image-20220214194927779.png)
+   ![](Docker容器化技术_images/image-20220214194927779.png)
 
    
 
@@ -378,7 +378,7 @@ docker run -it -v /宿主机绝对路径目录:/容器内目录 --name=自定义
 
 ​				如果用户需要在多个容器之间共享一些持续更新的数据，最简单的方式是使用数据卷容器。数据卷容器也是一个容器，但是它的目的是专门用来提供数据卷供其他容器挂载
 
-![image-20220215103331655](Docker容器化技术_images/image-20220215103331655.png)
+![](Docker容器化技术_images/image-20220215103331655.png)
 
 ```nginx
 docker run -it --name=自定义数据卷容器名 -v /容器内绝对路径目录  镜像名称
@@ -399,11 +399,11 @@ docker run -it --name=c1 --volumes-from data_container centos:centos8 /bin/bash
 docker run -it --name=c2 --volumes-from data_container centos:centos8 /bin/bash
 ```
 
-![image-20220215103104104](Docker容器化技术_images/image-20220215103104104.png)
+![](Docker容器化技术_images/image-20220215103104104.png)
 
-![image-20220215103215126](Docker容器化技术_images/image-20220215103215126.png)
+![](Docker容器化技术_images/image-20220215103215126.png)
 
-![image-20220215103303675](Docker容器化技术_images/image-20220215103303675.png)
+![](Docker容器化技术_images/image-20220215103303675.png)
 
 
 
@@ -481,7 +481,7 @@ firewall-cmd --add-port=3306/tcp --permanent
 firewall-cmd --reload
 ```
 
-![image-20220215112632879](Docker容器化技术_images/image-20220215112632879.png) 
+![](Docker容器化技术_images/image-20220215112632879.png) 
 
 
 
@@ -572,7 +572,7 @@ cd test
 vi index.html
 ```
 
-![image-20220215121341825](Docker容器化技术_images/image-20220215121341825.png) 
+![](Docker容器化技术_images/image-20220215121341825.png) 
 
 
 
@@ -657,7 +657,7 @@ vi index.html
 <h1>hello nginx-docker</h1>
 ```
 
-![image-20220216100645930](Docker容器化技术_images/image-20220216100645930.png) 
+![](Docker容器化技术_images/image-20220216100645930.png) 
 
 ### 5.4 安装Redis
 
@@ -689,13 +689,13 @@ firewall-cmd --add-port=6379/tcp --permanent
 firewall-cmd --reload
 ```
 
-![image-20220216101739699](Docker容器化技术_images/image-20220216101739699.png) 
+![](Docker容器化技术_images/image-20220216101739699.png) 
 
 > 若不存在GUI，可以通过命令行去访问
 
 * 找到windows中安装redis的位置
 
-![image-20220216101908716](Docker容器化技术_images/image-20220216101908716.png)
+![](Docker容器化技术_images/image-20220216101908716.png)
 
 
 
@@ -705,7 +705,7 @@ firewall-cmd --reload
 redis-cli.exe -h 192.168.2.102  -p 6379
 ```
 
-![image-20220216102040817](Docker容器化技术_images/image-20220216102040817.png)
+![](Docker容器化技术_images/image-20220216102040817.png)
 
 
 
@@ -834,7 +834,7 @@ docker build -f ./centos_dockerfile -t centos:centos8 .
 
 （1.）将SpringBoot项目打包成jar包，上传到docker_files文件夹
 
-![image-20220216201721174](Docker容器化技术_images/image-20220216201721174.png) 
+![](Docker容器化技术_images/image-20220216201721174.png) 
 
 
 
@@ -868,9 +868,9 @@ docker build -f docker_blog.jar -t my_docker_blog .
 docker run -it -p 9090:8080 my_docker_blog
 ```
 
-![image-20220216203053960](Docker容器化技术_images/image-20220216203053960.png)
+![](Docker容器化技术_images/image-20220216203053960.png)
 
-![image-20220216203108534](Docker容器化技术_images/image-20220216203108534.png)
+![](Docker容器化技术_images/image-20220216203108534.png)
 
 
 
@@ -908,9 +908,9 @@ docker-compose -version
 
 ```
 
-![image-20220217094651854](Docker容器化技术_images/image-20220217094651854.png)
+![](Docker容器化技术_images/image-20220217094651854.png)
 
-![image-20220217094744324](Docker容器化技术_images/image-20220217094744324.png)
+![](Docker容器化技术_images/image-20220217094744324.png)
 
 
 
@@ -970,7 +970,7 @@ server {
 
 （5.）使用docker-compose启动容器之前**`需要将之前的nginx容器关闭`**
 
-![image-20220217135206065](Docker容器化技术_images/image-20220217135206065.png)
+![](Docker容器化技术_images/image-20220217135206065.png)
 
 ```bash
 #需要在 ~/docker-compose目录下
@@ -983,7 +983,7 @@ docker-compose up
 
 （6.）windows访问
 
-![image-20220217135125903](Docker容器化技术_images/image-20220217135125903.png)
+![](Docker容器化技术_images/image-20220217135125903.png)
 
 
 
@@ -1007,7 +1007,7 @@ http://linux的ip地址:5000/v2/_catalog
 vim /etc/docker/daemon.json
 ```
 
-![image-20220217143546951](Docker容器化技术_images/image-20220217143546951.png)
+![](Docker容器化技术_images/image-20220217143546951.png)
 
 ```bash
 #5.重启docker服务
