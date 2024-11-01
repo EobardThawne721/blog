@@ -362,7 +362,7 @@ docker run -it -v /宿主机绝对路径目录:/容器内目录 --name=自定义
 
    * 在容器中创建
 
-   <img src="Docker容器化技术_images/image-20220214194220686.png" alt="image-20220214194220686"  />
+   <img src="./Docker容器化技术_images/image-20220214194220686.png" alt="image-20220214194220686"  />
 
    ![](Docker容器化技术_images/image-20220214194927779.png)
 
