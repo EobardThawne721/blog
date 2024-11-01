@@ -10,7 +10,6 @@ export default defineUserConfig({
   lang: "zh-CN",
   title: "九龙坡郭富城的博客",
   description: "我的个人博客",
-  tagline: "Talk is cheap. Show me the code. ———— Linus Torvalds",
   theme,
 
 
