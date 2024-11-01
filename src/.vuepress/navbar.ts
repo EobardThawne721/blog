@@ -2,8 +2,8 @@ import { navbar } from "vuepress-theme-hope";
 
 // 导航栏配置相关
 export default navbar([
-  "/",    //博客主页
-  "/demo/", //主要功能与配置演示
+  "/",            //博客主页
+  "/demo/",       //主要功能与配置演示
 
   //前端笔记相关
   {
@@ -54,30 +54,6 @@ export default navbar([
     ]
   },
 
-
-
-  // {
-  //   text: "博文",
-  //   icon: "pen-to-square",
-  //   prefix: "/posts/",
-  //   children: [
-  //     {
-  //       text: "苹果",
-  //       icon: "pen-to-square",
-  //       prefix: "apple/",
-  //       children: [
-  //         { text: "苹果1", icon: "pen-to-square", link: "1" },
-  //         { text: "苹果2", icon: "pen-to-square", link: "2" },
-  //         "3",
-  //         "4",
-  //       ],
-  //     },
-  //     { text: "樱桃", icon: "pen-to-square", link: "cherry" },
-  //     { text: "火龙果", icon: "pen-to-square", link: "dragonfruit" },
-  //     "tomato",
-  //     "strawberry",
-  //   ],
-  // },
 
   {
     text: "V2 文档",

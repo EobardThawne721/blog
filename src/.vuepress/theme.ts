@@ -16,7 +16,8 @@ export default hopeTheme({
 
   iconAssets: "fontawesome-with-brands",
 
-  logo: "https://theme-hope-assets.vuejs.press/logo.svg",
+  // logo: "https://theme-hope-assets.vuejs.press/logo.svg",
+  logo: "/assets/images/logo.png",
 
   repo: "vuepress-theme-hope/vuepress-theme-hope",
 
@@ -34,7 +35,7 @@ export default hopeTheme({
 
   // 博客相关
   blog: {
-    description: "AI硕士在读、后端开发者、前端菜鸟、爱喝可乐、爱打游戏...",
+    description: "AI硕士在读、后端开发者、前端菜鸟、爱喝可乐...",
     intro: "/intro.html",
     medias: {
       // Baidu: "https://example.com",

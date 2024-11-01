@@ -1,15 +1,19 @@
 ---
-# 这是博客的图标
+# 自定义当前md的图标
 icon: file
-# 自定义博客封面图片
+# 自定义当前md的封面图片
 cover: /assets/images/cover1.jpg
-# 设置写作时间
+# 设置当前md的写作时间
 date: 2024-11-01
+
+# 设置当前md的分类
 category:
   - Linux
+# 设置当前md的标签
 tag:
   - Linux系统
   - VM ware
+
 ---
 
 # Linux
