@@ -22,9 +22,9 @@ export default navbar([
     icon: "book",
     prefix: "/linux/",
     children: [
-      { text: "Linux", link: "Linux" },
-      { text: "Docker", link: "Docker容器化技术" },
-      { text: "Minio文件存储", link: "Minio文件系统" },
+      { text: "Linux", icon: "pen-to-square", link: "Linux" },
+      { text: "Docker", icon: "pen-to-square", link: "Docker容器化技术" },
+      { text: "Minio文件存储", icon: "pen-to-square", link: "Minio文件系统" },
     ]
   },
 
@@ -34,10 +34,21 @@ export default navbar([
     icon: "book",
     prefix: "/ai/",
     children: [
-      { text: "Python基础", link: "Python基础" },
+      { text: "Python基础", icon: "pen-to-square", link: "Python基础" },
       {
-        text: "神经网络", icon: "book", prefix: "NeuralNetwork/", children: [
+        text: "神经网络", prefix: "NeuralNetwork/", children: [
           { text: "CNN卷积神经网络", icon: "pen-to-square", link: "CNN卷积神经网络" },
+        ]
+      },
+      {
+        text: "生成模型", prefix: "Generative/", children: [
+          { text: "Flow流模型", icon: "pen-to-square", link: "Flow" },
+        ]
+      },
+      {
+        text: "AI配置相关", prefix: "other/", children: [
+          { text: "espeak配置", icon: "pen-to-square", link: "espeak 环境配置" },
+          { text: "MAS（vits中的对齐工具）", icon: "pen-to-square", link: "MAS对齐" },
         ]
       }
     ]
