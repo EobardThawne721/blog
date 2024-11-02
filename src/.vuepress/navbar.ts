@@ -46,6 +46,8 @@ export default navbar([
       {
         text: "生成模型", prefix: "Generative/", children: [
           { text: "Flow流模型", icon: "pen-to-square", link: "Flow" },
+          { text: "GAN生成对抗网络", icon: "pen-to-square", link: "GAN" },
+          { text: "自编码器", icon: "pen-to-square", link: "AutoEncoder" },
         ]
       },
       {
