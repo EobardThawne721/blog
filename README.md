@@ -18,8 +18,18 @@ Eobard Thawne的博客
         3. 
 
             ---
+                title: xxx              如果不设置 title ，那么页面中第一个一级标题的内容会被当作标题使用。
                 icon: pen-to-square     设置当前md的图标
                 date: 2022-01-01        设置当前md的日期
+                home: true              设定该页面是首页还是普通页面。
+                bgImage:                设定背景图片
+                heroImage: /images/hero.png 首页大标题图片上的logo 
+                heroHeight: 280         首页图片 <img> 标签的 height 属性。
+                heroText: xxx           首页的大标题,设置为 null 来禁用首页大标题
+                tagline: xxx            首页的标语
+                editLink: false         禁用在github上编辑此页链接
+                sidebar: false          禁用左边的侧边栏
+
                 category:               设置当前md的分类
                 - 苹果
                 tag:                    设置当前md的标签
@@ -33,7 +43,7 @@ Eobard Thawne的博客
 
                 prev: false
                 next: false         禁用 上一篇/下一篇 链接
-                editLink: false     禁用在github上编辑此页链接
+                
             ---
 
  -->

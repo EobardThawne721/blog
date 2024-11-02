@@ -1,6 +1,9 @@
 import { navbar } from "vuepress-theme-hope";
 
-// 导航栏配置相关
+/**
+ * 全局导航栏配置相关
+ */
+
 export default navbar([
   "/",            //博客主页
   "/demo/",       //主要功能与配置演示
@@ -10,7 +13,7 @@ export default navbar([
     text: "前端笔记",      //导航栏显示文本
     icon: "book",          //导航栏图标
     prefix: "/fronted/",   //导航栏路径前缀
-    children: [            //导航栏子项
+    children: [            //导航栏子项,最大深度为2
       { text: "HTML5", icon: "pen-to-square", link: "html" },   //导航栏子项1:文本显示为HTML5, link表示指向哪个文件(即md的文件名)
       { text: "CSS3", icon: "pen-to-square", link: "css" },
     ]
