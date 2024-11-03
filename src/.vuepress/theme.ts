@@ -33,7 +33,7 @@ export default hopeTheme({
   navbar,
 
   // 侧边栏:设置false可以禁用侧边栏,也可以手动设置全局的侧边栏页面显示,配置同navbar.ts
-  sidebar,
+  // sidebar,
   // sidebar:[
   //   {
   //     text: 'Foo',
@@ -42,6 +42,12 @@ export default hopeTheme({
   //     link: 'page'
   //   },
   // ],
+
+  siderbar:{
+    "/ai/":"structure",
+    "/linux/":"structure",
+  },
+
 
   // sidebarDepth:1,   //设置根据页面标题自动生成的侧边栏的最大深度 0 来禁用所有级别的页面标题。1 来包含 <h2> 标题。2 来包含 <h2> 和 <h3> 标题。
 
@@ -97,7 +103,10 @@ export default hopeTheme({
   // 加密配置
   encrypt: {
     config: {
+    // 对这个路径下的encrypt.md文档加密
       "/demo/encrypt.html": ["1234"],
+      // 对/fronted/这个路径下的所有都加密，密码为1234或5678
+      "/fronted/": ["1234", "5678"],
     },
   },
 

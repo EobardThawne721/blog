@@ -50,6 +50,30 @@ editLink: false
 - VuePress - <Badge type="note" text="v2" vertical="middle" />
 
 
+<!-- name站点名称，preview为站点预览图，必须为绝对路径或完整 URL ，desc站点描述，logo站点图标，repo站点源代码仓库-->
+<SiteInfo
+  name="Mr.Hope's Blog"
+  desc="Where there is light, there is hope"
+  url="https://mister-hope.com"
+  logo="https://mister-hope.com/logo.svg"
+  repo="https://github.com/Mister-Hope/Mister-Hope.github.io"
+  preview="https://theme-hope.vuejs.press/assets/image/mrhope.jpg"
+/>
+
+一个大绿分享图标: <FontIcon icon="share" color="#3eaf7c" size="32" />
+- <Share />
+- <Share services="twitter,weibo" />
+- <Share :services="['qq','weibo']" />
+- <Share colorful />
+
+
+
+# PDF
+使用技巧：https://plugin-components.vuejs.press/zh/guide/media/p-d-f.html#url
+<PDF url="//theme-hope-assets.vuejs.press/files/sample.pdf" width="100%" height="1600px"  noToolbar="false" />
+
+
+
 
 <VPCard
   title="Mr.Hope"
