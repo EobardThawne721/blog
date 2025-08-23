@@ -9,6 +9,13 @@ import sidebar from "./sidebar.js";
  */
 
 export default hopeTheme({
+  //关闭打印功能
+  print: false,
+   //专注模式
+  // focus: true,
+  //全屏按钮
+  // fullscreen: true,
+ 
   hostname: "https://mister-hope.github.io",
 
   author: {
@@ -25,7 +32,7 @@ export default hopeTheme({
   logo: null,   //Logo 图片将会显示在导航栏的左端,设置为 null 可以禁用 Logo 
 
   repo: "https://github.com/EobardThawne721/blog", //项目仓库的 URL
-  // repo: "vuepress-theme-hope/vuepress-theme-hope",
+
 
   docsDir: "src",
 
@@ -179,7 +186,7 @@ export default hopeTheme({
 
     // 此功能被开启用于演示，你应仅当使用时保留。
     markdownTab: true,
-
+  
     // 此处开启了很多功能用于演示，你应仅保留用到的功能。
     mdEnhance: {
       align: true,
