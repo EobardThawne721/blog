@@ -4,12 +4,18 @@ Eobard Thawne的博客
 
 <!-- 
     项目运行：npm run docs:dev
-
+// https://www.imgurl.org/ 免费的图片链接地址，上传自己的图片就可以生成地址
     Markdown笔记书写格式注意
         1.
             如果md中有图片上传的话，如果不把图片前面的![image-xxx]替换掉,会在页面显示出来，不美观，
             可以在vscode中批量全部替换使用ctrl+f 将 !\[image-[0-9]+\]  全部替换成 ![]
-
+            
+  // "scripts": {
+  //   "docs:build": "vuepress-webpack build src",
+  //   "docs:clean-dev": "vuepress-webpack dev src --clean-cache",
+  //   "docs:dev": "vuepress-webpack  dev src",
+  //   "docs:update-package": "npx vp-update"
+  // },
 
         2.
              如果md中有<img 标签的话，需要手动加入相对路径,否则不能回显图片

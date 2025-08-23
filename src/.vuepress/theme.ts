@@ -33,20 +33,36 @@ export default hopeTheme({
   navbar,
 
   // 侧边栏:设置false可以禁用侧边栏,也可以手动设置全局的侧边栏页面显示,配置同navbar.ts
-  // sidebar,
-  // sidebar:[
-  //   {
-  //     text: 'Foo',
-  //     prefix: '/demo/',
-  //      collapsible:true,   如果有children子项,设置为可折叠的
-  //     link: 'page'
-  //   },
-  // ],
+  sidebar: [
+    "/",
+    {
+      text: "前端",
+      link: "/fronted/",      // 点击前端跳转到 README.md
+    },
+    {
+      text: "Java后端",
+      // prefix: "/backend/",
+      // link: "/backend/",
+      collapsible: false,      // 允许折叠
+      collapsed: false,        // 默认折叠，不展开子文档
+      children: [
+        { text: "Java语言篇", link: "/backend/standard/" },
+        { text:"Java框架篇",link:"/backend/framework/"}
+      ],
+    },
+    {
+      text: "操作系统篇",
+      link: "/os/",
+      // collapsible: true,      // 允许折叠
+      // collapsed: true,        // 默认折叠，不展开子文档
+      // children: [
+      //   { text: "Java语言篇", link: "/backend/standard/" },
+      //   { text:"Java框架篇",link:"/backend/framework/"}
+      // ],
+    }
+  ],
 
-  siderbar:{
-    "/ai/":"structure",
-    "/linux/":"structure",
-  },
+
 
 
   // sidebarDepth:1,   //设置根据页面标题自动生成的侧边栏的最大深度 0 来禁用所有级别的页面标题。1 来包含 <h2> 标题。2 来包含 <h2> 和 <h3> 标题。
@@ -101,14 +117,14 @@ export default hopeTheme({
   },
 
   // 加密配置
-  encrypt: {
-    config: {
-    // 对这个路径下的encrypt.md文档加密
-      "/demo/encrypt.html": ["1234"],
-      // 对/fronted/这个路径下的所有都加密，密码为1234或5678
-      "/fronted/": ["1234", "5678"],
-    },
-  },
+  // encrypt: {
+  //   config: {
+  //   // 对这个路径下的encrypt.md文档加密
+  //     "/demo/encrypt.html": ["1234"],
+  //     // 对/fronted/这个路径下的所有都加密，密码为1234或5678
+  //     "/fronted/": ["1234", "5678"],
+  //   },
+  // },
 
   // 多语言配置
   metaLocales: {
@@ -133,18 +149,18 @@ export default hopeTheme({
       // https://theme-hope.vuejs.press/zh/guide/component/built-in.html#badge 内置组件相关
       // https://plugin-components.vuejs.press/zh/guide/code/code-pen.html#user 组件使用方法
       components: [
-      "ArtPlayer",
-      "Badge",
-      "BiliBili",
-      "CodePen",
-      "PDF",
-      "Share",
-      "SiteInfo",
-      "StackBlitz",
-      "VPBanner",
-      "VPCard",
-      "VidStack",
-      "XiGua",],
+        "ArtPlayer",
+        "Badge",
+        "BiliBili",
+        "CodePen",
+        "PDF",
+        "Share",
+        "SiteInfo",
+        "StackBlitz",
+        "VPBanner",
+        "VPCard",
+        "VidStack",
+        "XiGua",],
     },
 
     // 此处开启了很多功能用于演示，你应仅保留用到的功能。

@@ -1,5 +1,5 @@
 import { defineUserConfig } from "vuepress";
-
+import { viteBundler } from "@vuepress/bundler-vite";
 import theme from "./theme.js";
 
 export default defineUserConfig({
@@ -12,8 +12,14 @@ export default defineUserConfig({
   description: "我的个人博客",
   
   theme,
-
-
+  bundler: viteBundler({
+    viteOptions: {
+      server: {
+        hmr: true,      // 开启热更新
+        open: false,
+      },
+    },
+  }),
 
   // 和 PWA 一起启用
   // shouldPrefetch: false,
