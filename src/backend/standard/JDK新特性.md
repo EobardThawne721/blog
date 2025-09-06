@@ -1,10 +1,8 @@
-# JDK新特性
+# JDK8
 
-## jdk8
+## 一.lambda表达式
 
-### 一.lambda表达式
-
-#### 1.1 语法
+### 1.1 语法
 
 ​				左侧是实现接口方法中的参数列表,右侧是表达式中所执行的功能
 
@@ -15,7 +13,7 @@
 
 
 
-#### 1.2 四大内置函数式接口
+### 1.2 四大内置函数式接口
 
 
 - `Consumer<T>`: `void accept(T t);`  // 消费型接口,无返回值
@@ -38,7 +36,7 @@
 
 
 
-#### 1.3 其他用法
+### 1.3 其他用法
 
 ```
 当有接口并且里面有一个抽象方法时:
@@ -59,9 +57,9 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-### 二.Stream流
+## 二.Stream流
 
-#### 2.1 创建流(三种方式)
+### 2.1 创建流(三种方式)
 
 
 1. 通过实例化 Collection 系列集合，用实例调用 `stream()` 返回一个 `Stream<T>` 对象       ==> 获取一个集合流
@@ -71,11 +69,11 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-#### 2.2 常用中间操作
+### 2.2 常用中间操作
 
 ​				 中间的操作不会输出任何结果,只有在最后的终止操作才会输出新结果
 
-##### 2.2.1 过滤
+#### 2.2.1 过滤
 
 ​			排除元素(只接收lambda形式)，首先让数据变成流对象,然后链式调用**filter( (e)->e.条件表达式 )**,返回一个新流对象接收。		
 
@@ -83,19 +81,19 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-##### 2.2.2 限制
+#### 2.2.2 限制
 
 ​			限制获取流中前L个元素，首先让数据变成流对象,然后链式调用**limit(long L)**
 
 
 
-##### 2.2.3 跳过
+#### 2.2.3 跳过
 
 ​			跳过前K个元素，首先让数据变成流对象,然后链式调用**skip(long K)**
 
 
 
-##### 2.2.4 映射(★★★★)
+#### 2.2.4 映射(★★★★)
 
 ​			将元素转换成其他形式或者提取信息(只接受lambda)，首先让数据变成流对象,然后链式调用**map((e)->e.表达式 )** 			
 
@@ -103,7 +101,7 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-##### 2.2.5 排序(★★)
+#### 2.2.5 排序(★★)
 
 ​			将元素按照字典型排序，首先让数据变成流对象,然后链式调用 **sorted()**		//自然排序
 
@@ -111,7 +109,7 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-##### 2.2.6 归约(★★★★)
+#### 2.2.6 归约(★★★★)
 
 ​			将集合中的所有元素经过指定运算，折叠成一个元素输出，如：求最值、平均数等，首先让数据变成流对象,然后链式调用**reduce(初始值,BiFunction<T t1,T t2>接口的lambda表达式 )**
 
@@ -124,7 +122,7 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-##### 2.2.7 收集结果(★★)
+#### 2.2.7 收集结果(★★)
 
 ​				转换为一个新的集合，首先让数据变成流对象,然后链式调用**map(筛选想要的).collect(XXX)**
 
@@ -136,13 +134,13 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-##### 2.2.8 是否匹配条件
+#### 2.2.8 是否匹配条件
 
 ​				首先让数据变成流对象,然后链式调用 **`anyMatch( Predicate<T>接口的lambda表达式)`**   //返回boolean值
 
 
 
-##### 2.2.9 去重
+#### 2.2.9 去重
 
 ​				去掉重复的元素(必须让数据重写hashcode()和equals()才能去重)，首先让数据变成流对象,然后链式调用**distinct()**
 
@@ -150,13 +148,13 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 
 
-#### 2.3 常用终止操作
+### 2.3 常用终止操作
 
 ​					也称之为"惰性求值"，**一次性执行中间操作的全部结果**
 
 
 
-##### 2.3.1 遍历(★★★★ )
+#### 2.3.1 遍历(★★★★ )
 
 ```JAVA
 //简单遍历
@@ -176,7 +174,7 @@ list.stream()
 
 
 
-##### 2.3.2 获取第一个值
+#### 2.3.2 获取第一个值
 
 ​						中间操作接收的新流对象.findFirst();  
 
@@ -184,7 +182,7 @@ list.stream()
 
 
 
-##### 2.3.3 流中总个数
+#### 2.3.3 流中总个数
 
 ​						中间操作接收的新流对象.count();
 
@@ -192,7 +190,7 @@ list.stream()
 
 
 
-##### 2.3.4 流中的最大值
+#### 2.3.4 流中的最大值
 
 ​					中间操作接收的新流对象.max( Comparator<T t,T t>的lambda表达式 );
 
@@ -200,7 +198,7 @@ list.stream()
 
 
 
-##### 2.3.5 流中的最小值
+#### 2.3.5 流中的最小值
 
 ​					中间操作接收的新流对象.min( Comparator<T t,T t>的lambda表达式 );
 
@@ -212,11 +210,25 @@ list.stream()
 
 
 
+### 2.4指定范围内的整数流
+
+> **可以替代for循环**
+
+```java
+//左闭右开区间:[0,3)
+IntStream.range(0,3).forEach(System.out::print);
+System.out.println();
+//左闭右闭区间:[0,3]
+IntStream.rangeClosed(0,3).forEach(System.out::print);
+```
 
 
-### 三. 接口的改动
 
-#### 3.1 区别
+
+
+## 三. 接口的改动
+
+### 3.1 区别
 
 ​				**java8之前**：接口只有静态常量和抽象方法
 
@@ -224,7 +236,7 @@ list.stream()
 
 
 
-#### 3.2 用法
+### 3.2 用法
 
  ```JAVA
  	default XXX xxx(){ //具体实现代码块}
@@ -235,13 +247,13 @@ list.stream()
 
 
 
-### 四. 新时间API
+## 四. 新时间API
 
 ​					**全是不可变对象,线程安全,使用ISO-8601日期标准**
 
 
 
-#### 4.1 日期类
+### 4.1 日期类
 
 * LocalDate:本地日期类
 * LocalTime:本地时间类
@@ -283,7 +295,7 @@ ldt.getMinute();		//获取分
 
 
 
-#### 4.2 间隔
+### 4.2 间隔
 
 * Duration:计算两个"时间"的间隔
 * Period:计算两个"日期"的间隔
@@ -311,11 +323,151 @@ p.getXXX;//获取想要的间隔
 
 
 
-#### 4.3 自定义格式化日期
+### 4.3 自定义格式化日期
 
 ```java
 LocalDateTime ldt=LocalDateTime.now();	
 DateTimeFormatter dtf=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 String str=dtf.format(ldt);
+```
+
+
+
+<HR />
+
+
+
+# JDK10
+
+## 一.局部变量类型自动推断
+
+```JAVA
+var s=10;
+var s="10";
+var s = List.of(1, 2, 3);
+```
+
+> **`var`只能用于局部变量，不能用于成员变量和方法参数**
+
+
+
+
+
+<HR />
+
+
+
+
+
+# JDK12
+
+## 一.switch语法糖 
+
+```JAVA
+var id=10;
+switch (id){
+    case 1,2,3-> System.out.println(method.id);
+    case 4,5,6-> System.out.println(method.name);
+    case 7,8,9-> System.out.println(method.notes);
+    default -> System.out.println("null");
+}
+```
+
+> `-> ` 可以省略`break`关键字
+
+
+
+<HR />
+
+
+
+
+
+# JDK13
+
+## 一.字符串文本块
+
+```java
+var s = """
+    Elly said,"Maybe I was a bird in another life."
+    Noah said,"If you're a bird , I'm a bird."
+    <html>
+    <body>
+    <p>Hello, world</p>
+    </body>
+    </html>
+    """;
+```
+
+
+
+
+
+## 二.switch返回值
+
+> **jdk13之前想要拿到switch的结果，需要定义一个变量,然后为其赋值,现在可以使用`yield`关键字返回**
+
+```java
+ var res = switch (id) {
+    case 1, 2, 3 -> {
+        var i = 100;
+        yield i + id;
+    }
+    default -> {
+        yield id;
+    }
+};
+```
+
+
+
+<HR />
+
+
+
+# JDK14
+
+## 一.Record
+
+> 本质是一个`final`类，所有属性都会用`final`修饰，会自动编译出get、hashCode 、equals、toString 等方法，==**Record只会根据形参生成一个全参构造但可以使用紧凑构造器进行容错处理**==。使用Record可以更方便的创建一个常量类。==可用于Dto（接收前端json数据）或Vo类（返回前端对象值）==
+
+```JAVA
+ public record UserInfo(Integer id, String name, String otherInfo) {
+   
+   	//    public UserInfo(Integer id, String name, String otherInfo) {
+    //        if (id == null) {
+    //            this.id = 1;
+    //        } else {
+    //            this.id = id;
+    //        }
+    //        this.name = name;
+    //        this.otherInfo = otherInfo;
+    //    }
+   
+   		//紧凑构造器（等同于上面的写法），进行容错处理：当变量里面的id是空的时候默认赋值
+   		public UserInfo {		
+        if (id == null) {
+            id = 1;
+        }
+    	}
+   
+      static final String SEX = "man";
+      static Integer age = 20;
+
+      public void showInfo() {
+          System.out.println(id + ":" + name() + ":" + otherInfo + ":" + SEX);
+      }
+      public static void showAge() {
+          System.out.println(age);
+      }
+  }
+
+
+var userInfo = new UserInfo(1, "eobard", "something else");//构造方法赋值
+System.out.println(userInfo.id);    //直接使用属性值输出
+System.out.println(userInfo.name());//使用属性生成的方法输出
+System.out.println(UserInfo.SEX);   //调用静态final常量值
+userInfo.showInfo();                //调用成员方法
+UserInfo.showAge();                 //调用静态方法
 ```
 

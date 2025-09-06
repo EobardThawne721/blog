@@ -1279,9 +1279,60 @@ ctrl+a+d
 
 
 
+## 五.脚本
+### 大文件分片打包chunkPack
+> **假设一个图片训练集5G，里面有上千张图片，直接下载下来会很慢，这时候可以使用分片打包，将每1000个打包成压缩包，依次下载**
 
+```bash
+#!/bin/bash
+# Author: Eobard Gu
+# Date: 2025/7/7 15:30:30
 
+# 需要分片打包的文件路径地址
+SRC_DIR=~/live-spoof/datasets/train_data/org_1_300_300有AI人脸/real
+# 分片打包压缩的目标保存路径
+DST_DIR=~/live-spoof/datasets/train_data/result/real
+# 临时记录文件
+TMP_LIST=/tmp/tmp_file_list.txt
 
+# 获取SRC_DIR地址中最后一个路径的名称：eg：BASENAME=real
+BASENAME=$(basename "$SRC_DIR")  
+
+mkdir -p "$DST_DIR"
+cd "$SRC_DIR" || exit
+
+# 获取相对路径列表（仅文件），写入中间文件
+find . -type f | sort > "$TMP_LIST"
+
+# 总文件数
+TOTAL=$(wc -l < "$TMP_LIST")
+echo "总文件数：$TOTAL"
+
+# 分片打包的大小
+CHUNK_SIZE=1000
+PART=1
+START=1
+
+while [ $START -le $TOTAL ]; do
+    END=$((START + CHUNK_SIZE - 1))
+    if [ $END -gt $TOTAL ]; then
+        END=$TOTAL
+    fi
+    
+    TAR_NAME="$DST_DIR/${BASENAME}_part_${PART}.tar"  
+    # TAR_NAME="$DST_DIR/real_part_${PART}.tar"
+    
+    sed -n "${START},${END}p" "$TMP_LIST" | xargs tar -cf "$TAR_NAME"
+    
+    echo "打包第 $PART 部分：$TAR_NAME，包含文件 $START 到 $END"
+    
+    PART=$((PART + 1))
+    START=$((END + 1))
+done
+
+# 清理中间文件
+rm "$TMP_LIST"
+```
 
 
 

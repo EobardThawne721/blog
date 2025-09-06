@@ -89,6 +89,22 @@ docker -v
 
 
 
+#### 新的镜像地址
+
+```tex
+# 镜像地址
+"registry-mirrors": [
+    "https://docker.mirrors.tuna.tsinghua.edu.cn",
+    "https://docker.1ms.run",
+    "https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo",
+    "https://mirror.ccs.tencentyun.com",
+    "https://hub-mirror.c.163.com",
+    "https://mirrors.aliyun.com"
+]
+```
+
+
+
 
 
 ## 三.Docker命令
@@ -914,7 +930,142 @@ docker-compose -version
 
 
 
-### 8.2 部署SpringBoot+Nginx
+
+
+### 8.2 docker-compose
+
+>  **docker-compose   -f  文件名  -p 指定项目名称  up -d**
+
+* -f：如果不加 `-f` 默认寻找名称是docker-compose.yml 的文件
+* -p：如果不指定 `-p`，默认使用当前目录名作为项目名
+* up：启动并创建所有服务
+* -d：后台运行
+
+
+
+> **docker-compose down   [可选-v]**
+
+* 不加`-v`：关闭并删除docker-compose启动的所有容器、网络、依赖等，但保留挂载卷里的数据(比如broker、topic)
+* `-v` ：关闭并删除所有信息包括挂载卷里的数据
+
+
+
+> **使用docker-compose的方式，多个服务会加入同一个默认网络，并且可以通过服务名互相访问**
+
+* 容器之间通信必须用容器服务名(eg：zookeeper:2181，kafka:9092)，这是Docker提供的DNS服务解析功能
+* 如果使用docker run的方式默认在不同的桥接网络中，需要使用`--network `把它们放到同一个网络
+
+
+
+
+
+### 8.3 部署zookeeper-kafka-gui
+
+```yaml
+name: 'zookeeper-kafka-gui'
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: my-zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: my-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # 通过服务名：端口访问zookeeper的端口
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Kafka容器监听所有网卡,包括Docker网桥
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092        
+      # 容器对外暴露的地址,供客户端连接(这里的172.16.38.210是宿主机的ip地址)
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://172.16.38.210:9092 
+      #depends_on:kafka容器需要在Zookeeper容器之后启动，虽然不能保证Zookeeper完全“就绪”（即端口已监听、响应正常），但至少保证Zookeeper容器已经启动，能显著减少Connection refused错误发生的概率。
+    depends_on:
+      - zookeeper                                       
+    
+
+  kafka-ui:                                             # kafka可视化界面
+      image: provectuslabs/kafka-ui:latest
+      container_name: kafka-ui
+      ports:
+        - "9000:8080"
+      environment:
+        KAFKA_CLUSTERS_0_NAME: local-kafka
+        # 通过服务名：端口访问kafka的端口
+        KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092			
+      depends_on:
+        - kafka
+```
+
+
+
+
+
+### 8.4 部署MongoDB
+
+```yaml
+name: "mongodb"
+version: "2"
+services:
+  mongodb:
+    image: mongo
+    container_name: my-mongodb
+    ports:
+      - 27017:27017
+    environment:
+      TZ: Asia/Shanghai                     # 配置时区
+      MONGO_INITDB_ROOT_USERNAME: admin     # root用户账号
+      MONGO_INITDB_ROOT_PASSWORD: 123456    # root用户密码
+    volumes:
+      - ./mongodb:/data/db      # 将宿主机的./mongodb挂载到容器/data/db,方便Mongodb数据持久化
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+```
+
+> **docker exec -it  my-mongodb  mongosh -u admin -p 123456 --authenticationDatabase admin**
+
+* 进入名称为my-mongodb的容器
+* `mongosh`启动 MongoDB Shell客户端工具
+* `authenticationDatabase`使用mongodb中admin数据库来验证用户名和密码
+
+
+
+### 8.5 部署Rabbitmq
+
+```yaml
+name: "rabbitmq"
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management  # 带管理界面的镜像
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"    # RabbitMQ 服务端口（用于程序连接）
+      - "15672:15672"  # Web管理界面端口
+    environment:
+      RABBITMQ_DEFAULT_USER: admin   # 默认用户名
+      RABBITMQ_DEFAULT_PASS: admin   # 默认密码
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq  # 持久化数据
+
+volumes:
+  rabbitmq-data:
+```
+
+
+
+
+
+### 8.6 部署SpringBoot+Nginx
 
 ​		在`7.2节`的基础上，使用Docker Compose部署SringBoot、Nginx
 
