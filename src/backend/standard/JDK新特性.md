@@ -1,6 +1,6 @@
-# JDK8
+## JDK8
 
-## 一.lambda表达式
+### 一.lambda表达式
 
 ### 1.1 语法
 
@@ -47,17 +47,7 @@
 
 
 
-`Comparator比较接口表达`
-
-```JAVA
-//正数表示升序,负数表示降序(就是后面条件返回的值,可以加上+,-号)	
-Comparator<Integer> com=(x,y)->{return Integer.compare(x,y);}//比较两个数的大小
-Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字典来比较字符串的顺序
-```
-
-
-
-## 二.Stream流
+### 二.Stream流
 
 ### 2.1 创建流(三种方式)
 
@@ -71,7 +61,7 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 ### 2.2 常用中间操作
 
-​				 中间的操作不会输出任何结果,只有在最后的终止操作才会输出新结果
+​				 中间的操作不会输出任何结果，只有在最后的终止操作才会输出新结果
 
 #### 2.2.1 过滤
 
@@ -105,7 +95,31 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 
 ​			将元素按照字典型排序，首先让数据变成流对象,然后链式调用 **sorted()**		//自然排序
 
->  	sorted(Comparator 接口)			//要么lambda表示自定义排序,要么匿名内部类形式自定义排序
+>  	**sorted(Comparator 接口)			//要么lambda表示自定义排序,要么匿名内部类形式自定义排序**
+
+`Comparator比较接口表达`
+
+```JAVA
+//正数表示升序,负数表示降序(就是后面条件返回的值,可以加上+,-号)	
+Comparator<Integer> com=(x,y)->{return Integer.compare(x,y);}//比较两个数的大小
+Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字典来比较字符串的顺序
+```
+
+eg：
+
+```java
+//排序(根据长度从小到大排序)
+List<String> fruit = Arrays.asList("banana", "apple", "cherry");
+
+//或者使用lambda表达式：Comparator.comparingInt(String::length)
+fruit.sort((a, b) -> Integer.compare(a.length(), b.length()));
+
+System.out.println(fruit);	//[apple, banana, cherry]
+```
+
+
+
+
 
 
 
@@ -129,20 +143,81 @@ Comparator<Integer> com=(x,y)->{return String str1.compareTo(str2);} //按照字
 > **XXX可以是下面这几种**
 >
 > * **Collectors.toList()																 //返回一个List集合,可以重复元素**	
->   * **Collectors.Set();      													//返回一个set集合,不能重复元素**
+> * **Collectors.Set()      													//返回一个set集合,不能重复元素**
 > * **`Collectors.toCollection(Supplier<T>接口类型)`	//返回自定义的类型,可在供给型接口具体写lambda表达式**
+> * **Collectors.counting()                                     //返回一个Long**
+
+
 
 
 
 #### 2.2.8 是否匹配条件
 
-​				首先让数据变成流对象,然后链式调用 **`anyMatch( Predicate<T>接口的lambda表达式)`**   //返回boolean值
+​			首先让数据变成流对象，然后链式调用 **`anyMatch( Predicate<T>接口的lambda表达式)`**   //返回boolean值
 
 
 
 #### 2.2.9 去重
 
 ​				去掉重复的元素(必须让数据重写hashcode()和equals()才能去重)，首先让数据变成流对象,然后链式调用**distinct()**
+
+
+
+
+
+#### 2.2.10 分组操作
+
+> **分组操作分为二分类和多分类，其中二分类是多分类的特例，能用二分类的地方，可以用多分类实现**
+
+
+
+* **二分操作：Collectors.partitioningBy(Function<? super T, ? extends K> classifier, Collector<? super T, A, D> downstream)，按照classifier分类后按downstream操作进行后续处理**
+
+  ```java
+  //      二分场景
+  List<Integer> age = Arrays.asList(20, 17, 19, 21);
+  
+  
+  //  eg:按是否成年分为两组
+  Map<Boolean, List<Integer>> res1 = age.stream()
+      								.collect(Collectors.partitioningBy(i -> i > 18));
+  
+  //      false=>[17] , number:1
+  //      true=>[20, 19, 21] , number:3
+  res1.forEach((flag, res) -> System.out.println(flag + "=>" + res + " , number:" + res.size()));
+  ```
+
+  
+
+* **多分操作：Collectors.groupingBy(Function<? super T, ? extends K> classifier, Collector<? super T, A, D> downstream)：按照classifier分类后按downstream操作进行后续处理**
+
+  ```java
+  //       按条件多分组
+  List<String> name = Arrays.asList("Alice", "Bob", "Ana", "Charlie", "Brown");
+  
+  //  eg:按开头字母分组
+  Map<Character, List<String>> result = name.stream()
+      									.collect(
+      							Collectors.groupingBy(str ->str.charAt(0)));
+  
+  //      A=>[Alice, Ana]
+  //      B=>[Bob, Brown]
+  //      C=>[Charlie]
+  result.forEach((c, res) -> System.out.println(c + "=>" + res));
+  ```
+
+  ```java
+  //  eg:按字母长度>=5的分组,并统计每个组的数量
+  Map<Boolean, Long> result2 = name.stream()
+      						.collect(Collectors.groupingBy(str -> str.length() >= 5, Collectors.counting()));
+  //      false=>2
+  //      true=>3
+  result2.forEach((c, res) -> System.out.println(c + "=>" + res));
+  ```
+
+  
+
+
 
 
 
@@ -226,7 +301,7 @@ IntStream.rangeClosed(0,3).forEach(System.out::print);
 
 
 
-## 三. 接口的改动
+### 三. 接口的改动
 
 ### 3.1 区别
 
@@ -247,7 +322,7 @@ IntStream.rangeClosed(0,3).forEach(System.out::print);
 
 
 
-## 四. 新时间API
+### 四. 新时间API
 
 ​					**全是不可变对象,线程安全,使用ISO-8601日期标准**
 
@@ -333,13 +408,73 @@ String str=dtf.format(ldt);
 
 
 
+### 五. Optional类
+
+### 5.1 常用方法
+
+* **T get()：如果Optional中不为空则返回值，否则抛出异常：NoSuchElementException**
+* **void ifPresent(Consumer<? super T> consumer)：如果值存在则执行Consumer函数型接口，否则不做任何事情**
+* **boolean isPresent()：如果值存在则方法会返回true，否则返回 false**
+* **static  Optional  ofNullable(T value)：如果值存在则返回 Optional 包装的指定值，否则返回空的 Optional**
+* **T orElse(T other)：如果存在值则返回值， 否则返回 other**
+* **T orElseGet(Supplier<? extends T> other)：如果存在值则返回值， 否则返回 Supplier函数型接口的结果**
+* **orElseThrow(Supplier<? extends X> exceptionSupplier)：如果存在值则返回值，否则抛出指定异常**
+
+
+
+### 5.2 取值操作
+
+> **orElseXxx方法: 取值操作，一定有返回结果**
+
+```JAVA
+Object obj = null;
+
+//如果obj不为空则返回本身;否则返回默认值
+Object returned1 = Optional.ofNullable(obj).orElse("default value");//default value
+
+//如果obj不为空则返回本身;否则执行Supplier函数型接口
+Object returned2 = Optional.ofNullable(obj).orElseGet(() -> {		//2
+    return 1 + 1;
+});
+
+//如果obj不为空则返回本身;否则抛出异常
+Object returned3 = Optional.ofNullable(obj)
+    			.orElseThrow(() -> new RuntimeException("obj不能为空！"));//抛出异常
+```
+
+
+
+
+
+### 5.3 执行后续操作
+
+> **ifPresentXxx方法: 执行副作用操作，没有返回值**
+
+```JAVA
+Object object=new Object();
+
+//如果object存在则执行Consumer函数型接口
+Optional.ofNullable(object).ifPresent(System.out::println);	//打印object的内存地址
+
+Object obj = null;
+//如果obj存在则执行Consumer函数型接口;否则执行Runnable函数型接口
+Optional.ofNullable(obj).ifPresentOrElse(System.out::println,
+                                         ()-> System.out.println("null obj"));//打印null obj
+```
+
+
+
+
+
+
+
 <HR />
 
 
 
-# JDK10
+## JDK10
 
-## 一.局部变量类型自动推断
+### 一.局部变量类型自动推断
 
 ```JAVA
 var s=10;
@@ -359,9 +494,9 @@ var s = List.of(1, 2, 3);
 
 
 
-# JDK12
+## JDK12
 
-## 一.switch语法糖 
+### 一.switch语法糖 
 
 ```JAVA
 var id=10;
@@ -383,9 +518,9 @@ switch (id){
 
 
 
-# JDK13
+## JDK13
 
-## 一.字符串文本块
+### 一.字符串文本块
 
 ```java
 var s = """
@@ -403,7 +538,7 @@ var s = """
 
 
 
-## 二.switch返回值
+### 二.switch返回值
 
 > **jdk13之前想要拿到switch的结果，需要定义一个变量,然后为其赋值,现在可以使用`yield`关键字返回**
 
@@ -425,9 +560,9 @@ var s = """
 
 
 
-# JDK14
+## JDK14
 
-## 一.Record
+### 一.Record
 
 > 本质是一个`final`类，所有属性都会用`final`修饰，会自动编译出get、hashCode 、equals、toString 等方法，==**Record只会根据形参生成一个全参构造但可以使用紧凑构造器进行容错处理**==。使用Record可以更方便的创建一个常量类。==可用于Dto（接收前端json数据）或Vo类（返回前端对象值）==
 
