@@ -1,7 +1,7 @@
 ---
 title: Java语言篇
-# icon: object-group
-# order: 2
+icon: mask
+prev: /fronted/
 ---
 
 - [JDK新特性](./JDK新特性.md)

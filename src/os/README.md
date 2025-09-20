@@ -1,5 +1,7 @@
 ---
 title: 操作系统篇
+icon: computer
+prev: /backend/framework/
 ---
 
 - [Linux操作系统](./Linux.md)

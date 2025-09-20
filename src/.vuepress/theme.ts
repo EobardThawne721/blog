@@ -44,21 +44,25 @@ export default hopeTheme({
     "/",
     {
       text: "前端",
+      icon:"crown",
       link: "/fronted/",      // 点击前端跳转到 README.md
     },
     {
       text: "Java后端",
+      // icon: "heart",
+      icon:"ghost",
       // prefix: "/backend/",
       // link: "/backend/",
       collapsible: false,      // 允许折叠
       collapsed: false,        // 默认折叠，不展开子文档
       children: [
-        { text: "Java语言篇", link: "/backend/standard/" },
-        { text:"Java框架篇",link:"/backend/framework/"}
+        { text: "Java语言篇", link: "/backend/standard/",icon:"mask" },
+        { text:"Java框架篇",link:"/backend/framework/",icon:"skull"}
       ],
     },
     {
       text: "操作系统篇",
+      icon:"computer",
       link: "/os/",
       // collapsible: true,      // 允许折叠
       // collapsed: true,        // 默认折叠，不展开子文档

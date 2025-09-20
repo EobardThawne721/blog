@@ -6,17 +6,17 @@ import { navbar } from "vuepress-theme-hope";
 
 export default navbar([
   "/",            //博客主页
-  "/demo/",       //主要功能与配置演示
+  // "/demo/",       //主要功能与配置演示
   {
-    text: "博客",
+    text: "个人笔记",
     icon: "book",
     link: "/fronted/",
     activeMatch: "^/fronted/", // 高亮逻辑，可根据路径匹配
   },
   {
     text: "关于我",
-    icon: "book",
-    link: "./intro.md"
+    icon: "user-tie",
+    link: "intro.md"
   },
 
 

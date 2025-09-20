@@ -297,7 +297,7 @@ http://www.springframework.org/schema/security/spring-security.xsd">
 
 `1.DB`
 
-![./Spring Security_images/image-20211122191858289.png](SpringSecurity_images/image-20211122191858289.png)
+![image-20250920220309353](SpringSecurity_images/image-20250920220309353.png)
 
 ```sql
 CREATE DATABASE security_authority;
