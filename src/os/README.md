@@ -4,6 +4,7 @@ icon: computer
 prev: /backend/framework/
 ---
 
+- [Nginx使用](./Nginx使用.md)
 - [Linux操作系统](./Linux.md)
 - [Docker容器化技术](./Docker容器化技术.md)
 - [Minio文件系统](./Minio文件系统.md)
