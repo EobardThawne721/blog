@@ -12,7 +12,7 @@
 
 
 
-### 下载
+### 搭建单机版
 
 #### jdk配置
 
@@ -47,9 +47,7 @@ source /etc/profile
 
 
 
-#### 搭建单机版
-
-##### 安装kafaka
+#### 安装kafaka
 
 官方地址：[Apache Kafka](https://kafka.apache.org/downloads)
 
@@ -77,9 +75,9 @@ jps
 
 
 
-##### 其它命令
+#### 其它命令
 
-###### **创建topic**
+##### **创建topic**
 
 ```BASH
 bin/kafka-topics.sh --bootstrap-server localhost:9092  --create --topic  test
@@ -89,7 +87,7 @@ bin/kafka-topics.sh --bootstrap-server localhost:9092  --create --topic  test
 
 
 
-###### **查看topic列表**
+##### **查看topic列表**
 
 ```bash
 bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
@@ -101,7 +99,7 @@ bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
 
 
 
-###### **创建生产者**
+##### **创建生产者**
 
 ```bash
 #创建一个基于控制台的生产者，往kafka指定topic发消息
@@ -114,7 +112,7 @@ bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic test
 
 
 
-###### **创建消费者**
+##### **创建消费者**
 
 ```bash
 # 创建一个基于控制台的消费者，在test的topic中消费消息（默认从队列的最后消费）
@@ -129,7 +127,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092  --topic test
 
 
 
-###### **从头开始消费**
+##### **从头开始消费**
 
 ```bash
 # 创建一个基于控制台的消费者，在test的topic中，从头开始消费消息
@@ -140,7 +138,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092  --topic test  -
 
 
 
-###### **指定位置消费**
+##### **指定位置消费**
 
 ```bash
 #  创建一个基于控制台的消费者，在指定topic中从第二条消息（下标默认从0开始）开始消费
@@ -155,7 +153,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092  --topic test  -
 
 
 
-###### **不同消费者组消费**
+##### **不同消费者组消费**
 
 ```bash
 # 创建testGroup的消费者组
@@ -175,7 +173,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092  --topic test  -
 
 
 
-###### **查看消费者组里消费情况**
+##### **查看消费者组里消费情况**
 
 ```bash
 bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092  --describe --group testGroup
@@ -192,7 +190,7 @@ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092  --describe --gro
 
 
 
-#### 搭建集群版
+### 搭建集群版
 
 ![image-20250921194712690](Kafka_images/image-20250921194712690.png)
 
@@ -208,7 +206,7 @@ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092  --describe --gro
 
 
 
-##### 安装zookeeper
+#### 安装zookeeper
 
 官方地址：[Apache ZooKeeper](https://zookeeper.apache.org/releases.html)
 
@@ -241,7 +239,7 @@ kill -9 2150
 
 
 
-##### 部署Zookeeper集群
+#### 部署Zookeeper集群
 
 > **这里以1个集群为例，如果有多个，直接按照对应的步骤配置启动即可**
 
@@ -287,7 +285,7 @@ bin/zkServer.sh start
 
 
 
-##### 部署Kafka集群
+#### 部署Kafka集群
 
 * **修改每个服务器上Kafka的配置文件**
 
@@ -336,7 +334,7 @@ cat hup.out
 
 
 
-##### 测试
+#### 测试
 
 > **假设有三台服务器：`worker1:9092、worker2:9092、worker3:9092`，它们对应的broker的id和myid是`1、2、3`**
 
@@ -358,7 +356,7 @@ bin/kafka-topics.sh  --bootstrap-server worker1:9092 --describe  --topic disTopi
 
 
 
-##### 注意
+#### 注意
 
 > **1. Kafka 中的 Topic 是集群共享的，不管你在哪个 Broker 上创建 Topic，Kafka 会自动把分区和副本分散到集群里的不同 Broker 上，保证负载均衡和高可用性。**
 >
