@@ -2,7 +2,7 @@
 title: Java框架篇
 icon: skull
 order: 2
-next: /os/
+next: /python/Python基础.md
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 title: 操作系统篇
 icon: computer
-prev: /backend/framework/
+prev: /python/speech/
 ---
 
 - [Nginx使用](./Nginx使用.md)

@@ -1,5 +1,6 @@
 ---
 title: 人工智能篇
+icon: fire
 ---
 
 

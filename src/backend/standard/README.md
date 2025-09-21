@@ -1,6 +1,6 @@
 ---
 title: Java语言篇
-icon: mask
+icon: mug-hot
 prev: /fronted/
 ---
 

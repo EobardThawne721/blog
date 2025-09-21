@@ -50,49 +50,44 @@ export default hopeTheme({
     {
       text: "Java后端",
       icon:"ghost",
-      // prefix: "/backend/",
-      // link: "/backend/",
       collapsible: false,      // 允许折叠
       collapsed: false,        // 默认折叠，不展开子文档
       children: [
-        { text: "Java语言篇", link: "/backend/standard/",icon:"mask" },
+        { text: "Java基础篇", link: "/backend/standard/",icon:"mug-hot" },
         { text:"Java框架篇",link:"/backend/framework/",icon:"skull"}
       ],
     },
     {
       text: "Python",
-      icon: "bolt",
+      icon: "poo",
       prefix: "/python/",
-      collapsible: false,      // 允许折叠
-      collapsed: false,        // 默认折叠，不展开子文档
+      collapsible: true,      // 允许折叠
+      collapsed: true,        // 默认折叠，不展开子文档
       children: [
-        { text: "Python基础篇", link: "Python基础.md" },
-        { text:"人工智能篇",link:"/python/ai/"}
+        { text: "Python基础篇", link: "Python基础.md", icon:"worm" },
+        { text: "人工智能篇", link: "/python/ai/", icon:"fire" },
+        { text:"语音算法篇",link:"/python/speech/",icon:"headphones"}
       ],
     },
     {
       text: "操作系统篇",
       icon:"computer",
       link: "/os/",
-      // collapsible: true,      // 允许折叠
-      // collapsed: true,        // 默认折叠，不展开子文档
-      // children: [
-      //   { text: "Java语言篇", link: "/backend/standard/" },
-      //   { text:"Java框架篇",link:"/backend/framework/"}
-      // ],
     }
   ],
 
 
 
 
-  // sidebarDepth:1,   //设置根据页面标题自动生成的侧边栏的最大深度 0 来禁用所有级别的页面标题。1 来包含 <h2> 标题。2 来包含 <h2> 和 <h3> 标题。
+  sidebarDepth:2,   //设置根据页面标题自动生成的侧边栏的最大深度 0 来禁用所有级别的页面标题。1 来包含 <h2> 标题。2 来包含 <h2> 和 <h3> 标题。
 
   editLink: false,  //设置是否启用 在Github上编辑此页 链接
 
   // 页脚
   footer: "默认页脚",
   displayFooter: true,
+
+  // copyright:"123",
 
   // 博客相关
   blog: {
