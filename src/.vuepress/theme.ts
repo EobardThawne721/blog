@@ -49,7 +49,6 @@ export default hopeTheme({
     },
     {
       text: "Java后端",
-      // icon: "heart",
       icon:"ghost",
       // prefix: "/backend/",
       // link: "/backend/",
@@ -58,6 +57,17 @@ export default hopeTheme({
       children: [
         { text: "Java语言篇", link: "/backend/standard/",icon:"mask" },
         { text:"Java框架篇",link:"/backend/framework/",icon:"skull"}
+      ],
+    },
+    {
+      text: "Python",
+      icon: "bolt",
+      prefix: "/python/",
+      collapsible: false,      // 允许折叠
+      collapsed: false,        // 默认折叠，不展开子文档
+      children: [
+        { text: "Python基础篇", link: "Python基础.md" },
+        { text:"人工智能篇",link:"/python/ai/"}
       ],
     },
     {
