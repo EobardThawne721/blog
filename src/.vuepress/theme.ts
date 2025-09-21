@@ -53,6 +53,7 @@ export default hopeTheme({
       collapsible: false,      // 允许折叠
       collapsed: false,        // 默认折叠，不展开子文档
       children: [
+        { text: "安卓开发", link: "/backend/AndroidStudio.md",icon:"mobile-screen" },
         { text: "Java基础篇", link: "/backend/standard/",icon:"mug-hot" },
         { text:"Java框架篇",link:"/backend/framework/",icon:"skull"}
       ],

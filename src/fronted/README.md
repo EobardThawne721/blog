@@ -1,7 +1,7 @@
 ---
 title: 前端
 icon: crown
-next: /backend/standard/
+next: /backend/AndroidStudio.md
 ---
 
 - [VUE](./Vue.md)
