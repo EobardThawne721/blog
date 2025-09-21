@@ -45,6 +45,37 @@ source /etc/profile
 
 
 
+#### 安装zookeeper
+
+官方地址：[Apache ZooKeeper](https://zookeeper.apache.org/releases.html)
+
+```bash
+# 下载包
+wget https://mirrors.aliyun.com/apache/zookeeper/zookeeper-3.8.5/apache-zookeeper-3.8.5-bin.tar.gz
+#解压
+tar -zxf apache-zookeeper-3.8.5-bin.tar.gz
+```
+
+```bash
+# 进入解压后的conf文件夹，复制一份配置文件
+cp zoo_sample.cfg  zoo.cfg
+```
+
+```bash
+# 后台启动
+nohup bin/zkServer.sh start &
+
+# 使用jps查看是否启动成功 或者查看输出日志
+jps
+
+# 启动成功就不用管了，这里暂时先退出Zookeeper
+kill -9 2150
+```
+
+![image-20250920194639885](Kafka_images/image-20250920194639885.png) 
+
+![image-20250920194736578](Kafka_images/image-20250920194736578.png)
+
 
 
 #### 安装kafaka
@@ -76,6 +107,8 @@ jps
 
 
 #### 其它命令
+
+> **注意：请先确保Kafka和Zookeeper服务都启动起来了再运行**
 
 ##### **创建topic**
 
@@ -203,39 +236,6 @@ bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092  --describe --gro
 > * **Zookeeper会保存Kafka的Broker信息、Partition选举信息，当某些Broker服务崩溃时会自动选举，确保系统高可用**
 
 
-
-
-
-#### 安装zookeeper
-
-官方地址：[Apache ZooKeeper](https://zookeeper.apache.org/releases.html)
-
-```bash
-# 下载包
-wget https://mirrors.aliyun.com/apache/zookeeper/zookeeper-3.8.5/apache-zookeeper-3.8.5-bin.tar.gz
-#解压
-tar -zxf apache-zookeeper-3.8.5-bin.tar.gz
-```
-
-```bash
-# 进入解压后的conf文件夹，复制一份配置文件
-cp zoo_sample.cfg  zoo.cfg
-```
-
-```bash
-# 后台启动
-nohup bin/zkServer.sh start &
-
-# 使用jps查看是否启动成功 或者查看输出日志
-jps
-
-# 启动成功就不用管了，这里暂时先退出Zookeeper
-kill -9 2150
-```
-
-![image-20250920194639885](Kafka_images/image-20250920194639885.png) 
-
-![image-20250920194736578](Kafka_images/image-20250920194736578.png)
 
 
 
