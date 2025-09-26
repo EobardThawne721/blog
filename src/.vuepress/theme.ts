@@ -71,9 +71,14 @@ export default hopeTheme({
       ],
     },
     {
-      text: "操作系统篇",
+      text: "操作系统",
       icon:"computer",
       link: "/os/",
+    },
+    {
+      text: "常用工具",
+      icon:"screwdriver-wrench",
+      link: "/tools/",
     }
   ],
 
