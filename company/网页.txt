@@ -5,10 +5,3 @@
 
 
 
-添加tag
-
-git add. 
-git commit -m '.."
-
-git tag 标签名
-Git push origin 标签名  这时候相当于tag是最新的代码，你的本地仓库也是最新的代码，但是远程分支上是旧的，这时候你也可以git push 把最新的代码也同步上去
