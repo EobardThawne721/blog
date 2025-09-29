@@ -358,9 +358,35 @@ public void lowerSku(Message message, Channel channel){
 
 
 
-## 消息可靠性投递（生产者确认机制）
 
-### 解决方案
+
+
+
+## RabbitMQ消息丢失处理
+
+> **持久化配置可以和生产者确认机制配合起来，只有当消息持久化到磁盘后才会ack**
+
+* 队列持久化：创建队列的时候，将其设置为持久化，这样可以保证队列的元数据
+
+  ```java
+  @Queue(value = "xxx", durable = "true"）
+
+* 消息持久化：发送消息的时候将消息持久化
+
+  ```java
+   messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);  // 设置消息持久化
+
+
+
+
+
+## 生产者相关
+
+
+
+### 消息可靠性投递（生产者确认机制）
+
+#### 解决方案
 
 > **利用消息确认机制+消息持久化+定时任务**
 >
@@ -373,7 +399,7 @@ public void lowerSku(Message message, Channel channel){
 
 
 
-### 具体代码
+#### 具体代码
 
 **开启消息确认机制**
 
@@ -634,7 +660,64 @@ public class RabbitService {
 
 
 
-## 消息幂等性消费
+## 消费者相关
+
+### 消费者如何处理大量消息、消息积压问题
+
+* 创建多个消费者实例并行监听同一个队列，RabbitMQ内部会按照负载均衡的方式轮询或公平调度的方式处理，不会存在同时消费同一条消息
+
+  ```java
+  // 消费者1
+  @RabbitListener(queues = "your_queue")
+  public void receiveMessage1(String message) {
+      System.out.println("消费者1收到消息: " + message);
+  }
+  
+  // 消费者2
+  @RabbitListener(queues = "your_queue")
+  public void receiveMessage2(String message) {
+      System.out.println("消费者2收到消息: " + message);
+  }
+
+* 配置单个消费者，多个线程并行处理多个消息
+
+  ```java
+  @Bean
+  public TaskExecutor taskExecutor() {
+      return new SimpleAsyncTaskExecutor();  // 配置线程池
+  }
+  
+  @Bean
+  public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter,  TaskExecutor taskExecutor) {
+      SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+      container.setConnectionFactory(connectionFactory);
+      container.setMessageListener(listenerAdapter);
+      container.setTaskExecutor(taskExecutor);  // 使用线程池
+      container.setQueueNames("your_queue");
+      container.setConcurrentConsumers(5);  // 线程池的并发消费者数
+      return container;
+  }
+  ```
+
+
+
+
+
+### 如何保证消息顺序消费
+
+* 场景1：生产者发送多条消息到MQ，存在多个消费者监听，由于MQ的轮询或公平分配方式，如何保证顺序？
+  * 创建多个队列，确保每个消费者只消费一个队列，单个消费者消费消息天然有序
+* 场景2：生产者发送多条消息到MQ，配置一个消费者由多个线程执行，如何保证顺序？
+  * 放弃多线程处理，使用单线程保证天然有序
+  * 多线程并不理解消费消息，而是将消息放入新的共享缓冲区去排序，然后再开线程去执行
+
+
+
+
+
+
+
+### 消息幂等性消费
 
 > **幂等性指同一操作（或消息）无论执行多少次，产生的结果都相同，如果消费者没有及时手动ack或处理失败重新入队，消息会被多次传递，如果业务不具备幂等性就会造成多次重复扣款等后果。**
 
@@ -648,7 +731,7 @@ public class RabbitService {
 
 
 
-## 消费者重试机制
+### 消费者重试机制
 
 ```yaml
 # MQ:配置消费者的重试机制
