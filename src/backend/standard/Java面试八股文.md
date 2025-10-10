@@ -4,7 +4,7 @@
 
 课程视频：https://www.bilibili.com/video/BV1yT411H7YK?spm_id_from=333.788.videopod.episodes&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c
 
-还没有观看的：48-68（springcloud、rabbitmq、kafka）、95-105（锁底层）、116-134（JVM）
+还没观看的：48-68（springcloud、rabbitmq、kafka）、95-105（锁底层）、116-134（JVM）
 
 
 
