@@ -124,7 +124,7 @@
 
   * 设计意图：保证类的不可变性和安全性（如String类防止子类破坏字符串内容、System类防止核心API被篡改）
 
-* 修饰方法：被final修饰的方法不能被子类重写，但可以被子类继承使用；不能修饰构造方法、抽象方法、接口方法
+* 修饰方法：被final修饰的方法不能被子类重写，但可以被子类继承使用；**不能修饰构造方法**、抽象方法、接口方法
 
   * 设计意图：防止核心逻辑被修改
 
@@ -136,7 +136,7 @@
 
   * 修饰局部变量：如果未被使用，可以不赋值，如果使用了必须赋值
 
-  * 修饰形参变量：如果是基本类型数据，则只能被访问，不能被修改值；如果是包装类型则可以修改内容，不能被重新赋值
+  * 修饰形参变量：如果是基本类型数据，则只能被访问，不能被修改值；如果是包装类型则可以修改内容，不能被重新赋值（因为指向的是不变的内存地址）
 
     ```java
     public void test(final int x, final List<String> list) {
@@ -152,13 +152,13 @@
 
 #### String类为什么是不可变的
 
-* 类声明是final类型，不能被继承修改；内部没有提供修改内容的地方；存储内容的地方是`private final byte[] value`，只能被赋值一次，不能被修改
+* 类声明是final类型，不能被继承修改；内部没有提供修改内容的地方；**存储内容的地方是`private final byte[] value`，只能被赋值一次，不能被修改**
 
-* 对String进行修改时，都会创建一个新的对象，而原有的字符串对象保持不变
+* **对String进行修改时，都会创建一个新的对象，而原有的字符串对象保持不变**
 
 * 线程安全，因为值不能被修改，多个线程共享同一个String对象，同时也保证了数据的安全性
 
-* 优化常量池性能，当创建多个相同内容的String时，JVM会使用同一个对象而不会创建新的
+* **优化常量池性能，当创建多个相同内容的String时，JVM会使用同一个对象而不会创建新的**
 
   ```java
   String s1="ZO_OM";
@@ -168,7 +168,7 @@
   String s1="hello";
   String s2="world";
   String s3="hello world";//编译时放进常量池的
-  String s4=s1+" "+s2;		//运行期拼接
+  String s4=s1+" "+s2;		//运行时拼接
   s3==s4;//false 
   ```
 
@@ -198,8 +198,8 @@
 
 #### 静态变量与实例变量
 
-* 实例范围：静态变量在类加载就只实例一次，所有对象共享一份数据（改一个，全部都受影响）；实例变量每个对象都有自己独立一份（每个对象互不影响，改一个不会影响其它对象）
-* 内存位置：静态变量在方法区的静态存储区；实例变量在堆内存中，随对象创建而存在
+* **实例范围：静态变量在类加载就只实例一次，所有对象共享一份数据（改一个，全部都受影响）；实例变量每个对象都有自己独立一份（每个对象互不影响，改一个不会影响其它对象）**
+* **内存位置：静态变量在方法区的静态存储区；实例变量在堆内存中，随对象创建而存在**
 * 生命周期：静态变量类加载时创建，销毁时销毁；实例变量在对象创建时存在，回收时销毁
 * 访问方式：静态变量可通过类名或对象名调用；实例变量只能通过对象名访问
 
@@ -253,8 +253,8 @@
 > **抽象类通常是作为子类的基类，`描述的是子类共有的属性和行为，但某些行为需要子类去实现`；接口通常是描述一组类共同遵循的某种行为规范，`但它们本身可能不存在继承关系`**
 
 * 成员变量：抽象类可以有任何修饰符的变量；接口必须且默认是public static final的常量，且定义时必须初始化
-* 成员方法：抽象类有抽象方法和普通方法，抽象方法不能用private、static、final修饰；接口默认抽象方法，Java8后可以有默认方法、静态方法、私有方法
-* 构造方法：抽象类可以有构造方法；接口不允许
+* 成员方法：抽象类有抽象方法和普通方法，**抽象方法不能用private、static、final修饰**；接口默认抽象方法，Java8后可以有默认方法、静态方法、私有方法
+* 构造方法：**抽象类可以有构造方法；接口不允许**
 * 实例化：两者都不能被实例化
 * 继承关系：抽象类单继承；接口多实现
 * **选择性：抽象类可以作为模版方法，定义了类的骨架；接口更倾向于添加新功能或兼容性问题，不适合作为骨架**
@@ -280,7 +280,7 @@
   * **读操作：一次性从底层设备读取一大块数据放到缓冲区，再从缓冲区返回给用户程序，避免了程序的磁盘读取。**
   * **写操作：先将数据写入到缓冲区，等缓冲区满了或手动flush()时，再一次性写入到底层设备，减少了系统调用次数**
 
-> 在处理字符数据时，**BufferedReader**通常比**BufferedInputStream**更快，因为它专为字符流优化，减少了不必要的数据转换开销；在处理字节数据时，BufferedInputStream更为合适和高效。
+> 在处理字符数据时，BufferedReader通常比BufferedInputStream更快，因为它专为字符流优化，减少了不必要的数据转换开销；在处理字节数据时，BufferedInputStream更为合适和高效。
 
 
 
@@ -289,9 +289,9 @@
 #### IO模型
 
 * BIO（Blocking IO，阻塞IO）：读取或写入数据时，线程会一直等待（eg：Java的传统IO操作），直到数据准备就绪或写入完成，但在高并发下存在性能问题（因为线程会等待IO操作时阻塞，无法执行其它任务）
-* NIO（Non- Blocking IO，非阻塞IO）：线程执行一个IO时不会一直等待，而是继续执行其它任务，需要通过轮询或者回调函数等机制检查IO操作是否完成，能更好的支持并发，但会导致CPU资源浪费（因为会不停的调用判断数据处理好了没）
-* AIO（Asynchronous IO，异步IO）：线程执行IO时允许执行其它任务，不需要等待IO操作完成，操作系统完成后会自动通过回调通知，不需要轮询
-* IO多路复用：使用操作系统Selector机制（eg：Java的Selector类），通过选择器，一个线程可以监听多个通道上的IO事件，从而在单线程中处理多个连接（socket）
+* NIO（Non- Blocking IO，非阻塞IO）：线程执行一个IO时不会一直等待，而是继续执行其它任务，**需要通过轮询或者回调函数等机制检查IO操作是否完成，能更好的支持并发，但会导致CPU资源浪费（因为会不停的调用判断数据处理好了没）**
+* AIO（Asynchronous IO，异步IO）：线程执行IO时允许执行其它任务，不需要等待IO操作完成，**操作系统完成后会自动通过回调通知，不需要轮询**
+* IO多路复用：使用操作系统Selector机制（eg：Java的Selector类），通过选择器，**一个线程可以监听多个通道上的IO事件，从而在单线程中处理多个连接（socket）**
 
 
 
@@ -325,7 +325,7 @@
 ##### Vector和ArrayList区别
 
 * 两者都是动态数组结构
-* 线程安全和效率：ArrayList非线程安全，效率更高；Vector线程安全，效率低，所有的方法都用synchronized同步锁
+* 线程安全和效率：ArrayList非线程安全，效率更高；Vector线程安全，效率低，所有方法都用synchronized加锁
 * 扩容机制：ArrayList默认扩容为原来的1.5倍；Vector扩容为原来的两倍
 
 
@@ -506,11 +506,28 @@ list.add(12);   //扩容
 
 * 使用hashCode和equals方法
 
-  * 当向HashSet添加一个元素的时候，首先调用hashCode方法计算哈希值来决定在哈希表中的存储位置
-  * 在确定存储位置后，HashSet会检查该位置是否存在相同哈希值的元素，如果存在，利用equals方法判断两个元素是否相等，如果相同，认为元素存在，不能添加；否则添加到哈希表中
-  * 通过以上两个方法，HashSet可以快速检测和防止重复元素的添加，确保每个元素在Set中唯一的，HashSet 本质就是“只有 Key 的 HashMap”
+  * 当向HashSet添加元素时，首先调用hashCode方法计算在哈希表中的存储位置
+  * 在确定位置后，HashSet会检查该位置是否存在相同哈希值的元素，如果存在，利用hash值和equals方法判断两个元素是否相等，如果相同，认为元素存在，不能添加；否则添加到哈希表中
+  * **通过以上两个方法，HashSet可以快速检测和防止重复元素的添加，确保每个元素在Set中唯一的，HashSet 本质就是“只有 Key 的HashMap”**
 
 
+
+##### HashSet和HashMap的区别
+
+> 如果需要存储一堆不重复的东西，用 `HashSet`；如果需要给这些东西关联额外的信息，用 `HashMap`。
+
+* HashSet存储的不重复的单个元素，用于快速检查某个元素key是否存在；HashMap存储k-v对
+
+* HashSet基于HashMap，当HashSet添加相同key时会判断是否存在旧value，存在就直接失败；HashMap则会覆盖旧value
+
+  ```java
+  //省略HashSet其它代码
+  public boolean add(E e) {
+    	return map.put(e, PRESENT)==null;
+  }
+  ```
+
+  
 
 
 
@@ -532,7 +549,7 @@ list.add(12);   //扩容
 
 **散列表**
 
-> **根据Key直接访问在内存存储的Value的数据结构，由数组演化而来，利用了其按下标进行随机访问的特点；当多个Key通过hash函数映射到同一个数组下标位置时被称为哈希冲突，可以利用链表法（拉链法）去解决，每个数组下标位置（被称为桶或者槽）会对应一条链表，当hash冲突后的元素会放到相同槽位对应的链表或红黑树中**
+> **根据Key访问Value的数据结构，由数组演化而来，利用其按下标进行随机访问的特点；当多个Key通过hash函数映射到同一个数组下标位置时被称为哈希冲突，可以利用链表法（拉链法）去解决，每个数组下标位置（被称为桶或者槽）会对应一条链表，当hash冲突后的元素会放到相同槽位对应的链表或红黑树中**
 
 <img src="./Java面试八股文_images/image-20250427105514819.png" alt="image-20250427105514819" style="zoom: 23%;" /> <img src="./Java面试八股文_images/image-20250427105528571.png" alt="image-20250427105528571" style="zoom: 23%;" /> 
 
@@ -562,7 +579,7 @@ list.add(12);   //扩容
 底层使用hash表数据结构，即数组和链表或红黑树
 
 1. 往HashMap中put元素时，利用key的hashCode重新计算hash值计算对应的元素在数组的下标
-2. 若出现相同hash值相同的key，如果key相同，则覆盖原始值；若不key不相同，则将当前的key-value放入链表或红黑树中
+2. 若出现相同hash值、相同的key，则覆盖原始值；若key不相同，则将当前的key-value放入链表或红黑树中
 3. 获取值时，根据hash值获取下标，然后进一步判断key是否相同，从而找到对应值
 
 ![image-20250427114037362](Java面试八股文_images/image-20250427114037362.png)
@@ -574,7 +591,7 @@ list.add(12);   //扩容
 ###### JDK 1.7与1.8的区别
 
 * 1.7：当hash冲突时采用拉链法，将链表和数组结合，将hash冲突的值追加到链表
-* 1.8：当hash冲突时，链表的长度大于阈值（默认8）并且数组长度达到64时，链表会转换成红黑树来减少搜索时间；扩容resize( )时，红黑树的树节点数≤临界值6时会退化成链表
+* 1.8：当hash冲突时，**链表的长度大于阈值（默认8）并且数组长度达到64时，链表会转换成红黑树来减少搜索时间；扩容resize( )时，红黑树的树节点数≤临界值6时会退化成链表**
 
 
 
@@ -583,7 +600,6 @@ list.add(12);   //扩容
 > **方法返回值，`HashMap.put()` 返回的是旧值，如果没有旧值（首次插入），返回 null**
 
 ```java
-
 HashMap<String, String> map = new HashMap<>();
 System.out.println(map.put("a", "1")); // null，因为 "a" 第一次插入
 System.out.println(map.put("a", "2")); // 1，返回旧值 "1"
@@ -603,9 +619,9 @@ System.out.println(map.put("a", "3")); // 2，返回旧值 "2"
 1. **put新增判断数组是否为空，若为空，说明需要进行resize()扩容初始化**
 2. **根据key计算hash值对应的数组索引，若为空，说明没有遇到哈希冲突，直接新建节点添加**
 3. **若不为空，说明遇到了哈希冲突**
-   * **判断当前链表或者红黑树的头节点的hash值和新数据的hash值是否一致，若相同则修改value即可**
+   * **判断当前链表或者红黑树的头节点的hash值、key和新数据的hash值、key是否一致，若相同则修改value即可**
    * **若不相同，需要判断当前节点是否为红黑树，如果是红黑树，则执行红黑树的插入操作**
-   * **若不是红黑树，遍历链表并在尾部插入数据，然后判断链表长度是否大于8，大于则转为红黑树执行插入，遍历过程需判断其余节点的hash值和新数据的hash值是否一致，若相同则修改value即可**
+   * **若不是红黑树，遍历链表并在尾部插入数据，然后判断链表长度是否大于8（并且数组长度>64），大于则转为红黑树执行插入，遍历过程需判断其余节点的hash值和新数据的hash值是否一致，若相同则修改value即可**
 
 4. **插入成功后，需判断当前数组大小是否超过了最大容量（数组默认长度16×默认比例因子0.75），超过需resize()扩容**
 
@@ -644,7 +660,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,boolean evict) {
     else {
         Node<K,V> e; K k;
         
-        //判断 当前链表或者红黑树 的头节点p的hash值和新数据的hash是否一致
+        //判断 当前链表或者红黑树 的头节点p的hash、key值和新数据的hash、key是否一致
         if (p.hash == hash &&((k = p.key) == key || (key != null && key.equals(k))))
             //说明是相同的，只需要覆盖即可
             e = p;
@@ -657,7 +673,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,boolean evict) {
         else {
             //遍历链表
             for (int binCount = 0; ; ++binCount) {
-                //找到链表最后一个节点位置，然后插入数据
+                //如果链表不存在相同hash、key的元素，那么找到链表最后一个节点位置，插入数据
                if ((e = p.next) == null) {
                     p.next = newNode(hash, key, value, null);
                    
@@ -696,7 +712,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,boolean evict) {
 
 2. **当达到阈值后，每次扩容数组大小、阈值变为原来的两倍，并将旧数组的数据复制到新数组中**
 
-3. **如果当前节点的下一个节点为空，说明没有遇到haxi冲突，直接复制即可**
+3. **如果当前节点的下一个节点为空，说明没有遇到hash冲突，直接复制即可**
 
 4. **若不为空，说明遇到了哈希冲突**
    * **判断当前节点是否为红黑树，如果是，则执行红黑树的添加逻辑**
@@ -835,8 +851,8 @@ static final int hash(Object key) {
 ```
 
 * 计算key的hashCode值
-* 再进行调用hash方法进行二次hash，**让hashCode值右移16位再异或运算（扰动函数，减少哈希碰撞，让哈希分布更均匀**
-* 最后put方法时通过（容量-1）& hash得到数组索引，取代了取模操作，提升了效率
+* 调用hash方法进行扰动，**让hashCode值右移16位再异或运算（扰动函数，减少哈希碰撞，让哈希分布更均匀**
+* 最后put方法时通过`（容量-1）& hash` 操作得到数组索引，取代了取模操作，提升了效率
 
 
 
@@ -855,7 +871,7 @@ static final int hash(Object key) {
 
 ##### HashMap和HashTable的区别
 
-* 底层结构：HashMap为数组+链表和红黑树；HashTable是数组+链表
+* **底层结构：HashMap为数组+链表和红黑树；HashTable是数组+链表**
 
 * **效率：HashMap效率高，因为没有锁开销；HashTable大部分方法有synchronized同步锁**
 
@@ -881,29 +897,10 @@ static final int hash(Object key) {
 
 ##### HashMap和TreeMap的区别
 
-* 底层结构：HashMap基于哈希表实现的，通过hash值确定存储位置；TreeMap基于红黑树实现的，是一种**自平衡二叉查找树**
-* key值顺序：HashMap默认情况下，不保证元素的存储顺序；TreeMap能够保证key的有序性，总是按照key的自然顺序创建或者自定义Comparator进行排序
+* **底层结构：HashMap基于哈希表实现的，通过hash值确定存储位置；TreeMap基于红黑树实现的，是一种`自平衡二叉查找树`**
+* **key值顺序：HashMap默认情况下，不保证元素的存储顺序；TreeMap能够保证key的有序性，总是按照key的自然顺序创建或者自定义Comparator进行排序**
 * key为null：**HashMap最多允许1个null key和多个null value**（所有null key会被映射到数组下标0的位置，并且会覆盖之前的null key）；**TreeMap 不允许 null key，允许 null value**（因为是拿key作为树节点，BST树节点为空就不能查找了）
 * 复杂度：HashMap的查找、插入、删除平均复杂度为O(1)；TreeMap的查找、插入、删除的时间复杂度为O(logn)
-
-
-
-##### HashMap和HashSet的区别
-
-> 如果需要存储一堆不重复的东西，用 `HashSet`；如果需要给这些东西关联额外的信息，用 `HashMap`。
-
-* HashSet存储的不重复的单个元素，用于快速检查某个元素key是否存在；HashMap存储k-v对
-
-* HashSet基于HashMap，当HashSet添加相同key时会判断是否存在旧value，存在就直接失败；HashMap则会覆盖旧value
-
-  ```java
-  //省略HashSet其它代码
-  public boolean add(E e) {
-    	return map.put(e, PRESENT)==null;
-  }
-  ```
-
-  
 
 
 
@@ -1040,6 +1037,7 @@ Thread t1= new Thread(()->{
     }
     System.out.println(Thread.currentThread().getName()+" 被唤醒了...");
 },"t1");
+
 Thread t2=new Thread(()->{
     System.out.println(Thread.currentThread().getName()+" waiting...");
     synchronized (lock){
@@ -1187,7 +1185,19 @@ executor.shutdown();
 ##### Runnable接口和Callable接口有什么区别
 
 * **Runnable接口中run方法没有返回值；Callable接口call方法有返回值，可配合FutureTask的get拿到结果**
-* **Runnable接口中run方法的异常只能内部try-catch，不能抛出；Callable接口call方法可以throw出去**
+
+* **Runnable接口中run方法的异常只能内部try-catch，不能抛出（因为Runnable接口定义run方法时没有抛出异常，所以重写的时候不能抛出）；Callable接口call方法可以throw出去**
+
+  ```java
+  @FunctionalInterface
+  public interface Runnable {
+      public abstract void run();
+  }
+  
+  @FunctionalInterface
+  public interface Callable<V> {
+      V call() throws Exception;
+  }
 
 
 
@@ -1200,33 +1210,35 @@ executor.shutdown();
 
 ##### 多个线程按顺序执行
 
-> **t.join：阻塞当前线程进入TIMED_WAITING状态直到t线程执行完毕后，当前线程继续执行，`还可以使用线程池中的单例线程池`**
+> **t.join：阻塞当前线程进入TIMED_WAITING状态，直到t线程执行完毕后，当前线程继续执行，`还可以使用线程池中的单例线程池`**
 
 ```java
 Thread t1 = new Thread(() -> {
-            System.out.println(Thread.currentThread().getName() + " running...");
-        }, "t1");
-        Thread t2 = new Thread(() -> {
-            try {
-                t1.join();  //当前t2线程进入TIMED_WAITING阻塞状态，等待t1执行完才会继续执行
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println(Thread.currentThread().getName() + " running...");
-        }, "t2");
-        Thread t3 = new Thread(() -> {
-            try {
-                t2.join();  //当前t3线程进入TIMED_WAITING阻塞状态，等待t2执行完才会继续执行
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println(Thread.currentThread().getName() + " running...");
-        }, "t3");
+    System.out.println(Thread.currentThread().getName() + " running...");
+}, "t1");
 
-		//不管启动顺序如何，t2需要等待t1，t3需要等待t2，TIMED_WAITING会自动唤醒，无需手动唤醒
-        t3.start();
-        t2.start();
-        t1.start();
+Thread t2 = new Thread(() -> {
+    try {
+        t1.join();  //当前t2线程进入TIMED_WAITING阻塞状态，等待t1执行完才会继续执行
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    System.out.println(Thread.currentThread().getName() + " running...");
+}, "t2");
+
+Thread t3 = new Thread(() -> {
+    try {
+        t2.join();  //当前t3线程进入TIMED_WAITING阻塞状态，等待t2执行完才会继续执行
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    System.out.println(Thread.currentThread().getName() + " running...");
+}, "t3");
+
+//不管启动顺序如何，t2需要等待t1，t3需要等待t2，TIMED_WAITING会自动唤醒，无需手动唤醒
+t3.start();
+t2.start();
+t1.start();
 ```
 
 ![image-20250429112358348](Java面试八股文_images/image-20250429112358348.png)
@@ -1300,7 +1312,7 @@ Thread t1 = new Thread(() -> {
 
 ##### 锁的不同区域
 
-> **static修饰的字段或方法，在内存中只有一份，不管创建多少个类实例，都是共享的**
+> **static修饰的字段或方法，在内存中只有一份，存放于静态区中，不管创建多少个类实例，都是共享的**
 
 ###### 锁住方法区域
 
@@ -1363,6 +1375,43 @@ public void getSeq() {
 
 
 
+#### CountDownLatch
+
+> 闭锁/倒计时锁，用来进行线程同步写作，等待所有线程完成倒计时**（让一个或多个线程等待其他多个线程完成操作后再继续执行后续业务逻辑）**
+
+```java
+//初始化整数count：表示要等待的事件数量
+CountDownLatch latch = new CountDownLatch(3);
+
+// 启动三个线程
+for (int i = 1; i <= 3; i++) {
+    int threadId = i;
+    new Thread(() -> {
+        try {
+            System.out.println("线程 " + threadId + " 正在执行任务...");
+            Thread.sleep(1000); // 模拟耗时任务
+            System.out.println("线程 " + threadId + " 执行完毕");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            // 每完成一个任务，计数减1
+            latch.countDown();
+        }
+    }).start();
+}
+
+System.out.println("主线程等待子线程执行业务逻辑...");
+// 当计数减到0时,主线程等待的线程将被唤醒
+latch.await();
+System.out.println("所有子线程执行完毕，主线程继续执行后续逻辑");
+```
+
+![image-20250503143430223](Java面试八股文_images/image-20250503143430223.png)
+
+
+
+
+
 #### 线程池
 
 ##### 核心参数与执行流程
@@ -1380,7 +1429,7 @@ public ThreadPoolExecutor(int corePoolSize,
 * **corePoolSize：核心线程数目（主要执行任务的数量）**
 * **maximumPoolSize：最大线程数目=核心线程+救急（临时）线程的最大数目**
 * **keepAliveTime：生存时间，救急线程的生存时间，当创建好了救急线程，若在生存时间内没有新任务，救急线程资源会释放**
-* **unit：时间单位**
+* unit：时间单位
 * **workQueue：当没有空余的核心线程时，新来的任务会加入到队列中，队列满时会创建救急线程执行任务**
 * threadFactory：线程工厂，可指定对象的创建、设置线程名字、是否为守护线程
 * **handler：拒绝策略，当所有线程都繁忙时，任务队列也存满时，新来的任务会触发对应的拒绝策略**
@@ -1524,41 +1573,6 @@ public ThreadPoolExecutor(int corePoolSize,
 
   
 
-##### CountDownLatch
-
-> 闭锁/倒计时锁，用来进行线程同步写作，等待所有线程完成倒计时**（让一个或多个线程等待其他多个线程完成操作后再继续执行后续业务逻辑）**
-
-```java
-//初始化整数count：表示要等待的事件数量
-CountDownLatch latch = new CountDownLatch(3);
-
-// 启动三个线程
-for (int i = 1; i <= 3; i++) {
-    int threadId = i;
-    new Thread(() -> {
-        try {
-            System.out.println("线程 " + threadId + " 正在执行任务...");
-            Thread.sleep(1000); // 模拟耗时任务
-            System.out.println("线程 " + threadId + " 执行完毕");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            // 每完成一个任务，计数减1
-            latch.countDown();
-        }
-    }).start();
-}
-
-System.out.println("主线程等待子线程执行业务逻辑...");
-// 当计数减到0时,主线程等待的线程将被唤醒
-latch.await();
-System.out.println("所有子线程执行完毕，主线程继续执行后续逻辑");
-```
-
-![image-20250503143430223](Java面试八股文_images/image-20250503143430223.png)
-
-
-
 ##### 线程池使用场景
 
 ###### 批量导入/导出数据
@@ -1570,7 +1584,7 @@ System.out.println("所有子线程执行完毕，主线程继续执行后续逻
 int total = 200000;
 //每个线程处理1000条数据
 int batchSize = 1000;
-//总共两百个任务,一个任务处理1000条数据
+//总共两百个任务（即创建200个线程）,一个任务（线程）处理1000条数据
 int taskCount = total / batchSize;//200
 
 // 模拟20w数据
@@ -1595,7 +1609,7 @@ ExecutorService executor = new ThreadPoolExecutor(
     60L,
     TimeUnit.SECONDS,
     new LinkedBlockingQueue<>(1000),
-    //多出的新任务使用主线程执行任务,但是这里不会触发,因为手动只提交了1000个任务正好符合阻塞队列大小
+    //多出的新任务使用主线程执行任务,但是这里不会触发,因为手动只提交了1000个任务没有超过阻塞队列大小
     new ThreadPoolExecutor.CallerRunsPolicy()
 );
 
@@ -1696,7 +1710,7 @@ System.out.println("并发调用总耗时: " + duration + " 秒");
 
 
 
-##### 控制某个方法允许并发访问的数量
+##### 控制接口并发访问数量
 
 > `Semaphore`**（信号量）控制同时访问某个资源的线程数量，超过的线程必须等别人释放通行证后才能进入，eg：限流控制、控制访问共享资源的并发数量**
 
@@ -1709,6 +1723,7 @@ public static void downloadFile(int taskId) {
     try {
         // 获取许可，如果没有就阻塞等待
         semaphore.acquire();
+      
         System.out.println("线程 " + taskId + " 开始下载...");
         // 模拟下载时间
         Thread.sleep(2000);
