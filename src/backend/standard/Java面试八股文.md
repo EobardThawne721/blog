@@ -2107,8 +2107,8 @@ public void test1() {
 #### @Autowired和@Resource区别
 
 * @Autowired是Spring提供的注解；@Resource是JDK提供的注解
-* @Autowired是只能按类型注入；@Resource先按名次注入，找不到再按类型注入
-* @Autowired可以和@Qualifier一起使用按名次注入；@Resource可以配置name属性或type属性来指定方式注入
+* **@Autowired是只能按类型注入；@Resource先按名称注入，找不到再按类型注入**
+* @Autowired可以和@Qualifier一起使用按名称注入；@Resource可以配置name属性或type属性来指定方式注入
 
 
 
@@ -2118,10 +2118,10 @@ public void test1() {
 
 #### Spring使用到的设计模式
 
-* 工厂设计模式：Spring使用工厂模式通过BeanFactory、ApplicationContext 创建 bean 对象。
-* 代理设计模式：Spring AOP功能实现（JDK动态代理、CGLIB动态代理）
-* 单例设计模式：Spring 中的 Bean 默认都是单例的、并且是饿汉式模式(启动容器就生成实例，懒汉式：第一次请求才会创建)
-* 模版方法设计模式：Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作
+* **工厂设计模式**：Spring使用工厂模式通过BeanFactory、ApplicationContext 创建 bean 对象。
+* **代理设计模式**：Spring AOP功能实现（JDK动态代理、CGLIB动态代理）
+* **单例设计模式**：Spring 中的 Bean 默认都是单例的、并且是饿汉式模式(启动容器就生成实例，懒汉式：第一次请求才会创建)
+* **模版方法设计模式**：Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作
 * 适配器模式：Spring AOP 的增强或通知、Spring MVC都用到了适配器模式
 
 
@@ -2146,14 +2146,14 @@ public void test1() {
 
 > **什么是AOP？**
 
-**面向切面编程，用于将那些与业务无关、但对多个对象产生影响的公共行为和逻辑抽取为公共模块复用，降低耦合度**
+**面向切面编程，用于把与业务无关、但对多个对象产生影响的公共行为和逻辑代码抽取为公共模块复用，降低耦合度**
 
 
 
 > **AOP在spring中有两种实现方式：JDK动态代理、CGLIB动态代理**
 
-* JDK动态代理（默认情况，eg：常用开发中service、service.impl）：目标类实现了某个接口，运行时生成代理类实现接口的方法
-* CGLIB动态代理（eg：没有父类、接口就会切换为CGLIB或者强制配置Spring使用）：目标类和方法不能声明为final（因为是通过继承的方式，所以不能是final），运行时为目标类生成一个子类，覆盖其中的所有方法
+* **JDK动态代理**（默认情况，eg：常用开发中service、service.impl）：**目标类实现了某个接口**，运行时生成代理类实现接口的方法
+* **CGLIB动态代理**（eg：没有实现接口就会切换为CGLIB或者强制配置Spring使用）：目标类和方法不能声明为final（因为是通过继承的方式，所以不能是final），**运行时通过继承的方式为目标类生成一个子类**，覆盖其中的所有方法
 
 
 
@@ -2188,7 +2188,7 @@ public class ServiceA {
     @Transactional(propagation = Propagation.REQUIRED） //设置级别，默认REQUIRED
     public void methodA() {
         System.out.println("A start");
-        serviceB.methodB();		//事务A钟包含事务B
+        serviceB.methodB();		//事务A中包含事务B
         System.out.println("A end");
     }
 }
@@ -2205,19 +2205,19 @@ public class ServiceB {
 
 ==注意：下面说的外层内层事务，默认将外层设为REQUIRED级别，内层自定义设为下面几种之一，方便理解==
 
-* REQUIRED（默认）：如果外层存在事务，内层则加入当前事务；如果外层没有事务，则内层方法会新建一个事务（**eg：A和B要么同时提交，要么同时回滚）**
+* **REQUIRED（默认）**：如果外层存在事务，内层则加入当前事务；如果外层没有事务，则内层方法会新建一个事务（**eg：A和B要么同时提交，要么同时回滚）**
 
-* REQUIRES_NEW：**内层总是新建一个事务，保证自己独立提交或回滚**，原来的外层事务挂起**（eg：B回滚，A不受影响）**
+* **REQUIRES_NEW**：**内层总是新建一个事务，保证自己独立提交或回滚**，原来的外层事务挂起**（eg：B回滚，A不受影响）**
+
+* **SUPPORTS**：如果外层有事务，内层则加入当前事务；如果外层没有事务，内层不管有无事务都是以普通方法执行（**eg：外层有，内层加入；外层没有，内层普通方法执行**）
+
+* **NOT_SUPPORTED**：如果外层有事务，就把外层事务挂起，内层当成普通方法处理（**外层有，外层挂起，内层当普通方法执行**，eg：内层代码抛出异常，内层的DB操作还是会成功，但是外层的代码会回滚，因为捕获到了内层抛出的异常）
+
+* **NEVER**：不支持事务，如果存在事务，就抛异常（**只要内层处于外层事务中就抛异常**）
+
+* **MANDATORY**：必须运行在事务中，没事务就抛异常（**只要外层没事务就抛异常**）
 
 * NESTED：如果外层有事务，内层事务会在外层嵌套一个事务保存点，如果内层回滚不会影响外层；如果没有事务，则新建一个事务（**内层事务依赖外层事务，属于外层事务的嵌套保存点**）
-
-* SUPPORTS：如果外层有事务，内层则加入当前事务；如果外层没有事务，内层不管有无事务都是以普通方法执行
-
-* NOT_SUPPORTED：如果外层有事务，就把外层事务挂起，内层当成普通方法处理（**内层出现异常也不会回滚，但是内层抛出异常会影响外层事务）**
-
-* NEVER：不支持事务，如果存在事务，就抛异常（**只要内层处于外层事务中就抛异常**）
-
-* MANDATORY：必须运行在事务中，没事务就抛异常（**只要外层没事务就抛异常**）
 
   
 
