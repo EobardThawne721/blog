@@ -664,40 +664,137 @@ public class RabbitService {
 
 ### 消费者如何处理大量消息、消息积压问题
 
-* 创建多个消费者实例并行监听同一个队列，RabbitMQ内部会按照负载均衡的方式轮询或公平调度的方式处理，不会存在同时消费同一条消息
+>  **创建多个消费者实例并行监听同一个队列，RabbitMQ内部会按照负载均衡的方式轮询或公平调度的方式处理，不会存在同时消费同一条消息，`但是多个消费者的消费顺序不保证有序`**
+
+```tex
+                                    RabbitMQ Queue: test-queue
+                                                │
+                           ┌────────────────────┴────────────────────┐
+                           │                  │                      │
+                          Consumer#1       Consumer#2            Consumer#3
+                          (Thread-1)       (Thread-2)            (Thread-3)
+                           │                  │                      │
+                          调用相同方法       调用相同方法           调用相同方法
+                      receiveMessage()   receiveMessage()       receiveMessage()
+```
+
+
+
+* 使用rabbitmq内置线程池
+
+  > **如果不配置concurrency = "3"，默认为单线程串行化消费，假设9条消息，则需要9秒时间；如果设置了并发消费者线程则只需要3秒时间**
 
   ```java
-  // 消费者1
-  @RabbitListener(queues = "your_queue")
-  public void receiveMessage1(String message) {
-      System.out.println("消费者1收到消息: " + message);
-  }
+  private static final AtomicInteger counter = new AtomicInteger(0);
+  private static long startTime = 0;
   
-  // 消费者2
-  @RabbitListener(queues = "your_queue")
-  public void receiveMessage2(String message) {
-      System.out.println("消费者2收到消息: " + message);
-  }
-
-* 配置单个消费者，多个线程并行处理多个消息
-
-  ```java
-  @Bean
-  public TaskExecutor taskExecutor() {
-      return new SimpleAsyncTaskExecutor();  // 配置线程池
-  }
+  @RabbitListener(
+      bindings = @QueueBinding(
+              //绑定队列
+              value = @Queue(value = "test-queue", durable = "true"),
+              //绑定交换机
+              exchange = @Exchange(value = "test-exchange"),
+              //绑定路由Kye
+              key = {"test-key"}
+      )
+  //设置并发消费者数量(可设置区间形式;eg:3-10,等同于设置setConcurrentConsumers和setMaxConcurrentConsumers)
+      , concurrency = "3"
+  )
+  public void receiveMessage1(Message message, Channel channel) throws IOException, InterruptedException {
+      // 第一次收到消息时，记录开始时间
+      if (counter.get() == 0) {
+          startTime = System.currentTimeMillis();
+      }
   
-  @Bean
-  public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter,  TaskExecutor taskExecutor) {
-      SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-      container.setConnectionFactory(connectionFactory);
-      container.setMessageListener(listenerAdapter);
-      container.setTaskExecutor(taskExecutor);  // 使用线程池
-      container.setQueueNames("your_queue");
-      container.setConcurrentConsumers(5);  // 线程池的并发消费者数
-      return container;
+      System.out.println(Thread.currentThread().getName() + " 收到消息: " + new String(message.getBody()));
+      Thread.sleep(1000); // 模拟每条消息处理耗时 1 秒
+  
+      channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+  
+      int finished = counter.incrementAndGet();
+    
+      if (finished == 9) {
+          long total = System.currentTimeMillis() - startTime;
+          System.out.println("所有消息处理完毕，总耗时: " + total + " ms");
+      }
   }
   ```
+
+  <table>
+      <tr>
+          <td><img src="./RabbitMQ实战_images/image-20251030153620451.png" alt="image-20251030153620451" style="zoom:50%;" /></td>
+          <td><img src="./RabbitMQ实战_images/image-20251030153444175.png" alt="image-20251030153444175" style="zoom:50%;" /></td>
+      </tr>
+  </table>
+
+  
+
+* 使用自定义线程池
+
+```java
+@Bean
+public Executor threadPoolExecutor() {
+    //自定义自己的线程池
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(5);
+    executor.setMaxPoolSize(10);
+    executor.setQueueCapacity(10);
+    executor.setThreadNamePrefix("custom-consumer-");
+    executor.initialize();
+    return executor;
+}
+
+@Bean
+public SimpleRabbitListenerContainerFactory container(ConnectionFactory connectionFactory, Executor threadPoolExecutor) {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory);
+    factory.setTaskExecutor(threadPoolExecutor);    //使用自定义的线程池
+    factory.setConcurrentConsumers(5);           //最小并发消费者线程数（启动时创建几个消费者线程）
+    factory.setMaxConcurrentConsumers(10);       //最大并发消费者线程数（动态扩容上限）
+    //每个消费者预取数量(每个消费者每次最多拿10条消息,prefetch越小,分配越公平),
+    //  如果不设置,如果有线程处理的慢,那么消息在这个线程就会堆积,而其它线程则处于空闲状态
+    //  设置了之后,就算有线程处理慢,它上限是10条,其它快的线程可以继续处理其它消息
+    factory.setPrefetchCount(10);
+    factory.setAcknowledgeMode(AcknowledgeMode.MANUAL); //设置为手动ack
+    return factory;
+}
+
+//================================================================================================//
+
+private static final AtomicInteger counter = new AtomicInteger(0);
+private static long startTime = 0;
+
+@RabbitListener(
+        bindings = @QueueBinding(
+                //绑定队列,并对消息进行持久化
+                value = @Queue(value = "test-queue", durable = "true"),
+                //绑定交换机
+                exchange = @Exchange(value = "test-exchange"),
+                //绑定路由Kye
+                key = {"test-key"}
+        )
+          //绑定自定义容器工厂Bean的name
+        , containerFactory = "container"
+)
+public void receiveMessage1(Message message, Channel channel) throws IOException, InterruptedException {
+    // 第一次收到消息时，记录开始时间
+    if (counter.get() == 0) {
+        startTime = System.currentTimeMillis();
+    }
+    System.out.println(Thread.currentThread().getName() + " 收到消息: " + new String(message.getBody()));
+    Thread.sleep(1000); // 模拟每条消息处理耗时 1 秒
+  
+    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+  
+    int finished = counter.incrementAndGet();
+    if (finished == 19) {
+        long total = System.currentTimeMillis() - startTime;
+        System.out.println("所有消息处理完毕，总耗时: " + total + " ms");
+    }
+}
+```
+
+<img src="./RabbitMQ实战_images/image-20251030165632244.png" alt="image-20251030165632244" style="zoom:50%;" /> 
 
 
 
@@ -709,7 +806,7 @@ public class RabbitService {
   * 创建多个队列，确保每个消费者只消费一个队列，单个消费者消费消息天然有序
 * 场景2：生产者发送多条消息到MQ，配置一个消费者由多个线程执行，如何保证顺序？
   * 放弃多线程处理，使用单线程保证天然有序
-  * 多线程并不理解消费消息，而是将消息放入新的共享缓冲区去排序，然后再开线程去执行
+  * 多线程并不立即消费消息，而是将消息放入新的共享缓冲区去排序，然后再开线程去执行
 
 
 
@@ -724,6 +821,33 @@ public class RabbitService {
 利用Redis去重
 
 1. 当生产者发送消息时可以设置CorrelationData的id来配置消息的唯一id，在消费者消费消息的时候，可以通过setnx写入redis中并配置一定时间内，如果返回1，说明第一次消费；否则表示已消费
+
+   ```java
+   @RabbitListener(queues = "order.queue")
+   public void handleOrderMessage(OrderMessage message, Channel channel, 
+                                @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
+       // 检查消息是否已处理
+       String messageId = message.getMessageId();
+   
+       Boolean isNew = redisTemplate.opsForValue().setIfAbsent("msg:" + messageId, "processed", 24, TimeUnit.HOURS);
+   
+       if (Boolean.TRUE.equals(isNew)) {
+           try {
+               // 处理业务逻辑
+               processOrder(message);
+               // 手动确认消息
+               channel.basicAck(deliveryTag, false);
+           } catch (Exception e) {
+               // 处理异常，拒绝消息并重新入队
+               channel.basicNack(deliveryTag, false, true);
+           }
+       } else {
+           // 消息已处理，直接确认
+           channel.basicAck(deliveryTag, false);
+           log.info("消息 {} 已处理，跳过重复消费", messageId);
+       }
+   }
+   }
 
 利用DB设置唯一索引
 
