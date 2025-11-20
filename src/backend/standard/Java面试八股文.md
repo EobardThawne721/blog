@@ -152,6 +152,19 @@
     
     
 
+#### 缓存机制（新的）
+
+* Integer
+* String等等
+
+
+
+索引调整顺序
+
+http和https区别
+
+spring循环依赖线程安全
+
 
 
 #### String类为什么是不可变的
@@ -2160,7 +2173,7 @@ public void test1() {
 > **AOP在spring中有两种实现方式：JDK动态代理、CGLIB动态代理**
 
 * **JDK动态代理**（默认情况，eg：常用开发中service、service.impl）：**目标类实现了某个接口**，运行时生成代理类实现接口的方法
-* **CGLIB动态代理**（eg：没有实现接口就会切换为CGLIB或者强制配置Spring使用）：**目标类和方法不能声明为final**（因为是通过继承的方式，所以不能是final），**运行时通过继承的方式为目标类生成一个子类**，覆盖其中的所有方法
+* **CGLIB动态代理**（eg：没有实现接口就会切换为CGLIB或者强制配置Spring使用）：**`目标类和方法不能声明为final`**（因为是通过继承的方式，所以不能是final），**运行时通过继承的方式为目标类生成一个子类**，覆盖其中的所有方法
 
 
 
@@ -2282,6 +2295,7 @@ public class ServiceB {
 * **通过BeanDefinition获取bean的定义信息**
 * **通过构造函数实例化bean**
 * **依赖注入属性值**
+* @PostConstruct注解方法（这样初始化时就能使用所有依赖，而不需要关心框架的底层机制）
 * **处理Aware接口（BeanNameAware、BeanFactoryAware、ApplicationContextAware）**
 * **Bean的后置处理器-前置方法**
 * **初始化方法（`@PostConstruct的自定义方法`、InitializingBean接口）**
@@ -2470,9 +2484,9 @@ public B(A a) {}        	// 注入已初始化的真实 A
 
 > **BeanFactory（Bean工厂） 是 Spring 的工厂，FactoryBean（工厂Bean）是自定义功能的特殊Bean**
 
-*  **BeanFactory是Spring最核心的IOC接口，用来管理Bean的生命周期，提供getBean()等方法**
+*  **`BeanFactory是Spring最核心的IOC接口，用来管理Bean的生命周期，提供getBean()等方法`**
    * **BeanFactory**和**ApplicationContext**是**spring**框架的两个**IOC**容器，现在一般使用 **ApplicationnContext**（eg：最常见的子类ClassPathXmlApplicationContext类路径加载xml、AnnotationConfigApplicationContext注解加载等，都是**ApplicationContext**的子类，而ApplicationContext间接实现了BeanFactory）
-*  **FactoryBean是Spring提供的特殊接口，用来定制Bean的创建逻辑**（eg：返回代理对象、复杂对象、第三方类）
+*  **`FactoryBean是Spring提供的特殊接口，用来定制Bean的创建逻辑`**（eg：返回代理对象、复杂对象、第三方类）
    * 某些特殊情况下，实例化Bean需要复杂逻辑，如果按照传统xml方式则会配置大量信息，此时就可以实现这个接口来定制化
 
 
