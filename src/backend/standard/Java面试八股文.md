@@ -152,18 +152,64 @@
     
     
 
-#### 缓存机制（新的）
+#### 缓存机制
 
-* Integer
-* String等等
+> **JVM中的缓存机制是将相同对象中缓存中的值复用， 提高性能、减少内存占用、避免重复创建对象（`下面复用缓存的值不是利用new的方式，因为那是创建对象了，地址会发生改变，及时使用缓存的值也不是同一个对象`）**
+
+* 包装类型
+  * Boolean：true、false两个常量
+  * Byte：-128~127
+  * Character：0~127的ASCII字符
+  * Short：-128~127
+  * Integer：-128~127
+  * Long：-128 ~ 127
+  * String：字符串常量
+* 枚举类型（枚举值在JVM中是单例）
+* 等等
+
+```java
+Boolean bool1 = true;  // Boolean.TRUE
+Boolean bool2 = true;  // Boolean.TRUE  同一个对象
+System.out.println(bool1 == bool2); // true
+
+Byte b1 = 127;     // 缓存  
+Byte b2 = 127;     // 同一个对象
+System.out.println(b1 == b2); // true
+
+Character c1 = 'A';    // 缓存
+Character c2 = 'A';    // 同一个对象
+System.out.println(c1 == c2); // true
+
+Short s1 = 127;    // 缓存
+Short s2 = 127;    // 同一个对象
+System.out.println(s1 == s2); // true
+
+Integer i1 = 127;  // 缓存
+Integer i2 = 127;  // 同一个对象
+System.out.println(i1 == i2); // true
+
+Long l1 = 127L;    // 缓存
+Long l2 = 127L;    // 同一个对象
+System.out.println(l1 == l2); // true
+
+// 字面量 - 自动入池
+String s1 = "hello";           // 常量池
+String s2 = "hello";           // 常量池 - 同一个对象
+System.out.println(s1 == s2); // true
+
+// new String - 不入池
+String s3 = new String("hello"); // 堆中新对象
+String s4 = new String("hello"); // 堆中新对象
+System.out.println(s3 == s4); // false
 
 
+enum Color { RED, GREEN, BLUE }  // 枚举值在JVM中是单例
+Color red1 = Color.RED;   // 缓存
+Color red2 = Color.RED;   // 缓存 - 同一个对象
+System.out.println(red1 == red2); // true
+```
 
-索引调整顺序
 
-http和https区别
-
-spring循环依赖线程安全
 
 
 
@@ -2295,7 +2341,6 @@ public class ServiceB {
 * **通过BeanDefinition获取bean的定义信息**
 * **通过构造函数实例化bean**
 * **依赖注入属性值**
-* @PostConstruct注解方法（这样初始化时就能使用所有依赖，而不需要关心框架的底层机制）
 * **处理Aware接口（BeanNameAware、BeanFactoryAware、ApplicationContextAware）**
 * **Bean的后置处理器-前置方法**
 * **初始化方法（`@PostConstruct的自定义方法`、InitializingBean接口）**
@@ -2413,7 +2458,7 @@ class TestApplicationTests {
 
 ##### 属性注入循环依赖问题
 
-Spring 通过**三级缓存**机制解决部分`单例作用域、属性注入`的循环依赖问题
+Spring 通过**三级缓存**机制解决部分`单例作用域、属性注入`的循环依赖问题，**三个缓存均是线程安全的**，底层依赖`ConcurrentHashMap`实现并发安全控制
 
 * **一级缓存**（`singletonObjects`）：缓存已经经历了完整生命周期的Bean（ 完全初始化好的单例 Bean）
 * **二级缓存**（`earlySingletonObjects`）：缓存早期的Bean对象（已通过构造方法实例化但未完成属性赋值、增强等操作）
@@ -2428,9 +2473,9 @@ Spring 通过**三级缓存**机制解决部分`单例作用域、属性注入`�
 //4.A获得完全初始化的B，完成对象创建，放入一级缓存中
 
 // 模拟三级缓存操作
-Map<String, Object> singletonObjects = new HashMap<>(); // 一级缓存
-Map<String, Object> earlySingletonObjects = new HashMap<>(); // 二级缓存
-Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(); // 三级缓存
+Map<String, Object> singletonObjects = new ConcurrentHashMap<>(); // 一级缓存
+Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(); // 二级缓存
+Map<String, ObjectFactory<?>> singletonFactories = new ConcurrentHashMap<>(); // 三级缓存
 
 // 1. 创建 A 的实例
 A a = new A(); // 构造器实例化
@@ -2515,6 +2560,17 @@ public B(A a) {}        	// 注入已初始化的真实 A
 * 将Controller执行完成后返回ModeAndView对象，通过 处理器适配器 返回给DispatcherServlet
 * DispatcherServlet将ModeAndView对象交给ViewResolver（视图解析器）解析成具体的View（视图）
 * DispatcherServlet根据View（视图）渲染，将里面的EL表达式、JSTL标签进行数据填充并返回给用户
+
+
+
+
+
+#### http和https区别
+
+* http无加密，明文传输；https基于SSL机密（对称+非对称机密结合）
+* http默认端口80；https默认端口443
+* http数据无校验，可能被篡改；https通过mac校验防止数据篡改
+* http无加密开销，速度更快；https需要加解密，性能略低
 
 
 
@@ -3365,6 +3421,21 @@ eg： name(varchar)、status(varchar)、address(varchar) 为复合索引
 ...where substring(name,3,2)='科技'	 	//索引失效,全表查询
 ...where name=‘xx’ and status=1	 		//只有name索引生效,将status字符串类型转换为数字类型
 ```
+
+
+
+#### 索引顺序优化
+
+```tex
+//以下查询索引都不会失效，查询优化器会重新排序条件 
+
+... where status='1' and name='zs'   				 // name='zs' AND  status='1'
+... where status='1' and address='xx' and name='zs'  // name='zs' AND  status='1' and address='xx'
+```
+
+> **条件语句中只要包含复合索引的最左列，无论字段顺序如何，复合索引都会生效**
+
+
 
 
 
