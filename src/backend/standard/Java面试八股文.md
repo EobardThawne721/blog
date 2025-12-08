@@ -2776,6 +2776,8 @@ Mybatis底层会为Mapper接口创建JDK动态代理，执行DB的操作
 
 
 
+#### 已实战项目
+
 > **实战问题1（梯控项目）：在我参与梯控物联网项目的时候，需要使用MQTT协议去监听电梯设备的信息，包括电梯的在线状态、二维码乘坐电梯的校验、平台发送指令控制电梯到指定楼层等等；这些消息会发布到不同的主题上，起初采用的是统一的方法去监听所有的主题，然后利用if-else或者switch去判断不同主题的逻辑（刚开始接触这个MQTT的时候我以为会和rabbitmq一样的做法，通过注解就可以监听指定主题，但是它好像不支持），刚开始主题不多的情况下还算可以实用，但是随着主题和业务逻辑增多，代码变的很臃肿、难以解耦**
 
 解决1：我采用的是基于自定义注解和反射机制来实现MQTT多主题解耦监听的机制，首先我创建了一个自定义注解去在方法上去指定需要监听的主题名，然后我创建了MqttMessageProcessor消息的处理器在Spring Boot项目启动的时候去扫描使用了这个注解的类并拿到它使用注解的方法，我把它放入到一个map中，K就是主题名称，V就是方法的签名这里用的是反射技术；然后我在这个类中创建一个通过反射调用消息处理的方法去执行对应主题的业务逻辑，就是先根据刚刚的map去拿到方法签名，然后利用IOC容器去把这个方法的类找到并执行对应的方法，然后我在MQTT配置类中把这个消息处理器注入进来，然后在MQTT配置类监听消息的方法上直接调用刚刚的方法，并把主题名和消息message传进去即可
@@ -2816,6 +2818,152 @@ Mybatis底层会为Mapper接口创建JDK动态代理，执行DB的操作
 ```
 
 
+
+
+
+#### 场景题
+
+##### 灰度发布
+
+> **场景：部分用户先体验新功能 / 新逻辑，验证稳定性、兼容性后，再全量切换，避免全量发布导致的线上故障（`面试中高频考察的 “业务分流 + 技术落地” 场`）**
+>
+> **实现方式：`AOP+策略模式`，解耦、无侵入、可复用、易扩展**
+
+==eg：从白名单或者30%的用户去体验新功能，剩下的还是使用老方法==
+
+1. **自定义灰度发布注解**
+
+```java
+/**
+ * <dependency>
+ *      <groupId>org.springframework.boot</groupId>
+ *      <artifactId>spring-boot-starter-aop</artifactId>
+ * </dependency>
+ */
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface GrayRelease {
+    int ratio() default 30; // 新逻辑占比（默认30%用户）
+
+//    String key() default "userId"; // TODO:可扩展的分流依据（默认按用户ID）
+}
+```
+
+
+
+2. 定义新旧策略
+
+```java
+public interface BasicStrategy {
+    //抽象的执行方法
+    String execute(Long userId);
+}
+
+//==============新策略=================//
+@Component
+public class NewStrategyImpl implements BasicStrategy {
+    @Override
+    public String execute(Long userId) {
+        //假设新的策略：给当前用户的id 增加115元
+        return "当前用户id:{" + userId + "},账户新增：115元";
+    }
+}
+
+//===============旧策略================//
+@Component
+public class OldStrategyImpl implements BasicStrategy {
+
+    @Override
+    public String execute(Long userId) {
+        //假设旧的策略：给当前用户的id 增加100元
+        return "当前用户id:{"+userId+"},账户新增：100元";
+    }
+}
+```
+
+
+
+3. 业务逻辑方法
+
+```java
+@Service
+public class MyServiceImpl {
+    @Autowired
+    private OldStrategyImpl oldStrategy;
+    
+    //假设这里是方法
+    @GrayRelease(ratio = 95)   //获取划分比例(后期可以从Nacos配置中心设置)
+    public String getOne(Long userId) {
+        //默认执行的逻辑是旧策略
+        return oldStrategy.execute(userId);
+    }
+}
+```
+
+
+
+4. 切面
+
+```java
+@Component
+@Aspect
+public class GrayReleaseAspect {
+    //注入所有策略,根据策略来调整
+    @Autowired
+    private OldStrategyImpl oldStrategy;
+
+    @Autowired
+    private NewStrategyImpl newStrategy;
+
+    //切点
+    @Pointcut("@annotation(com.my.thawne.annotation.GrayRelease)")
+    public void grayPointcut() {
+    }
+
+    //连接点为使用自定义注解的方法
+    // && @annotation(grayRelease)的作用是将拦截方法上注解的参数绑定到这里的grayRelease里
+    @Around("grayPointcut() && @annotation(grayRelease)")
+    public Object around(ProceedingJoinPoint joinPoint, GrayRelease grayRelease) throws Throwable {
+        //获取拦截方法的参数，假设第一个字段就是userId
+        Object[] args = joinPoint.getArgs();
+        String userId = args[0].toString();
+     
+        try {
+            BasicStrategy strategy = useNewStrategy(userId, grayRelease.ratio()) ? newStrategy : oldStrategy;
+            return strategy.execute(Long.valueOf(userId));
+        } catch (Exception e) {
+            //兜底：使用默认的旧策略,即被拦截的方法默认使用oldStrategy的规则
+            return joinPoint.proceed();
+        }
+    }
+
+
+    // 白名单：测试用户ID，可以从Nacos配置中心获取
+    private static final Set<String> WHITE_LIST = Set.of();
+
+    //判断是否使用新策略
+    private boolean useNewStrategy(String userId, int ratio) {
+        if (WHITE_LIST.contains(userId)) {
+            return true;
+        }
+        //获取用户的非负hash值(因为Integer.MAX_VALUE最高位是0，按位与之后所有非负的排除掉了)
+        int hash = userId.hashCode() & Integer.MAX_VALUE;
+        //对非负哈希值取模，将结果会映射到0~99
+        return hash % 100 < ratio;
+    }
+}
+```
+
+
+
+5. 测试
+
+![image-20251208164727183](Java面试八股文_images/image-20251208164727183.png)
+
+![image-20251208164759046](Java面试八股文_images/image-20251208164759046.png) 
+
+![image-20251208164831425](Java面试八股文_images/image-20251208164831425.png) 
 
 
 
