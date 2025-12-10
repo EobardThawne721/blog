@@ -273,13 +273,33 @@ System.out.println(red1 == red2); // true
 #### 异常处理机制
 
 * 编写可能出现异常的代码时，可放入try代码块中
+
 * try后可以有一个或多个catch块来捕捉，catch中子类异常顺序在父类异常前（eg：先捕获ClassCastException，再捕获Exception）
-* 可选地加入finally块执行清理代码
+
+* 可选地加入finally块执行清理代码，不管try-catch的操作是什么，finally块都会执行
+
+  ```java
+  int i=3;
+  try {
+      i=4;				//变为4
+      i=i/0;				
+  } catch (Exception e) {
+      i=5 ;   			//由于异常，变为5
+  }finally {
+      i=6;				//最终执行，变为6
+  }
+  System.out.println("i = " + i);  //6
+  ```
+
 * 方法声明时使用throws 抛出；方法体使用throw new 抛出
 
 
 
-### 面向对象
+### 面向对象（OOP）
+
+> **封装、继承、多态是OOP的三大核心特点**
+
+
 
 #### 方法重载与方法覆盖
 
@@ -290,12 +310,21 @@ System.out.println(red1 == red2); // true
   * 同一个类中多个方法名相同，参数不同
   * 返回类型可以不同，但不作为重载的依据
 
-* 方法覆盖：
+* 方法覆盖（重写）：
 
-  * 子类重写父类的方法，方法名相同，参数相同
+  * 重写范围：子类重写父类的方法，方法名相同，参数相同（**父类protected类型也能被重写；父类static方法、构造方法不能被重写**）
 
-  * 返回类型必须相同、返回子类类型（减少类型转换）
+  * **访问修饰符：子类重写父类方法的访问权限可以放宽，但不能变窄**
 
+    ```java
+      父类        子类
+    protected → public：  	 ✔  放宽
+    protected → protected：   ✔  不变
+    protected → private：     ❌ 报错 
+    ```
+  
+  * 返回类型：必须相同、返回子类类型（减少类型转换）
+  
     ```java
     public abstract class UTjfjxvg3 {
         public abstract UTjfjxvg3 show();
@@ -308,8 +337,11 @@ System.out.println(red1 == red2); // true
         }
     }
     ```
+  
 
-    
+
+
+
 
 #### 抽象类与接口
 
@@ -355,6 +387,10 @@ System.out.println(red1 == red2); // true
 * NIO（Non- Blocking IO，非阻塞IO）：线程执行一个IO时不会一直等待，而是继续执行其它任务，**需要通过轮询或者回调函数等机制检查IO操作是否完成，能更好的支持并发，但会导致CPU资源浪费（因为会不停的调用判断数据处理好了没）**
 * AIO（Asynchronous IO，异步IO）：线程执行IO时允许执行其它任务，不需要等待IO操作完成，**操作系统完成后会自动通过回调通知，不需要轮询**
 * IO多路复用：使用操作系统Selector机制（eg：Java的Selector类），通过选择器，**一个线程可以监听多个通道上的IO事件，从而在单线程中处理多个连接（socket）**
+
+
+
+
 
 
 
@@ -507,7 +543,7 @@ list.add(12);   //扩容
 
 
 
-##### ArrayList与LinkedList的区别
+##### ArrayList（数组）与LinkedList（链表）的区别
 
 1. **底层数据结构**
 
@@ -579,7 +615,7 @@ list.add(12);   //扩容
 
 > 如果需要存储一堆不重复的东西，用 `HashSet`；如果需要给这些东西关联额外的信息，用 `HashMap`。
 
-* HashSet存储的不重复的单个元素，用于快速检查某个元素key是否存在；HashMap存储k-v对
+* **HashSet存储的不重复的单个元素，用于快速检查某个元素key是否存在；HashMap存储k-v对**
 
 * HashSet基于HashMap，当HashSet添加相同key时会判断是否存在旧value，存在就直接失败；HashMap则会覆盖旧value
 
@@ -655,7 +691,7 @@ list.add(12);   //扩容
 ###### JDK 1.7与1.8的区别
 
 * 1.7：当hash冲突时采用拉链法，将链表和数组结合，将hash冲突的值追加到链表；**使用头插法，并发扩容时，容易造成环形链表引起死循环**
-* 1.8：当hash冲突时，**链表的长度大于阈值（默认8）并且数组长度达到64时，链表会转换成红黑树来减少搜索时间；扩容resize( )时，红黑树的树节点数≤临界值6时会退化成链表；使用尾插法，解决了扩容时环形链表的问题**
+* 1.8：**当hash冲突时，链表的长度大于阈值（默认8）并且数组长度达到64时，链表会转换成红黑树来减少搜索时间；扩容resize( )时，红黑树的树节点数≤临界值6时会退化成链表；使用尾插法，解决了扩容时环形链表的问题**
 
 
 
@@ -915,7 +951,7 @@ static final int hash(Object key) {
 ```
 
 * 计算key的hashCode值
-* 调用hash方法进行扰动，**让hashCode值右移16位再异或运算（扰动函数，减少哈希碰撞，让哈希分布更均匀**
+* 调用hash方法进行扰动，**让hashCode值右移16位再`异或运算`（扰动函数，减少哈希碰撞，让哈希分布更均匀**
 * 最后put方法时通过`（容量-1）& hash` 操作得到数组索引，取代了取模操作，提升了效率
 
 
@@ -942,6 +978,23 @@ static final int hash(Object key) {
 * **线程安全：HashMap非线程安全（如果需要线程安全，推荐使用`ConcurrentHashMap`）；HashTable线程安全**
 
 * 扩容机制：HashMap默认16，扩容x2；HashTable默认11，扩容x2+1
+
+  ```java
+  //HashMap的源码
+  final Node<K,V>[] resize() {
+      Node<K,V>[] oldTab = table;
+      //获取当前数组容量和阈值
+      int oldCap = (oldTab == null) ? 0 : oldTab.length;
+      //将旧数组的容量左移1位（即x2）并且安全校验它不能超过最大的容量
+      if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY )     
+  }
+  
+  //HashTable的源码
+  protected void rehash() {
+      int oldCapacity = table.length;
+      int newCapacity = (oldCapacity << 1) + 1;
+  }
+  ```
 
 * **null值：HashMap允许一个null key和多个null value；HashTable不允许null key和value**
 
@@ -2638,11 +2691,19 @@ public B(A a) {}        	// 注入已初始化的真实 A
 
 **作用**
 
-Mybatis底层会为Mapper接口创建JDK动态代理，执行DB的操作
+> **Mybatis底层会为Mapper接口创建JDK动态代理，执行DB的操作**
 
 
 
 **SQL在XML是怎么拿到的？**
+
+```
+过程：
+	代理对象---->根据 全类名+方法名+参数 在一二级缓存查询(查到了，直接返回)
+						----> 一二级缓存不存在，  查询 全类名+方法名 的 缓存(查到了，直接执行)
+                        	-----> 解析sql并放入缓存中 然后执行
+                        ----> 结果映射 并放入一二级缓存
+```
 
 1. 当我们调用`userMapper.selectById`的时候，代理对象会根据Mapper文件的`全类名+方法名+参数`生成一个缓存的唯一key，然后在一级缓存中查询；如果一级缓存没有，那么在二级缓存中查询，（要确保是否开启了二级缓存，在xml文件配置`<cache />`）
 
@@ -2703,7 +2764,7 @@ Mybatis底层会为Mapper接口创建JDK动态代理，执行DB的操作
    * **@SpringBootConfiguration（标记这是一个配置类）**
    * **@EnableAutoConfiguration**
    * @ComponentScan（扫描指定包及其子包下的组件，注入到IOC容器中）
-2. 其中**@EnableAutoConfiguration是实现自动配置的核心注解**，该注解通过@Import注解导入对应的配置选择类，**内部就是读取该项目及其引用Jar包classpath路径下的META-INF/spring.factories文件中的所配置的全类名，**这些配置类所定义的Bean会根据条件注解或 指定exclude排除项来决定是否加载到IOC容器中，**这就是约定大于配置的核心**
+2. 其中**@EnableAutoConfiguration是实现自动配置的核心注解**，该注解通过@Import注解导入对应的配置选择类，**内部就是读取该项目及其引用Jar包classpath路径下的META-INF/spring.factories文件中的所配置的全类名，**这些配置类所定义的Bean会根据条件注解或 **指定exclude**排除项来决定是否加载到IOC容器中，**这就是约定大于配置的核心**
 3. 条件判断像@ConditionalOnClass、@ConditionalOnMissingBean这样的注解，来判断似乎否有对应的class文件，如果有则加载所对应的自动装配类
 
 
