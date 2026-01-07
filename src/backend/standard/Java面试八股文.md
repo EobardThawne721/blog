@@ -200,8 +200,9 @@ System.out.println(s1 == s2); // true
 // new String - 不入池
 String s3 = new String("hello"); // 堆中新对象
 String s4 = new String("hello"); // 堆中新对象
+String s5=s4.intern(); //获取字符串常量池的引用,如果存在,就返回这个引用,不存在则加入常量池并返回引用
 System.out.println(s3 == s4); // false
-
+System.out.println(s5 == s4); // true
 
 enum Color { RED, GREEN, BLUE }  // 枚举值在JVM中是单例
 Color red1 = Color.RED;   // 缓存
@@ -214,6 +215,8 @@ System.out.println(red1 == red2); // true
 
 
 #### String类为什么是不可变的
+
+> **使用享元模式，创建字符串首先会检查常量池是否存在该字符串，通过共享对象来减少内存开销**
 
 * 类声明是final类型，不能被继承修改；内部没有提供修改内容的地方；**存储内容的地方是`private final byte[] value`，只能被赋值一次，不能被修改**
 
@@ -1396,6 +1399,16 @@ t1.start();
 
 
 
+#### 线上Linux死锁排除方式
+
+* 使用`jps`命令找到对应的Java应用进程ID
+* 使用`jstack 进程ID`命令输出对应的堆栈信息，会直接标注`DEADLOCK`关键字，哪些线程有哪些锁
+* 使用`JConsole`可视化工具展示线程死锁详细信息
+
+
+
+
+
 
 
 #### 线程结束方式
@@ -1521,6 +1534,15 @@ public void getSeq() {
 ![image-20250429144825424](Java面试八股文_images/image-20250429144825424.png)
 
 > **注意：EntryList中的线程并不存在顺序问题，谁先抢到Owner谁就拿到了锁，所以同步锁是非公平锁，不存在线程先后顺序**
+
+
+
+
+
+##### JDK8中基于悲观锁的实现
+
+* Collections.synchronizedList( )：通过synchronized悲观锁加锁实现
+* ReentrantLock：悲观锁，与synchronized相似，获取锁的方式为显示：lock、unlock
 
 
 
