@@ -17,6 +17,7 @@ next: /python/Python基础.md
 ::: danger ORM框架
 - [Mybatis](./orm/Mybatis总结.md)
 - [Mybatis-Plus](./orm/Mybatis-Plus总结.md)
+- [Spring Data JPA](./orm/Spring-Data-JPA.md)
 :::
 
 
@@ -30,6 +31,7 @@ next: /python/Python基础.md
 ::: info **Spring全家桶**
 - [Spring 总结](./spring/Spring总结.md)
 - [Spring MVC 总结](./spring/SpringMVC总结.md)
+- [SSM整合篇](./spring/SSM整合.md)
 - [Spring Security 总结](./spring/SpringSecurity.md)
 - [Spring Boot 总结](./spring/SpringBoot.md)
 - [实战：Spring Boot 模块化开发](./spring/SpringBoot模块化开发.md)
