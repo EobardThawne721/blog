@@ -24,6 +24,7 @@ next: /python/Python基础.md
 ::: tip **基础框架组件**
 - [Shiro总结](./standard/Shiro学习.md)
 - [ElasticSerach](./standard/ElasticSerach总结.md)
+- [文档管理：Swagger2 & Knife4j](./standard/swagger2与knife4j.md)
 :::
 
 ---

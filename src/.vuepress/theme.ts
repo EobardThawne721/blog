@@ -79,6 +79,11 @@ export default hopeTheme({
       text: "常用工具",
       icon:"screwdriver-wrench",
       link: "/tools/",
+    },
+    {
+      text: "数据结构与算法",
+      icon:"code",
+      link: "/algorithm/",
     }
   ],
 
