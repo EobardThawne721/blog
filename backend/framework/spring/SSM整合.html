@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content="VuePress 2.0.0-rc.18" />
+    <meta name="theme" content="VuePress Theme Hope 2.0.0-rc.59" />
+    <style>
+      :root {
+        --vp-c-bg: #fff;
+      }
+
+      [data-theme="dark"] {
+        --vp-c-bg: #1b1b1f;
+      }
+
+      html,
+      body {
+        background: var(--vp-c-bg);
+      }
+    </style>
+    <script>
+      const userMode = localStorage.getItem("vuepress-theme-hope-scheme");
+      const systemDarkMode =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
+    <meta property="og:url" content="https://mister-hope.github.io/blog/backend/framework/spring/SSM%E6%95%B4%E5%90%88.html"><meta property="og:site_name" content="九龙坡郭富城的博客"><meta property="og:title" content="SSM整合"><meta property="og:description" content="SSM整合 1. 创建Maven项目，导入依赖 注意：若想要把Mapper的映射文件放在src/main/java目录下，则要在pom.xml文件中添加以下配置 2. 在 resources文件夹下创建相应配置文件 2.1 applicationContext.xml 注意：不管使用了src/main/java还是src/main/resource的方..."><meta property="og:type" content="article"><meta property="og:locale" content="zh-CN"><meta property="og:updated_time" content="2026-01-26T12:56:05.000Z"><meta property="article:modified_time" content="2026-01-26T12:56:05.000Z"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"SSM整合","image":[""],"dateModified":"2026-01-26T12:56:05.000Z","author":[{"@type":"Person","name":"Eobard Thawne","url":"https://gitee.com/eobard721"}]}</script><title>SSM整合 | 九龙坡郭富城的博客</title><meta name="description" content="SSM整合 1. 创建Maven项目，导入依赖 注意：若想要把Mapper的映射文件放在src/main/java目录下，则要在pom.xml文件中添加以下配置 2. 在 resources文件夹下创建相应配置文件 2.1 applicationContext.xml 注意：不管使用了src/main/java还是src/main/resource的方...">
+    <link rel="preload" href="/blog/assets/style-BNS39pOl.css" as="style"><link rel="stylesheet" href="/blog/assets/style-BNS39pOl.css">
+    <link rel="modulepreload" href="/blog/assets/app-CagdXowz.js"><link rel="modulepreload" href="/blog/assets/SSM整合.html-DYDNVi3a.js"><link rel="modulepreload" href="/blog/assets/plugin-vue_export-helper-DlAUqK2U.js">
+    <link rel="prefetch" href="/blog/assets/index.html-ICUL_fni.js" as="script"><link rel="prefetch" href="/blog/assets/intro.html-P5ry9Bjo.js" as="script"><link rel="prefetch" href="/blog/assets/AndroidStudio.html-DACtYr71.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-BhGVhskQ.js" as="script"><link rel="prefetch" href="/blog/assets/disable.html-B4r7RD5u.js" as="script"><link rel="prefetch" href="/blog/assets/encrypt.html-BkyiWlO9.js" as="script"><link rel="prefetch" href="/blog/assets/layout.html-d9t2Hi_r.js" as="script"><link rel="prefetch" href="/blog/assets/markdown.html-DFoJbYrl.js" as="script"><link rel="prefetch" href="/blog/assets/page.html-BF3VM2kn.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-Ce6OyzHf.js" as="script"><link rel="prefetch" href="/blog/assets/Vue.html-GeUQMLJL.js" as="script"><link rel="prefetch" href="/blog/assets/css.html-CZJDEAVg.js" as="script"><link rel="prefetch" href="/blog/assets/html.html-BJQ6W3s7.js" as="script"><link rel="prefetch" href="/blog/assets/Docker容器化技术.html-DnIUX37D.js" as="script"><link rel="prefetch" href="/blog/assets/Linux.html-XtP9QfSr.js" as="script"><link rel="prefetch" href="/blog/assets/Minio文件系统.html-CtQTEFOv.js" as="script"><link rel="prefetch" href="/blog/assets/Nginx使用.html-DHKH_Yl-.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-CA-MkRD_.js" as="script"><link rel="prefetch" href="/blog/assets/Python基础.html--rMUDDpX.js" as="script"><link rel="prefetch" href="/blog/assets/Git的使用.html-CKjAmC9y.js" as="script"><link rel="prefetch" href="/blog/assets/JMeter.html-TL3Kc8gI.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-CJB3KHSE.js" as="script"><link rel="prefetch" href="/blog/assets/Sunny-Ngrok内网穿透.html-B2_hlLYa.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-CnoZK_hD.js" as="script"><link rel="prefetch" href="/blog/assets/Redis.html-BiBJGDiU.js" as="script"><link rel="prefetch" href="/blog/assets/JDK新特性.html-EFXhb8gm.js" as="script"><link rel="prefetch" href="/blog/assets/Java进阶总结.html-B1VbGKTV.js" as="script"><link rel="prefetch" href="/blog/assets/Java面试八股文.html-C6Be2qh2.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-OCZBB4HL.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-DnBkjKcr.js" as="script"><link rel="prefetch" href="/blog/assets/MAS对齐.html-Hkt5lcBV.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-CWTsNJzm.js" as="script"><link rel="prefetch" href="/blog/assets/espeak环境配置.html-CYbCsE0P.js" as="script"><link rel="prefetch" href="/blog/assets/Kafka.html-CrlWYkEq.js" as="script"><link rel="prefetch" href="/blog/assets/RabbitMQ实战.html-DA8jyuxk.js" as="script"><link rel="prefetch" href="/blog/assets/RabbitMQ消息队列.html-B7T54MUI.js" as="script"><link rel="prefetch" href="/blog/assets/Mybatis-Plus总结.html-D_ZZy81Z.js" as="script"><link rel="prefetch" href="/blog/assets/Mybatis总结.html-DnDutluX.js" as="script"><link rel="prefetch" href="/blog/assets/Spring-Data-JPA.html-DmPFY_rZ.js" as="script"><link rel="prefetch" href="/blog/assets/SpringBoot.html-CLhovtAR.js" as="script"><link rel="prefetch" href="/blog/assets/SpringBoot模块化开发.html-BlueiFca.js" as="script"><link rel="prefetch" href="/blog/assets/SpringCloudAlibaba.html-BaVCojQ8.js" as="script"><link rel="prefetch" href="/blog/assets/SpringMVC总结.html-B80S2fc_.js" as="script"><link rel="prefetch" href="/blog/assets/SpringSecurity.html-7gZ27Jic.js" as="script"><link rel="prefetch" href="/blog/assets/Spring总结.html-Cu9srdbu.js" as="script"><link rel="prefetch" href="/blog/assets/ElasticSerach总结.html-D2d9Bp8a.js" as="script"><link rel="prefetch" href="/blog/assets/Shiro学习.html-CJNl7PDf.js" as="script"><link rel="prefetch" href="/blog/assets/AutoEncoder.html-Cj8jGo4Q.js" as="script"><link rel="prefetch" href="/blog/assets/Flow.html-l2gtPswQ.js" as="script"><link rel="prefetch" href="/blog/assets/GAN.html-BgbT-YIt.js" as="script"><link rel="prefetch" href="/blog/assets/CNN卷积神经网络.html-B377KIAC.js" as="script"><link rel="prefetch" href="/blog/assets/404.html-BwxCj4dZ.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-mnWacM0b.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-CsqgRVdH.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-DBmTfxNE.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-DtLy1HnF.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-C_aiafnq.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-BgLiU-tl.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-CQipQH-S.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-7SAiohqs.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-BAJ1wMr2.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-DiMQ5Zza.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-DcPLAcFX.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-C41MU3Uu.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-Pr9Mkq2D.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-C3196DwV.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-B0aIttVj.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-PXZi4Acq.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-Bgw0hYcr.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-D1cKVHUm.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-DL2wjHmg.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-Doi9UWYE.js" as="script"><link rel="prefetch" href="/blog/assets/index.html-BMOz3cY2.js" as="script"><link rel="prefetch" href="/blog/assets/browser-DFdoOzbh.js" as="script"><link rel="prefetch" href="/blog/assets/photoswipe.esm-D2Nf-uDI.js" as="script">
+  </head>
+  <body>
+    <div id="app"><!--[--><!--[--><!--[--><span tabindex="-1"></span><a href="#main-content" class="vp-skip-link sr-only">跳至主要內容</a><!--]--><!--[--><div class="theme-container external-link-icon has-toc" vp-container><!--[--><header id="navbar" class="vp-navbar" vp-navbar><div class="vp-navbar-start"><button type="button" class="vp-toggle-sidebar-button" title="Toggle Sidebar"><span class="icon"></span></button><!----><!--[--><a class="route-link vp-brand" href="/blog/" aria-label="带我回家"><!----><!----><span class="vp-site-name">九龙坡郭富城的博客</span></a><!--]--><!----></div><div class="vp-navbar-center"><!----><!--[--><nav class="vp-nav-links"><div class="vp-nav-item hide-in-mobile"><a class="route-link auto-link" href="/blog/" aria-label="博客主页"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-home" style=""></span><!--]-->博客主页<!----></a></div><div class="vp-nav-item hide-in-mobile"><a class="route-link auto-link" href="/blog/fronted/" aria-label="个人笔记"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-book" style=""></span><!--]-->个人笔记<!----></a></div><div class="vp-nav-item hide-in-mobile"><a class="route-link auto-link" href="/blog/intro.html" aria-label="关于我"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-user-tie" style=""></span><!--]-->关于我<!----></a></div></nav><!--]--><!----></div><div class="vp-navbar-end"><!----><!--[--><!----><div class="vp-nav-item vp-action"><a class="vp-action-link" href="https://github.com/EobardThawne721/blog" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="icon github-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="github icon" name="github" style="width:1.25rem;height:1.25rem;vertical-align:middle;"><path d="M511.957 21.333C241.024 21.333 21.333 240.981 21.333 512c0 216.832 140.544 400.725 335.574 465.664 24.49 4.395 32.256-10.07 32.256-23.083 0-11.69.256-44.245 0-85.205-136.448 29.61-164.736-64.64-164.736-64.64-22.315-56.704-54.4-71.765-54.4-71.765-44.587-30.464 3.285-29.824 3.285-29.824 49.195 3.413 75.179 50.517 75.179 50.517 43.776 75.008 114.816 53.333 142.762 40.79 4.523-31.66 17.152-53.377 31.19-65.537-108.971-12.458-223.488-54.485-223.488-242.602 0-53.547 19.114-97.323 50.517-131.67-5.035-12.33-21.93-62.293 4.779-129.834 0 0 41.258-13.184 134.912 50.346a469.803 469.803 0 0 1 122.88-16.554c41.642.213 83.626 5.632 122.88 16.554 93.653-63.488 134.784-50.346 134.784-50.346 26.752 67.541 9.898 117.504 4.864 129.834 31.402 34.347 50.474 78.123 50.474 131.67 0 188.586-114.73 230.016-224.042 242.09 17.578 15.232 33.578 44.672 33.578 90.454v135.85c0 13.142 7.936 27.606 32.854 22.87C862.25 912.597 1002.667 728.747 1002.667 512c0-271.019-219.648-490.667-490.71-490.667z"></path></svg></a></div><div class="vp-nav-item hide-in-mobile"><button type="button" class="vp-outlook-button" tabindex="-1" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" class="icon outlook-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="outlook icon" name="outlook"><path d="M224 800c0 9.6 3.2 44.8 6.4 54.4 6.4 48-48 76.8-48 76.8s80 41.6 147.2 0 134.4-134.4 38.4-195.2c-22.4-12.8-41.6-19.2-57.6-19.2C259.2 716.8 227.2 761.6 224 800zM560 675.2l-32 51.2c-51.2 51.2-83.2 32-83.2 32 25.6 67.2 0 112-12.8 128 25.6 6.4 51.2 9.6 80 9.6 54.4 0 102.4-9.6 150.4-32l0 0c3.2 0 3.2-3.2 3.2-3.2 22.4-16 12.8-35.2 6.4-44.8-9.6-12.8-12.8-25.6-12.8-41.6 0-54.4 60.8-99.2 137.6-99.2 6.4 0 12.8 0 22.4 0 12.8 0 38.4 9.6 48-25.6 0-3.2 0-3.2 3.2-6.4 0-3.2 3.2-6.4 3.2-6.4 6.4-16 6.4-16 6.4-19.2 9.6-35.2 16-73.6 16-115.2 0-105.6-41.6-198.4-108.8-268.8C704 396.8 560 675.2 560 675.2zM224 419.2c0-28.8 22.4-51.2 51.2-51.2 28.8 0 51.2 22.4 51.2 51.2 0 28.8-22.4 51.2-51.2 51.2C246.4 470.4 224 448 224 419.2zM320 284.8c0-22.4 19.2-41.6 41.6-41.6 22.4 0 41.6 19.2 41.6 41.6 0 22.4-19.2 41.6-41.6 41.6C339.2 326.4 320 307.2 320 284.8zM457.6 208c0-12.8 12.8-25.6 25.6-25.6 12.8 0 25.6 12.8 25.6 25.6 0 12.8-12.8 25.6-25.6 25.6C470.4 233.6 457.6 220.8 457.6 208zM128 505.6C128 592 153.6 672 201.6 736c28.8-60.8 112-60.8 124.8-60.8-16-51.2 16-99.2 16-99.2l316.8-422.4c-48-19.2-99.2-32-150.4-32C297.6 118.4 128 291.2 128 505.6zM764.8 86.4c-22.4 19.2-390.4 518.4-390.4 518.4-22.4 28.8-12.8 76.8 22.4 99.2l9.6 6.4c35.2 22.4 80 12.8 99.2-25.6 0 0 6.4-12.8 9.6-19.2 54.4-105.6 275.2-524.8 288-553.6 6.4-19.2-3.2-32-19.2-32C777.6 76.8 771.2 80 764.8 86.4z"></path></svg><div class="vp-outlook-dropdown"><!----></div></button></div><!----><!--]--><!----><button type="button" class="vp-toggle-navbar-button" aria-label="Toggle Navbar" aria-expanded="false" aria-controls="nav-screen"><span><span class="vp-top"></span><span class="vp-middle"></span><span class="vp-bottom"></span></span></button></div></header><!----><!--]--><!----><div class="toggle-sidebar-wrapper"><span class="arrow start"></span></div><aside id="sidebar" class="vp-sidebar" vp-sidebar><!----><ul class="vp-sidebar-links"><li><a class="route-link auto-link vp-sidebar-link" href="/blog/" aria-label="博客主页"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-home" style=""></span><!--]-->博客主页<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/fronted/" aria-label="前端"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-crown" style=""></span><!--]-->前端<!----></a></li><li><section class="vp-sidebar-group"><p class="vp-sidebar-header"><span class="font-icon icon fa-fw fa-sm fas fa-ghost" style=""></span><span class="vp-sidebar-title">Java后端</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link auto-link vp-sidebar-link" href="/blog/backend/AndroidStudio.html" aria-label="安卓开发"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-mobile-screen" style=""></span><!--]-->安卓开发<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/backend/standard/" aria-label="Java基础篇"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-mug-hot" style=""></span><!--]-->Java基础篇<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/backend/framework/" aria-label="Java框架篇"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-skull" style=""></span><!--]-->Java框架篇<!----></a></li></ul></section></li><li><section class="vp-sidebar-group"><button class="vp-sidebar-header clickable" type="button"><span class="font-icon icon fa-fw fa-sm fas fa-poo" style=""></span><span class="vp-sidebar-title">Python</span><span class="vp-arrow end"></span></button><!----></section></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/os/" aria-label="操作系统"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-computer" style=""></span><!--]-->操作系统<!----></a></li><li><a class="route-link auto-link vp-sidebar-link" href="/blog/tools/" aria-label="常用工具"><!--[--><span class="font-icon icon fa-fw fa-sm fas fa-screwdriver-wrench" style=""></span><!--]-->常用工具<!----></a></li></ul><!----></aside><!--[--><main id="main-content" class="vp-page"><!--[--><!----><!----><nav class="vp-breadcrumb disable"></nav><div class="vp-page-title"><h1><!---->SSM整合</h1><div class="page-info"><span class="page-author-info" aria-label="作者🖊" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon author-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="author icon" name="author"><path d="M649.6 633.6c86.4-48 147.2-144 147.2-249.6 0-160-128-288-288-288s-288 128-288 288c0 108.8 57.6 201.6 147.2 249.6-121.6 48-214.4 153.6-240 288-3.2 9.6 0 19.2 6.4 25.6 3.2 9.6 12.8 12.8 22.4 12.8h704c9.6 0 19.2-3.2 25.6-12.8 6.4-6.4 9.6-16 6.4-25.6-25.6-134.4-121.6-240-243.2-288z"></path></svg><span><a class="page-author-item" href="https://gitee.com/eobard721" target="_blank" rel="noopener noreferrer">Eobard Thawne</a></span><span property="author" content="Eobard Thawne"></span></span><!----><span class="page-date-info" aria-label="写作日期📅" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon calendar-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="calendar icon" name="calendar"><path d="M716.4 110.137c0-18.753-14.72-33.473-33.472-33.473-18.753 0-33.473 14.72-33.473 33.473v33.473h66.993v-33.473zm-334.87 0c0-18.753-14.72-33.473-33.473-33.473s-33.52 14.72-33.52 33.473v33.473h66.993v-33.473zm468.81 33.52H716.4v100.465c0 18.753-14.72 33.473-33.472 33.473a33.145 33.145 0 01-33.473-33.473V143.657H381.53v100.465c0 18.753-14.72 33.473-33.473 33.473a33.145 33.145 0 01-33.473-33.473V143.657H180.6A134.314 134.314 0 0046.66 277.595v535.756A134.314 134.314 0 00180.6 947.289h669.74a134.36 134.36 0 00133.94-133.938V277.595a134.314 134.314 0 00-133.94-133.938zm33.473 267.877H147.126a33.145 33.145 0 01-33.473-33.473c0-18.752 14.72-33.473 33.473-33.473h736.687c18.752 0 33.472 14.72 33.472 33.473a33.145 33.145 0 01-33.472 33.473z"></path></svg><span data-allow-mismatch="text">2026年1月26日</span><meta property="datePublished" content="2026-01-26T12:56:05.000Z"></span><!----><span class="page-reading-time-info" aria-label="阅读时间⌛" data-balloon-pos="up"><svg xmlns="http://www.w3.org/2000/svg" class="icon timer-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="timer icon" name="timer"><path d="M799.387 122.15c4.402-2.978 7.38-7.897 7.38-13.463v-1.165c0-8.933-7.38-16.312-16.312-16.312H256.33c-8.933 0-16.311 7.38-16.311 16.312v1.165c0 5.825 2.977 10.874 7.637 13.592 4.143 194.44 97.22 354.963 220.201 392.763-122.204 37.542-214.893 196.511-220.2 389.397-4.661 5.049-7.638 11.651-7.638 19.03v5.825h566.49v-5.825c0-7.379-2.849-13.981-7.509-18.9-5.049-193.016-97.867-351.985-220.2-389.527 123.24-37.67 216.446-198.453 220.588-392.892zM531.16 450.445v352.632c117.674 1.553 211.787 40.778 211.787 88.676H304.097c0-48.286 95.149-87.382 213.728-88.676V450.445c-93.077-3.107-167.901-81.297-167.901-177.093 0-8.803 6.99-15.793 15.793-15.793 8.803 0 15.794 6.99 15.794 15.793 0 80.261 63.69 145.635 142.01 145.635s142.011-65.374 142.011-145.635c0-8.803 6.99-15.793 15.794-15.793s15.793 6.99 15.793 15.793c0 95.019-73.789 172.82-165.96 177.093z"></path></svg><span>大约 6 分钟</span><meta property="timeRequired" content="PT6M"></span><!----><!----></div><hr></div><div class="vp-toc-placeholder"><aside id="toc" vp-toc><!----><div class="vp-toc-header">此页内容<!----><div class="arrow end"></div></div><div class="vp-toc-wrapper"><ul class="vp-toc-list"><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#_1-创建maven项目-导入依赖">1. 创建Maven项目，导入依赖</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#_2-在-resources文件夹下创建相应配置文件">2. 在 resources文件夹下创建相应配置文件</a></li><li><ul class="vp-toc-list"><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2-1-applicationcontext-xml">2.1 applicationContext.xml</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2-2-db-properties">2.2 db.properties</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2-3-log4j-properties">2.3 log4j.properties</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2-4-mybatis-config-xml">2.4 mybatis-config.xml</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2-5-springmvc-xml">2.5 springmvc.xml</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level3" href="#_2-6-根据路径创建mapper文件">2.6 根据路径创建Mapper文件</a></li><!----><!--]--></ul></li><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#_3-修改webapp的web-xml">3. 修改webapp的web.xml</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#_4-根据配置文件-创建相应的包结构">4. 根据配置文件，创建相应的包结构</a></li><!----><!--]--><!--[--><li class="vp-toc-item"><a class="route-link vp-toc-link level2" href="#_5-项目截图">5.项目截图</a></li><!----><!--]--></ul><div class="vp-toc-marker" style="top:-1.7rem;"></div></div><!----></aside></div><!----><div class="theme-hope-content" vp-content><h1 id="ssm整合" tabindex="-1"><a class="header-anchor" href="#ssm整合"><span>SSM整合</span></a></h1><h2 id="_1-创建maven项目-导入依赖" tabindex="-1"><a class="header-anchor" href="#_1-创建maven项目-导入依赖"><span>1. 创建Maven项目，导入依赖</span></a></h2><div class="language-xml-dtd line-numbers-mode" data-highlighter="shiki" data-ext="xml-dtd" data-title="xml-dtd" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span> &lt;properties&gt;</span></span>
+<span class="line"><span>        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</span></span>
+<span class="line"><span>        &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;</span></span>
+<span class="line"><span>        &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;</span></span>
+<span class="line"><span>        &lt;!--  锁定版本信息  --&gt;</span></span>
+<span class="line"><span>        &lt;!--  spring相关版本  --&gt;</span></span>
+<span class="line"><span>        &lt;spring.version&gt;5.2.8.RELEASE&lt;/spring.version&gt;</span></span>
+<span class="line"><span>        &lt;!--  mybatis版本  --&gt;</span></span>
+<span class="line"><span>        &lt;mybatis.version&gt;3.5.5&lt;/mybatis.version&gt;</span></span>
+<span class="line"><span>        &lt;!--  mybatis-spring版本  --&gt;</span></span>
+<span class="line"><span>        &lt;mybatis-spring.version&gt;2.0.5&lt;/mybatis-spring.version&gt;</span></span>
+<span class="line"><span>        &lt;!--  mysql版本  --&gt;</span></span>
+<span class="line"><span>        &lt;mysql.version&gt;5.1.37&lt;/mysql.version&gt;</span></span>
+<span class="line"><span>        &lt;!--  fast json版本  --&gt;</span></span>
+<span class="line"><span>        &lt;fast-json.version&gt;1.2.75&lt;/fast-json.version&gt;</span></span>
+<span class="line"><span>        &lt;!--  jackson版本  --&gt;</span></span>
+<span class="line"><span>        &lt;jackson.version&gt;2.11.2&lt;/jackson.version&gt;</span></span>
+<span class="line"><span>    &lt;/properties&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!--  依赖坐标  --&gt;</span></span>
+<span class="line"><span>    &lt;dependencies&gt;</span></span>
+<span class="line"><span>        &lt;!-- spring相关 --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${spring.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.aspectj&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;1.8.7&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${spring.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;spring-tx&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${spring.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;spring-test&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${spring.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!-- mybatis相关 --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;mybatis&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${mybatis.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.mybatis&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;mybatis-spring&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${mybatis-spring.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  mysql  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;mysql&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${mysql.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--日志--&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;commons-logging&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;1.2&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  DBCP数据源  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;commons-dbcp&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;commons-dbcp&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;1.4&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  log4j  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;log4j&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;log4j&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;1.2.17&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  单元测试  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;junit&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;junit&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;4.13&lt;/version&gt;</span></span>
+<span class="line"><span>            &lt;scope&gt;test&lt;/scope&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  spring web  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;spring-web&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${spring.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  spring mvc  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.springframework&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${spring.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  jsp  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;javax.servlet.jsp&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;2.2&lt;/version&gt;</span></span>
+<span class="line"><span>            &lt;scope&gt;provided&lt;/scope&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  servlet  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;4.0.1&lt;/version&gt;</span></span>
+<span class="line"><span>            &lt;scope&gt;provided&lt;/scope&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  JSR 303依赖  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;org.hibernate&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;5.4.3.Final&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  fast json  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${fast-json.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--jackson--&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;jackson-core&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${jackson.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;${jackson.version}&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  commons-io  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;commons-io&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;commons-io&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;2.7&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  commons-fileupload  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;commons-fileupload&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;commons-fileupload&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;1.4&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>       &lt;!--jstl标签--&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;jstl&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;jstl&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;1.2&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>        &lt;!--  pagehelper  --&gt;</span></span>
+<span class="line"><span>        &lt;dependency&gt;</span></span>
+<span class="line"><span>            &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;</span></span>
+<span class="line"><span>            &lt;artifactId&gt;pagehelper&lt;/artifactId&gt;</span></span>
+<span class="line"><span>            &lt;version&gt;5.2.0&lt;/version&gt;</span></span>
+<span class="line"><span>        &lt;/dependency&gt;</span></span>
+<span class="line"><span>    &lt;/dependencies&gt;</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p><mark>注意：若想要把Mapper的映射文件放在src/main/java目录下，则要在pom.xml文件中添加以下配置</mark></p><div class="language-xml-dtd line-numbers-mode" data-highlighter="shiki" data-ext="xml-dtd" data-title="xml-dtd" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>&lt;build&gt;</span></span>
+<span class="line"><span>        &lt;resources&gt;</span></span>
+<span class="line"><span>            &lt;resource&gt;</span></span>
+<span class="line"><span>                &lt;directory&gt;src/main/resources&lt;/directory&gt;</span></span>
+<span class="line"><span>                &lt;includes&gt;</span></span>
+<span class="line"><span>                    &lt;include&gt;**/*.xml&lt;/include&gt;</span></span>
+<span class="line"><span>                    &lt;include&gt;**/*.properties&lt;/include&gt;</span></span>
+<span class="line"><span>                &lt;/includes&gt;</span></span>
+<span class="line"><span>                &lt;filtering&gt;true&lt;/filtering&gt;</span></span>
+<span class="line"><span>            &lt;/resource&gt;</span></span>
+<span class="line"><span>            &lt;resource&gt;</span></span>
+<span class="line"><span>                &lt;directory&gt;src/main/java&lt;/directory&gt;</span></span>
+<span class="line"><span>                &lt;includes&gt;</span></span>
+<span class="line"><span>                    &lt;include&gt;**/*.properties&lt;/include&gt;</span></span>
+<span class="line"><span>                    &lt;include&gt;**/*.xml&lt;/include&gt;</span></span>
+<span class="line"><span>                &lt;/includes&gt;</span></span>
+<span class="line"><span>                &lt;filtering&gt;true&lt;/filtering&gt;</span></span>
+<span class="line"><span>            &lt;/resource&gt;</span></span>
+<span class="line"><span>        &lt;/resources&gt;</span></span>
+<span class="line"><span>    &lt;/build&gt;</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><hr><h2 id="_2-在-resources文件夹下创建相应配置文件" tabindex="-1"><a class="header-anchor" href="#_2-在-resources文件夹下创建相应配置文件"><span>2. 在 resources文件夹下创建相应配置文件</span></a></h2><h3 id="_2-1-applicationcontext-xml" tabindex="-1"><a class="header-anchor" href="#_2-1-applicationcontext-xml"><span>2.1 applicationContext.xml</span></a></h3><div class="language-xml-dtd line-numbers-mode" data-highlighter="shiki" data-ext="xml-dtd" data-title="xml-dtd" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span>
+<span class="line"><span>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="line"><span>       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</span></span>
+<span class="line"><span>       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="line"><span>       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span></span>
+<span class="line"><span>       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;</span></span>
+<span class="line"><span>       xsi:schemaLocation=&quot;</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/beans</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/beans/spring-beans.xsd</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/context</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/context/spring-context.xsd</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/tx</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/tx/spring-tx.xsd</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/aop</span></span>
+<span class="line"><span>		   http://www.springframework.org/schema/aop/spring-aop.xsd&quot;&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 扫描注解所在的包 --&gt;</span></span>
+<span class="line"><span>    &lt;context:component-scan base-package=&quot;com.eobard.dao,com.eobard.service&quot;/&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 引入database.properties属性文件 --&gt;</span></span>
+<span class="line"><span>    &lt;bean class=&quot;org.springframework.context.support.PropertySourcesPlaceholderConfigurer&quot;&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;location&quot;&gt;</span></span>
+<span class="line"><span>            &lt;value&gt;classpath:db.properties&lt;/value&gt;</span></span>
+<span class="line"><span>        &lt;/property&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 配置数据源dataSource --&gt;</span></span>
+<span class="line"><span>    &lt;bean id=&quot;dataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot;&gt;</span></span>
+<span class="line"><span>        &lt;!--驱动--&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;driverClassName&quot; value=&quot;${jdbc.driver}&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;!--连接字符串--&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;url&quot; value=&quot;${jdbc.url}&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;!--数据库用户名--&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;username&quot; value=&quot;${jdbc.user}&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;!--数据库密码--&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;password&quot; value=&quot;${jdbc.password}&quot;/&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 配置SqlSessionFactoryBean:如果未来要使用MP，这里的class就需要换成MP的类 --&gt;</span></span>
+<span class="line"><span>    &lt;bean id =&quot;sqlSessionFactory&quot; class=&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;&gt;</span></span>
+<span class="line"><span>        &lt;!--  引用数据源 --&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;!-- 加载MyBatis配置文件 --&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;!-- 加载src/main/resource文件下的SQL映射文件 --&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:mapper/**/*.xml&quot;/&gt;</span></span>
+<span class="line"><span>			&lt;!--若想要加载src/main/java文件下则使用下列属性--&gt;</span></span>
+<span class="line"><span>        &lt;!--</span></span>
+<span class="line"><span>			&lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:com/eobard/dao/**/*.xml&quot;/&gt;</span></span>
+<span class="line"><span>		--&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>&lt;!--     使用mybatis-plus的MybatisSqlSessionFactoryBean</span></span>
+<span class="line"><span>    &lt;bean id=&quot;sqlSessionFactory&quot; class=&quot;com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean&quot;&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;configLocation&quot; value=&quot;classpath:mybatis-config.xml&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;typeAliasesPackage&quot; value=&quot;com.eobard.entity&quot;&gt;&lt;/property&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;mapperLocations&quot; value=&quot;classpath:mapper/**/*.xml&quot; /&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;--&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 加载mapper所在的包 --&gt;</span></span>
+<span class="line"><span>    &lt;bean class=&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;&gt;</span></span>
+<span class="line"><span>        &lt;!-- 扫描mapper接口所在的位置 --&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;basePackage&quot; value=&quot;com.eobard.dao&quot;/&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 定义事务管理器 --&gt;</span></span>
+<span class="line"><span>    &lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 开启注解式事务 --&gt;</span></span>
+<span class="line"><span>    &lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>&lt;/beans&gt;</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p><mark>注意：不管使用了src/main/java还是src/main/resource的方法，都要在对应的路径下创建Mapper.xml映射文件，否则SSM环境搭建好了之后会启动不了</mark></p><h3 id="_2-2-db-properties" tabindex="-1"><a class="header-anchor" href="#_2-2-db-properties"><span>2.2 db.properties</span></a></h3><div class="language-properties line-numbers-mode" data-highlighter="shiki" data-ext="properties" data-title="properties" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">jdbc.driver</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;"> =</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;"> com.mysql.jdbc.Driver</span></span>
+<span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">jdbc.url</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;"> =</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;"> jdbc:mysql://localhost:3306/ssm?</span><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">useUnicode</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;">=</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;">true&amp;</span><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">characterEncoding</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;">=</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;">utf-8</span></span>
+<span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">jdbc.user</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;"> =</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;"> root</span></span>
+<span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">jdbc.password</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;"> =</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;"> 123456</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="_2-3-log4j-properties" tabindex="-1"><a class="header-anchor" href="#_2-3-log4j-properties"><span>2.3 log4j.properties</span></a></h3><div class="language-properties line-numbers-mode" data-highlighter="shiki" data-ext="properties" data-title="properties" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">log4j.rootLogger</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;">=</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;">debug,con</span></span>
+<span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">log4j.appender.con</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;">=</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;">org.apache.log4j.ConsoleAppender</span></span>
+<span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">log4j.appender.con.layout</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;">=</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;">org.apache.log4j.PatternLayout</span></span>
+<span class="line"><span style="--shiki-light:#E45649;--shiki-dark:#C678DD;">log4j.appender.con.layout.ConversionPattern</span><span style="--shiki-light:#383A42;--shiki-dark:#ABB2BF;">=</span><span style="--shiki-light:#383A42;--shiki-dark:#98C379;">%d{MM-dd HH:mm:ss}[%p]%c%n -%m%n</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="_2-4-mybatis-config-xml" tabindex="-1"><a class="header-anchor" href="#_2-4-mybatis-config-xml"><span>2.4 mybatis-config.xml</span></a></h3><div class="language-xml-dtd line-numbers-mode" data-highlighter="shiki" data-ext="xml-dtd" data-title="xml-dtd" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span>
+<span class="line"><span>&lt;!DOCTYPE configuration</span></span>
+<span class="line"><span>        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span>
+<span class="line"><span>        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;</span></span>
+<span class="line"><span>&lt;configuration&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;settings&gt;</span></span>
+<span class="line"><span>        &lt;!-- 显示日志信息 --&gt;</span></span>
+<span class="line"><span>        &lt;setting name=&quot;logImpl&quot; value=&quot;LOG4J&quot;/&gt;</span></span>
+<span class="line"><span>    &lt;/settings&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;typeAliases&gt;</span></span>
+<span class="line"><span>        &lt;!-- 设置别名 --&gt;</span></span>
+<span class="line"><span>        &lt;package name=&quot;com.eobard.entity&quot;/&gt;</span></span>
+<span class="line"><span>    &lt;/typeAliases&gt;</span></span>
+<span class="line"><span>        </span></span>
+<span class="line"><span>&lt;/configuration&gt;</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="_2-5-springmvc-xml" tabindex="-1"><a class="header-anchor" href="#_2-5-springmvc-xml"><span>2.5 springmvc.xml</span></a></h3><div class="language-xml-dtd line-numbers-mode" data-highlighter="shiki" data-ext="xml-dtd" data-title="xml-dtd" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span>
+<span class="line"><span>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="line"><span>       xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;</span></span>
+<span class="line"><span>       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</span></span>
+<span class="line"><span>       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="line"><span>       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span></span>
+<span class="line"><span>       xsi:schemaLocation=&quot;</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/beans</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/beans/spring-beans.xsd</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/mvc</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/mvc/spring-mvc.xsd</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/context</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/context/spring-context.xsd</span></span>
+<span class="line"><span>           http://www.springframework.org/schema/aop</span></span>
+<span class="line"><span>		http://www.springframework.org/schema/aop/spring-aop.xsd&quot;&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 加载控制器所在的包 --&gt;</span></span>
+<span class="line"><span>    &lt;context:component-scan base-package=&quot;com.eobard.controller&quot;/&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 配置视图解析器 --&gt;</span></span>
+<span class="line"><span>    &lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;</span></span>
+<span class="line"><span>        &lt;!-- 视图前缀（页面在哪个目录下） --&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/jsp/&quot;/&gt;</span></span>
+<span class="line"><span>        &lt;!-- 视图后缀(页面的后缀名是什么) --&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot;/&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 加载静态资源 --&gt;</span></span>
+<span class="line"><span>    &lt;mvc:resources mapping=&quot;/statics/**&quot; location=&quot;/statics/&quot;/&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 开启注解支持 --&gt;</span></span>
+<span class="line"><span>    &lt;mvc:annotation-driven&gt;</span></span>
+<span class="line"><span>        &lt;mvc:message-converters&gt;</span></span>
+<span class="line"><span>            &lt;!-- 配置编码字符集 --&gt;</span></span>
+<span class="line"><span>            &lt;!-- 配置响应编码字符集 --&gt;</span></span>
+<span class="line"><span>            &lt;bean class=&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;&gt;</span></span>
+<span class="line"><span>                &lt;property name=&quot;supportedMediaTypes&quot;&gt;</span></span>
+<span class="line"><span>                    &lt;list&gt;</span></span>
+<span class="line"><span>                        &lt;value&gt;text/html;charset=UTF-8&lt;/value&gt;</span></span>
+<span class="line"><span>                        &lt;value&gt;application/json;charset=UTF-8&lt;/value&gt;</span></span>
+<span class="line"><span>                        &lt;value&gt;text/plain;charset=UTF-8&lt;/value&gt;</span></span>
+<span class="line"><span>                        &lt;value&gt;application/xml;charset=UTF-8&lt;/value&gt;</span></span>
+<span class="line"><span>                    &lt;/list&gt;</span></span>
+<span class="line"><span>                &lt;/property&gt;</span></span>
+<span class="line"><span>            &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>            &lt;!-- 配置Jackson消息转换器 --&gt;</span></span>
+<span class="line"><span>            &lt;bean class=&quot;org.springframework.http.converter.json.MappingJackson2HttpMessageConverter&quot;&gt;</span></span>
+<span class="line"><span>                &lt;property name=&quot;objectMapper&quot;&gt;</span></span>
+<span class="line"><span>                    &lt;bean class=&quot;com.fasterxml.jackson.databind.ObjectMapper&quot;&gt;</span></span>
+<span class="line"><span>                        &lt;!-- 格式化日期 --&gt;</span></span>
+<span class="line"><span>                        &lt;property name=&quot;dateFormat&quot;&gt;</span></span>
+<span class="line"><span>                            &lt;bean class=&quot;java.text.SimpleDateFormat&quot;&gt;</span></span>
+<span class="line"><span>                                &lt;constructor-arg type=&quot;java.lang.String&quot; value=&quot;yyyy-MM-dd&quot; /&gt;</span></span>
+<span class="line"><span>                            &lt;/bean&gt;</span></span>
+<span class="line"><span>                        &lt;/property&gt;</span></span>
+<span class="line"><span>                    &lt;/bean&gt;</span></span>
+<span class="line"><span>                &lt;/property&gt;</span></span>
+<span class="line"><span>            &lt;/bean&gt;</span></span>
+<span class="line"><span>        &lt;/mvc:message-converters&gt;</span></span>
+<span class="line"><span>    &lt;/mvc:annotation-driven&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 配置文件解析器对象，要求id名称必须是multipartResolver --&gt;</span></span>
+<span class="line"><span>    &lt;bean id=&quot;multipartResolver&quot;</span></span>
+<span class="line"><span>          class=&quot;org.springframework.web.multipart.commons.CommonsMultipartResolver&quot;&gt;</span></span>
+<span class="line"><span>        &lt;!-- 设置文件上传限制大小为10M --&gt;</span></span>
+<span class="line"><span>        &lt;property name=&quot;maxUploadSize&quot; value=&quot;10485760&quot;/&gt;</span></span>
+<span class="line"><span>    &lt;/bean&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>&lt;/beans&gt;</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="_2-6-根据路径创建mapper文件" tabindex="-1"><a class="header-anchor" href="#_2-6-根据路径创建mapper文件"><span>2.6 根据路径创建Mapper文件</span></a></h3><p>​ 根据applicationContext.xml文件的mapperLocations属性，在对应的路径下创建映射文件，该文件夹用于存放Mapper.xml文件</p><hr><h2 id="_3-修改webapp的web-xml" tabindex="-1"><a class="header-anchor" href="#_3-修改webapp的web-xml"><span>3. 修改webapp的web.xml</span></a></h2><div class="language-xml-dtd line-numbers-mode" data-highlighter="shiki" data-ext="xml-dtd" data-title="xml-dtd" style="--shiki-light:#383A42;--shiki-dark:#abb2bf;--shiki-light-bg:#FAFAFA;--shiki-dark-bg:#282c34;"><pre class="shiki shiki-themes one-light one-dark-pro vp-code"><code><span class="line"><span>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span>
+<span class="line"><span>&lt;web-app xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span></span>
+<span class="line"><span>         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="line"><span>         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;</span></span>
+<span class="line"><span>         version=&quot;4.0&quot;&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 设置欢迎界面 --&gt;</span></span>
+<span class="line"><span>    &lt;welcome-file-list&gt;</span></span>
+<span class="line"><span>        &lt;welcome-file&gt;login.jsp&lt;/welcome-file&gt;</span></span>
+<span class="line"><span>    &lt;/welcome-file-list&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 加载spring配置文件 --&gt;</span></span>
+<span class="line"><span>    &lt;listener&gt;</span></span>
+<span class="line"><span>        &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;</span></span>
+<span class="line"><span>    &lt;/listener&gt;</span></span>
+<span class="line"><span>    &lt;!-- 上下文参数配置 --&gt;</span></span>
+<span class="line"><span>    &lt;context-param&gt;</span></span>
+<span class="line"><span>        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</span></span>
+<span class="line"><span>        &lt;!-- 使用*号通配符，通配符前面的字符要一致 --&gt;</span></span>
+<span class="line"><span>        &lt;param-value&gt;classpath:applicationContext*.xml&lt;/param-value&gt;</span></span>
+<span class="line"><span>    &lt;/context-param&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 加载springmvc配置文件 --&gt;</span></span>
+<span class="line"><span>    &lt;servlet&gt;</span></span>
+<span class="line"><span>        &lt;!-- servlet名称，名称自定义，名称唯一 --&gt;</span></span>
+<span class="line"><span>        &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;</span></span>
+<span class="line"><span>        &lt;!-- 前端控制器，SpringMVC核心控制器 --&gt;</span></span>
+<span class="line"><span>        &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;</span></span>
+<span class="line"><span>        &lt;!-- web项目启动，立即加载springmvc配置文件 --&gt;</span></span>
+<span class="line"><span>        &lt;init-param&gt;</span></span>
+<span class="line"><span>            &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</span></span>
+<span class="line"><span>            &lt;!-- springmvc配置文件位置 --&gt;</span></span>
+<span class="line"><span>            &lt;param-value&gt;classpath:springmvc.xml&lt;/param-value&gt;</span></span>
+<span class="line"><span>        &lt;/init-param&gt;</span></span>
+<span class="line"><span>    &lt;/servlet&gt;</span></span>
+<span class="line"><span>    &lt;servlet-mapping&gt;</span></span>
+<span class="line"><span>        &lt;!-- servlet名称，名称自定义 --&gt;</span></span>
+<span class="line"><span>        &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;</span></span>
+<span class="line"><span>        &lt;!-- 访问路径--&gt;</span></span>
+<span class="line"><span>        &lt;url-pattern&gt;/&lt;/url-pattern&gt;</span></span>
+<span class="line"><span>    &lt;/servlet-mapping&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>    &lt;!-- 配置过滤器 --&gt;</span></span>
+<span class="line"><span>    &lt;!--配置解决中文乱码的过滤器--&gt;</span></span>
+<span class="line"><span>    &lt;filter&gt;</span></span>
+<span class="line"><span>        &lt;filter-name&gt;encodingFilter&lt;/filter-name&gt;</span></span>
+<span class="line"><span>        &lt;filter-class&gt;org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class&gt;</span></span>
+<span class="line"><span>        &lt;init-param&gt;</span></span>
+<span class="line"><span>            &lt;param-name&gt;encoding&lt;/param-name&gt;</span></span>
+<span class="line"><span>            &lt;param-value&gt;UTF-8&lt;/param-value&gt;</span></span>
+<span class="line"><span>        &lt;/init-param&gt;</span></span>
+<span class="line"><span>        &lt;init-param&gt;</span></span>
+<span class="line"><span>            &lt;param-name&gt;forceEncoding&lt;/param-name&gt;</span></span>
+<span class="line"><span>            &lt;param-value&gt;true&lt;/param-value&gt;</span></span>
+<span class="line"><span>        &lt;/init-param&gt;</span></span>
+<span class="line"><span>    &lt;/filter&gt;</span></span>
+<span class="line"><span>  &lt;!--配置过滤器的url映射路径--&gt;</span></span>
+<span class="line"><span>    &lt;filter-mapping&gt;</span></span>
+<span class="line"><span>        &lt;filter-name&gt;encodingFilter&lt;/filter-name&gt;</span></span>
+<span class="line"><span>        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;</span></span>
+<span class="line"><span>    &lt;/filter-mapping&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>&lt;/web-app&gt;</span></span></code></pre><div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0;"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><hr><h2 id="_4-根据配置文件-创建相应的包结构" tabindex="-1"><a class="header-anchor" href="#_4-根据配置文件-创建相应的包结构"><span>4. 根据配置文件，创建相应的包结构</span></a></h2><blockquote><p>com.eobard.entity</p><p>com.eobard.dao</p><p>com.eobard.service</p><p>com.eobard.controller</p><p>....省略其它包</p></blockquote><h2 id="_5-项目截图" tabindex="-1"><a class="header-anchor" href="#_5-项目截图"><span>5.项目截图</span></a></h2><img src="/blog/assets/image-20211122200905824-CkHLf5Jn.png" alt="image-20211122200905824" align="left"></div><!----><footer class="vp-page-meta"><!----><div class="vp-meta-item git-info"><div class="update-time"><span class="vp-meta-label">上次编辑于: </span><span class="vp-meta-info" data-allow-mismatch="text">2026/1/26 12:56:05</span></div><div class="contributors"><span class="vp-meta-label">贡献者: </span><!--[--><!--[--><span class="vp-meta-info" title="email: 2209473452@qq.com">Eobard</span><!--]--><!--]--></div></div></footer><!----><!----><!----><!--]--></main><!--]--><footer class="vp-footer-wrapper" vp-footer><div class="vp-footer">默认页脚</div><div class="vp-copyright">Copyright © 2026 Eobard Thawne </div></footer></div><!--]--><!--]--><!--[--><!----><!--[--><!--]--><!--]--><!--]--></div>
+    <script type="module" src="/blog/assets/app-CagdXowz.js" defer></script>
+  </body>
+</html>
