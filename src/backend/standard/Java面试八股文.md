@@ -606,11 +606,23 @@ list.add(12);   //扩容
   }
   ```
 
-* 使用hashCode和equals方法
+* **使用hashCode和equals方法**
 
-  * 当向HashSet添加元素时，首先调用hashCode方法计算在哈希表中的存储位置
-  * 在确定位置后，HashSet会检查该位置是否存在相同哈希值的元素，如果存在，利用hash值和equals方法判断两个元素是否相等，如果相同，认为元素存在，不能添加；否则添加到哈希表中
+  * **当向HashSet添加元素时，首先调用该元素的hashCode方法，计算在哈希表中的存储位置**
+  * **在确定位置后，HashSet会检查该位置是否存在相同哈希值的元素，如果存在，利用hash值和equals方法判断两个元素是否相等，如果相同，认为元素存在，不能添加；否则添加到哈希表中**
   * **通过以上两个方法，HashSet可以快速检测和防止重复元素的添加，确保每个元素在Set中唯一的，HashSet 本质就是“只有 Key 的HashMap”**
+
+
+
+###### 存放实体类时的注意事项
+
+> **假设先把某个类add到HashSet中，然后修改这个实体类的某个字段，再add到HashSet，此时的HashSet集合大小是多少？**
+
+* **HashSet是通过hashcode和equals方法来判断元素是否重复**
+* **如果实体类的hashcode和equals方法依赖于这个字段，对应的hashcode和equals的结果都会变，那么第二个add时，此时容器大小变为2，（但是新旧对象都会存在，如果调用contains方法会出现错误）**
+* **如果hashcode和equals方法不依赖于这个字段，那么对应的hashcode和equals结果也不会变，修改字段后，第二个add时，HashSet会认为是重复元素，不会存入**
+
+
 
 
 
