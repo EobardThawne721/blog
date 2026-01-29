@@ -577,6 +577,44 @@ list.add(12);   //扩容
 
 
 
+
+
+##### ArrayList移除元素
+
+> 增强 `for` 循环内部使用迭代器（`Iterator`）遍历集合。如果在遍历过程中直接调用 `ArrayList` 的 `remove()` 方法，会破坏迭代器的结构一致性，从而抛出`ConcurrentModificationException`异常。
+
+解决方式：
+
+1. 使用普通 `for` 循环倒序删除**（原地操作）**
+
+   ```java
+   for (int i = list.size() - 1; i >= 0; i--) {
+       if (list.get(i) % 2 == 0) {
+           list.remove(i); // ✅ 安全
+       }
+   }
+   ```
+
+2. 使用 `Iterator` 的 `remove()` 方法**（原地操作）**
+
+   ```java
+   Iterator<Integer> it = list.iterator();
+   while (it.hasNext()) {
+       Integer n = it.next();
+       if (n % 2 == 0) {
+           it.remove(); // ✅ 安全
+       }
+   }
+   ```
+
+3. Java 8+ Stream 过滤
+
+
+
+
+
+
+
 #### Set
 
 ##### List接口和Set接口区别
@@ -2692,6 +2730,18 @@ public B(A a) {}        	// 注入已初始化的真实 A
 * **http默认端口80；https默认端口443**
 * **http数据无校验，可能被篡改；https通过mac校验防止数据篡改**
 * http无加密开销，速度更快；https需要加解密，性能略低
+
+
+
+#### http包含哪些部分
+
+* **请求行**：包括**请求方法（GET、POST、PUT、DELETE等）**、**请求 URL**、HTTP 协议版本
+* **请求头**：**Host（目标服务器的域名和端口）**、**数据格式（application/json、multipart/form-data等）**、**Authorization身份认证信息（Token等）**
+* **请求体**：并非所有请求都有，**POST、PUT**等方法会通过请求体传递数据（表单参数、JSON 字符串、文件流等）
+
+
+
+
 
 
 
