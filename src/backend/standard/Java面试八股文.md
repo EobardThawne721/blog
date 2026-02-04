@@ -154,14 +154,14 @@
 
 #### 缓存机制
 
-> **JVM中的缓存机制是将相同对象中缓存中的值复用， 提高性能、减少内存占用、避免重复创建对象（`下面复用缓存的值不是利用new的方式，因为那是创建对象了，地址会发生改变，及时使用缓存的值也不是同一个对象`）**
+> **JVM中的缓存机制是将相同对象中缓存中的值复用， 提高性能、减少内存占用、避免重复创建对象（`下面复用缓存的值不是利用new的方式，因为那是创建对象了，地址会发生改变`）**
 
 * 包装类型
   * Boolean：true、false两个常量
   * Byte：-128~127
   * **Character：0~127的ASCII字符**
   * Short：-128~127
-  * Integer：-128~127
+  * **Integer：-128~127**
   * Long：-128 ~ 127
   * String：字符串常量
 * 枚举类型（枚举值在JVM中是单例）
@@ -281,6 +281,8 @@ System.out.println(red1 == red2); // true
 
 * 可选地加入finally块执行清理代码，不管try-catch的操作是什么，finally块都会执行
 
+* **try后至少有一个catch或者finally**
+
   ```java
   int i=3;
   try {
@@ -357,6 +359,8 @@ System.out.println(red1 == red2); // true
 * 继承关系：抽象类单继承；接口多实现
 * **选择性：抽象类可以作为模版方法，定义了类的骨架；接口更倾向于添加新功能或兼容性问题，不适合作为骨架**
 
+**<font color="red">注意：接口的存在是为了解耦，通过分离“功能定义”和“功能实现”，让代码模块间摆脱直接的依赖，实现“高内聚，低耦合”的设计思想</font>**
+
 
 
 ### IO流
@@ -408,7 +412,7 @@ System.out.println(red1 == red2); // true
 
 1. **其中需要序列化的类需要实现Serializable接口**
 2. `transient` 修饰的字段不会被序列化
-3. **`serialVersionUID` 很重要**，类修改后如果 ID 不匹配，反序列化会失败
+3. **`serialVersionUID` 很重要**，类修改后如果版本ID不匹配，反序列化会失败
    * 如果该对象类没有指定默认的版本号，JVM会根据类结构自动生成版本号，当类的结构改变时，版本号也会变化，当旧的序列化数据反序列化时会报错，因为两者的版本号已经变化
    * 如果该对象类指定了默认的版本号，那么旧的序列化数据反序列化时，会认为版本兼容，新增字段在旧序列化数据会变成对应类型的默认值
 
@@ -421,6 +425,12 @@ System.out.println(red1 == red2); // true
 
 
 ### 集合
+
+> **所有实现了`java.lang.Iterable`接口的集合（包括 Collection 体系下的 List/Set/Queue、Map等），都能使用foreach和迭代器获取元素**；且增强 for循环的底层本质就是迭代器
+
+
+
+
 
 #### List
 
@@ -625,11 +635,55 @@ list.add(12);   //扩容
 
 
 
+
+
+##### 什么时候需要重写hashcode、equals方法？
+
+> **Java官方要求重写equals时必须同时重写hashCode方法**
+
+* **默认`equals()`：直接比较两个对象的内存地址（==运算符的逻辑）**
+* **默认`hashCode()`：返回对象内存地址转换后的整数，不同内存对象的哈希值几乎一定不同**
+
+
+
+1. **需要将自定义的类作为集合的元素时（HashSet、HashMap、HashTable等哈希集合）的键值**：如果不重写这两个方法，即使两个对象内容完全相同，也会被判定为不同元素
+
+2. **基于对象内容判断两个对象是否相等**：默认的equals方法无法满足，需要根据自己的业务规则去实现
+
+   ```java
+   //eg：基于id比较两个对象是否相同
+   
+   @Override
+   public boolean equals(Object o) {
+       // 1. 自反性：同一个对象，直接返回true
+       if (this == o) return true;
+       // 2. 排除空对象和类型不匹配的情况
+       if (o == null || getClass() != o.getClass()) return false;
+       // 3. 强转并比较核心属性（id）
+       User user = (User) o;
+       // 处理id为null的情况，避免空指针
+       return java.util.Objects.equals(id, user.id);
+   }
+   
+   // 重写hashCode()：仅基于equals()中的核心属性id计算
+   @Override
+   public int hashCode() {
+       // 使用JDK1.7+的Objects.hash()，自动处理null，简洁安全
+       return java.util.Objects.hash(id);
+   }
+   ```
+
+   
+
+
+
+
+
 ##### HashSet是如何保证元素不重复的？
 
 * 基于哈希表实现
 
-  HashSet构造函数中是通过HashMap来存储元素，其中Key为本身新增的元素，Value为HashSet为内部固定的静态Object对象(私有Present)
+  HashSet构造函数中是通过HashMap来存储元素，其中Key为本身新增的元素，Value为HashSet内部固定的静态Object对象(私有Present)
 
   ```java
   private transient HashMap<E,Object> map;
@@ -646,7 +700,7 @@ list.add(12);   //扩容
 
 * **使用hashCode和equals方法**
 
-  * **当向HashSet添加元素时，首先调用该元素的hashCode方法，计算在哈希表中的存储位置**
+  * **当向HashSet添加元素时，首先调用该元素的hashCode方法，计算在哈希表中的存储位置**（即hash和hash>>>16的异或运算后对数组大小取模）
   * **在确定位置后，HashSet会检查该位置是否存在相同哈希值的元素，如果存在，利用hash值和equals方法判断两个元素是否相等，如果相同，认为元素存在，不能添加；否则添加到哈希表中**
   * **通过以上两个方法，HashSet可以快速检测和防止重复元素的添加，确保每个元素在Set中唯一的，HashSet 本质就是“只有 Key 的HashMap”**
 
@@ -654,11 +708,11 @@ list.add(12);   //扩容
 
 ###### 存放实体类时的注意事项
 
-> **假设先把某个类add到HashSet中，然后修改这个实体类的某个字段，再add到HashSet，此时的HashSet集合大小是多少？**
+> **（前提条件：同一个类，只new了一次）假设先把某个类add到HashSet中，然后修改这个实体类的某个字段，再add到HashSet，此时的HashSet集合大小是多少？**
 
 * **HashSet是通过hashcode和equals方法来判断元素是否重复**
-* **如果实体类的hashcode和equals方法依赖于这个字段，对应的hashcode和equals的结果都会变，那么第二个add时，此时容器大小变为2，（但是新旧对象都会存在，如果调用contains方法会出现错误）**
-* **如果hashcode和equals方法不依赖于这个字段，那么对应的hashcode和equals结果也不会变，修改字段后，第二个add时，HashSet会认为是重复元素，不会存入**
+* 如果实体类的hashCode和equals方法依赖于这个字段**（即重写了这两个方法），对应的hashCode和equals的结果都会变，那么第二个add时，此时容器大小变为2，（但是新旧对象都会存在，如果调用contains方法会出现错误）**
+* 如果hashcode和equals方法不依赖于这个字段**（即没重写这两个方法），那么对应的hashcode和equals结果也不会变，修改字段后，第二个add时，HashSet会认为是重复元素，不会存入**
 
 
 
@@ -1990,6 +2044,8 @@ public static void main(String[] args) throws Exception {
 3. 当调用get方法，同样也是以ThreadLocal自己作为key到当前线程中查找关联的资源数据
 4. 当调用remove方法，以ThreadLocal自己作为key，移除当前线程关联的资源值
 
+> **eg：使用Sa-Token的时候，会把登录用户的ID信息、相关Token、租户ID等存放到ThreadLocal里面去，根据S-Token的工具类StpUtil可以做后续的业务逻辑**
+
 
 
 
@@ -2371,7 +2427,7 @@ public void test1() {
 
 > **什么是AOP？**
 
-**面向切面编程，用于把与业务无关、但对多个对象产生影响的公共行为和逻辑代码抽取为公共模块复用，降低耦合度**
+**面向切面编程，用于把与业务无关但对多个对象产生影响的公共行为和逻辑代码抽取为公共模块复用，降低耦合度、或对业务进行增强处理**
 
 
 
@@ -3770,7 +3826,7 @@ public class GrayReleaseAspect {
 
 1. **使用复合索引的时候**，违反了左匹配法则或者范围查询右边的列会失效
 2. 模糊查询，%号在前面会导致失效
-3. 在where表达式中对索引的字段上进行了运算操作或者类型转换也会导致失效
+3. 在where表达式中对索引的字段上进行了运算操作或者类型转换也会导致失效（因为B+树的节点是一整行数据，所以运算操作不知道返回的字段类型是什么）
 
 ```
 eg： name(varchar)、status(varchar)、address(varchar) 为复合索引
