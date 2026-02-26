@@ -279,7 +279,7 @@ System.out.println(red1 == red2); // true
 
 * try后可以有一个或多个catch块来捕捉，catch中子类异常顺序在父类异常前（eg：先捕获ClassCastException，再捕获Exception）
 
-* 可选地加入finally块执行清理代码，不管try-catch的操作是什么，finally块都会执行
+* 可选地加入finally块执行清理代码，**不管try-catch的操作是什么，finally块都会执行**
 
 * **try后至少有一个catch或者finally**
 
@@ -296,7 +296,9 @@ System.out.println(red1 == red2); // true
   System.out.println("i = " + i);  //6
   ```
 
-* 方法声明时使用throws 抛出；方法体使用throw new 抛出
+* **方法声明时使用throws 抛出；方法体使用throw new 抛出**
+
+* **除了RuntimeException及其子类不用捕获或声明抛出，其它的异常都必须抛出或声明**
 
 
 
@@ -308,7 +310,7 @@ System.out.println(red1 == red2); // true
 
 #### 方法重载与方法覆盖
 
-> 多态包含了方法重载与方法覆盖
+> 多态包含了方法重载与方法覆盖，**多态指的运行时多态（方法重写、接口实现、抽象类继承），方法重载是编译时多态**
 
 * 方法重载：
 
