@@ -350,6 +350,18 @@ System.out.println(red1 == red2); // true
 
 
 
+#### 对象拷贝
+
+* 浅拷贝：基本类型直接复制值；引用类型则和源对象都指向同一个堆内存的引用对象（新旧指向同一个引用）
+
+* 深拷贝：基本类型直接复制值；引用类型则在源对象中找到堆里面的数据，重新创建一份一模一样的引用对象到堆内存中，并指向新的引用地址（新旧指向不同的引用，但内容一致）
+
+  
+
+
+
+
+
 #### 抽象类与接口
 
 > **抽象类通常是作为子类的基类，`描述的是子类共有的属性和行为，但某些行为需要子类去实现`；接口通常是描述一组类共同遵循的某种行为规范，`但它们本身可能不存在继承关系`**
@@ -752,6 +764,21 @@ list.add(12);   //扩容
 > **`一种自平衡的二叉搜索树BST，所有的规则都是为了保证红黑树平衡，红黑树的查找、新增、删除的时间复杂度都为O(logn)（普通的BST极端情况下，退化成链表形式即单侧树，复杂度为O(n)`**
 
 ![image-20250426180434184](Java面试八股文_images/image-20250426180434184.png)
+
+
+
+
+
+**红黑树顺序问题**
+
+> **eg：1-10个元素顺序插入 vs  无序插入**
+
+* 相同顺序：红黑树的结构固定（插入规则唯一）
+* 不同顺序：大概率结构不同（核心原因是红黑树的插入重构：旋转+变色）
+
+**`红黑树为自平衡的二叉查找树，必须满足左节点<根<右节点 且插入后通过变色、左旋、右旋保证红黑树和平衡树的特点（左右子树高度相差为1）`**
+
+
 
 
 
@@ -2046,7 +2073,7 @@ public static void main(String[] args) throws Exception {
 3. 当调用get方法，同样也是以ThreadLocal自己作为key到当前线程中查找关联的资源数据
 4. 当调用remove方法，以ThreadLocal自己作为key，移除当前线程关联的资源值
 
-> **eg：使用Sa-Token的时候，会把登录用户的ID信息、相关Token、租户ID等存放到ThreadLocal里面去，根据S-Token的工具类StpUtil可以做后续的业务逻辑**
+> **eg：使用Sa-Token的时候，会把登录用户的ID信息、相关Token、租户ID等存放到ThreadLocal里面去，根据Sa-Token的工具类StpUtil可以做后续的业务逻辑**
 
 
 
@@ -2059,325 +2086,6 @@ public static void main(String[] args) throws Exception {
 ![image-20250503164903655](Java面试八股文_images/image-20250503164903655.png)
 
 
-
-## 设计模式
-
-#### 工厂模式
-
-##### 简单工厂模式
-
-* 抽象产品：定义产品的规范，包括产品的主要特性、功能
-* 具体产品：实现或继承抽象产品的子类
-* 具体工厂：提供创建产品的方法，通过该方法来获取产品
-
-> **缺点：1. 违反开闭原则（每增加一个品种，都要修改工厂类，工厂类的职责过重，代码臃肿）；2.违反了单一职责原则（工厂类不仅创建对象，还承担了产品选择的逻辑，职责过多）**
-
-```java
-//抽象产品
-public interface Coffee {
-    public String getName();
-
-    public void addSugar();
-}
-
-
-//具体产品1
-public class AmericanCoffe implements Coffee {
-    @Override
-    public String getName() {
-        return "美式咖啡";
-    }
-
-    @Override
-    public void addSugar() {
-        System.out.println("美式加糖");
-    }
-}
-
-
-//具体产品2
-public class LatteCoffee implements Coffee {
-    @Override
-    public String getName() {
-        return "拿铁咖啡";
-    }
-
-    @Override
-    public void addSugar() {
-        System.out.println("拿铁加糖");
-    }
-}
-
-//具体工厂
-public class CoffeeFactory {
-    public static Coffee createCoffee(String type) {
-        Coffee coffee = null;
-        if ("american".equals(type)) {
-            coffee = new AmericanCoffe();
-        } else if ("latte".equals(type)) {
-            coffee = new LatteCoffee();
-        }
-        return coffee;
-    }
-}
-
-
-Coffee latte = CoffeeFactory.createCoffee("latte");
-System.out.println(latte.getName());
-latte.addSugar();
-```
-
-![image-20250503183112645](Java面试八股文_images/image-20250503183112645.png) 
-
-
-
-##### 工厂方法模式
-
-* 抽象产品：定义产品的规范，包括产品的主要特性、功能
-* 具体产品：实现或继承抽象产品的子类
-* 抽象工厂：提供创建产品的接口，通过访问具体的工厂方法来创建产品
-* 具体工厂：实现抽象工厂中的抽象方法，完成具体产品的创建
-
-> **解决了简单工厂模式的单一职责原则和开闭原则，每个产品对应一个工厂类，增加了系统复杂度**
-
-```java
-//抽象产品
-public interface Coffee {
-    public String getName();
-
-    public void addSugar();
-}
-
-
-//具体产品1
-public class AmericanCoffe implements Coffee {
-    @Override
-    public String getName() {
-        return "美式咖啡";
-    }
-
-    @Override
-    public void addSugar() {
-        System.out.println("美式加糖");
-    }
-}
-
-
-//具体产品2
-public class LatteCoffee implements Coffee {
-    @Override
-    public String getName() {
-        return "拿铁咖啡";
-    }
-
-    @Override
-    public void addSugar() {
-        System.out.println("拿铁加糖");
-    }
-}
-
-//抽象工厂
-public interface CoffeeFactory {
-    public Coffee createCoffee();
-}
-
-//具体工厂1
-public class AmericanCoffeeFactory implements CoffeeFactory {
-    @Override
-    public Coffee createCoffee() {
-        return new AmericanCoffe();
-    }
-}
-
-//具体工厂2
-public class LatteCoffeeFactory implements CoffeeFactory {
-    @Override
-    public Coffee createCoffee() {
-        return new LatteCoffee();
-    }
-}
-
-
-CoffeeFactory americanCoffeeFactory = new AmericanCoffeeFactory();
-Coffee americanCoffee = americanCoffeeFactory.createCoffee();
-System.out.println(americanCoffee.getName());
-americanCoffee.addSugar();
-```
-
-
-
-#### 策略模式
-
-##### 简单策略模式
-
-* 策略接口：定义所有策略的共同行为
-* 具体策略类：实现策略接口，封装具体的行为或算法
-* 上下文类：持有策略接口的引用，面向接口编程，动态使用不同策略
-
-```java
-//策略接口
-public interface PayStrategy {
-    void pay(int amount);
-}
-
-//具体策略接口1
-public class AliPay implements PayStrategy {
-    @Override
-    public void pay(int amount) {
-        System.out.println("使用支付宝支付：" + amount + "元");
-    }
-}
-
-//具体策略接口2
-public class WeChatPay implements PayStrategy {
-    @Override
-    public void pay(int amount) {
-        System.out.println("使用微信支付：" + amount + "元");
-    }
-}
-
-//上下文类
-public class PayContext {
-    private PayStrategy payStrategy;
-
-    public PayContext(PayStrategy payStrategy) {
-        this.payStrategy = payStrategy;
-    }
-
-    public void executePay(int amount) {
-        payStrategy.pay(amount);
-    }
-}
-
-//使用
-PayContext context = new PayContext(new AliPay());
-context.executePay(100);
-```
-
-
-
-
-
-##### 策略模式+工厂模式
-
-> **解决实际项目中多类型if-else、switch判断的业务，eg：多种登录方式（微信登录、邮箱登录、账号密码登录）、支付方式（微信支付、支付宝支付、信用卡支付）等**
-
-```java
-//支付方式枚举
-public enum PayTypeEnum {
-    ALI_PAY(0, "阿里pay"),
-    WECHAT_PAY(1, "微信pay"),
-    CREDITCARD_PAY(2, "信用卡pay");
-
-    public static PayTypeEnum getPayEnum(int code) {
-        //遍历所有的枚举字段
-        for (PayTypeEnum payType : values()) {
-            if (payType.code == code) {
-                return payType;
-            }
-        }
-        throw new IllegalArgumentException("不支持的支付类型: " + code + "，支持的类型有: " +
-                Arrays.stream(PayTypeEnum.values())
-                        .map(e -> e.name + "(" + e.code + ")")
-                        .collect(Collectors.joining(", ")));
-    }
-
-    private int code;
-    private String name;
-
-    PayTypeEnum(int code, String name) {
-        this.code = code;
-        this.name = name;
-    }
-
-}
-
-
-//策略接口
-public interface PayStrategy {
-    PayTypeEnum getPayTypeEnum();
-
-    public void pay(int count);
-}
-
-//具体策略接口1
-@Component
-public class WechatPay implements PayStrategy {
-    @Override
-    public PayTypeEnum getPayTypeEnum() {
-        return PayTypeEnum.WECHAT_PAY;
-    }
-
-    @Override
-    public void pay(int count) {
-        System.out.println("wechat pay");
-    }
-}
-
-//具体策略接口2
-@Component
-public class AliPay implements PayStrategy {
-    @Override
-    public PayTypeEnum getPayTypeEnum() {
-        return PayTypeEnum.ALI_PAY;
-    }
-
-    @Override
-    public void pay(int count) {
-        System.out.println("阿里pay");
-    }
-}
-
-//具体策略接口3
-@Component
-public class CreditCardPay implements PayStrategy {
-    @Override
-    public PayTypeEnum getPayTypeEnum() {
-        return PayTypeEnum.CREDITCARD_PAY;
-    }
-
-    @Override
-    public void pay(int count) {
-        System.out.println("信用卡pay");
-    }
-}
-
-
-//工厂类
-@Component
-public class PayFactory {
-
-    @Resource
-    private List<PayStrategy> payStrategyList;
-
-    private final Map<PayTypeEnum, PayStrategy> payStrategyMap = new HashMap();
-
-
-    public PayStrategy getPayStrategy(int payType) {
-        PayTypeEnum payEnum = PayTypeEnum.getPayEnum(payType);
-        return payStrategyMap.get(payEnum);
-    }
-
-    @PostConstruct
-    public void setPayStrategyList() {
-        payStrategyList.forEach(item -> payStrategyMap.put(item.getPayTypeEnum(), item));
-    }
-}
-
-
-//调用
-@Resource
-private PayFactory payFactory;
-
-
-@Test
-public void test1() {
-    PayStrategy payStrategy = payFactory.getPayStrategy(4);
-    payStrategy.pay(10);
-}
-```
-
-![image-20250504120829627](Java面试八股文_images/image-20250504120829627.png) 
 
 
 
@@ -2782,6 +2490,17 @@ public B(A a) {}        	// 注入已初始化的真实 A
 
 
 
+#### TCP和UDP区别
+
+* TCP面向连接；UDP面向无连接
+* TCP传输可靠；UDP不可靠传输（丢包、重发、乱序）
+* TCP三次握手建立连接，四次挥手关闭连接，数据需要ACK确认；UDP不需确认，发送后不管
+* TCP传输的字节流；UDP传输数据报（有明确边界，接收方完整接收）
+
+
+
+
+
 #### http和https区别
 
 * **http无加密，明文传输；https基于SSL机密**（对称+非对称机密结合）
@@ -2908,6 +2627,15 @@ public B(A a) {}        	// 注入已初始化的真实 A
    * @ComponentScan（扫描指定包及其子包下的组件，注入到IOC容器中）
 2. 其中**@EnableAutoConfiguration是实现自动配置的核心注解**，该注解通过@Import注解导入对应的配置选择类，**内部就是读取该项目及其引用Jar包classpath路径下的META-INF/spring.factories文件中的所配置的全类名，**这些配置类所定义的Bean会根据条件注解或 **指定exclude**排除项来决定是否加载到IOC容器中，**这就是约定大于配置的核心**
 3. 条件判断像@ConditionalOnClass、@ConditionalOnMissingBean这样的注解，来判断似乎否有对应的class文件，如果有则加载所对应的自动装配类
+
+
+
+### Gateway网关的作用
+
+* **统一所有请求入口**
+* **路由转发（内部的微服务地址）**
+* 统一限流熔断
+* **统一鉴权（登录、Token校验）**
 
 
 

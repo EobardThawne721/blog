@@ -9,16 +9,16 @@ heroText: null
 heroFullScreen: true
 tagline: Talk is cheap. Show me the code. Linus Torvalds
 
-# projects:
-  # - icon: project
-  #   name: 项目名称
-  #   desc: 项目详细描述
-  #   link: https://你的项目链接
+projects:
+  - icon: link
+    name: 代码混淆工具
+    desc: 对Java单体应用、安卓项目进行代码混淆
+    link: https://gitee.com/eobard721/obfuscator-boot
 
-  # - icon: link
-  #   name: 链接名称
-  #   desc: 链接详细描述
-  #   link: https://链接地址
+  - icon: link
+    name: 人脸年龄预测模型
+    desc: 轻量级人脸年龄预测模型，可应用于中小规模数据集年龄预测任务
+    link: https://gitee.com/eobard721/facial-age-prediction
 
   # - icon: book
   #   name: 书籍名称
@@ -40,10 +40,10 @@ tagline: Talk is cheap. Show me the code. Linus Torvalds
   #   desc: 自定义详细介绍
   #   link: https://你的自定义链接
 
-footer: 自定义你的页脚文字
+footer: talk is cheap, show me the code！
 ---
 
-
+<MyComponent />
 
 <!-- 这是一个博客主页的案例。要使用此布局，你应该在页面前端设置 `layout: BlogHome` 和 `home: true`。 -->
 

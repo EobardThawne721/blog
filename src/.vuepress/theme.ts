@@ -95,7 +95,7 @@ export default hopeTheme({
   editLink: false,  //设置是否启用 在Github上编辑此页 链接
 
   // 页脚
-  footer: "默认页脚",
+  footer: "talk is cheap, show me the code！",
   displayFooter: true,
 
   // copyright:"123",

@@ -22,7 +22,6 @@ actions:
   - text: 案例
     icon: star
     link: /zh/demo/
-
 features:
   - title: Markdown 增强
     icon: b:markdown
@@ -107,6 +106,9 @@ features:
 copyright: false
 footer: MIT Licensed | Copyright © 2019-present Mr.Hope
 ---
+
+
+<MyComponent />
 
 ## 🛠 安装
 
@@ -235,8 +237,8 @@ export default {
 
 # PDF
 使用技巧：https://plugin-components.vuejs.press/zh/guide/media/p-d-f.html#url
-<PDF url="//theme-hope-assets.vuejs.press/files/sample.pdf" width="100%" height="1600px"  noToolbar="false" />
-
+<!-- <PDF url="//theme-hope-assets.vuejs.press/files/sample.pdf" width="100%" height="1600px"  noToolbar="false" />
+ -->
 
 
 
@@ -293,3 +295,4 @@ console.log('你好，VuePress!')
 # 这里会被 Vue 编译
 1 + 2 + 3 =  {{ 1 + 2 + 3 }}
 这是默认主题内置的 `<Badge />` 组件 <Badge text="演示" />
+
