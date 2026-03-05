@@ -2,9 +2,9 @@
 
 ## 课程简介
 
-课程视频：https://www.bilibili.com/video/BV1yT411H7YK?spm_id_from=333.788.videopod.episodes&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c
+课程视频：[JVM虚拟机篇-04-JVM组成-什么是虚拟机栈_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1yT411H7YK?spm_id_from=333.788.videopod.episodes&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c&p=119)
 
-还没观看的：48-68（springcloud、rabbitmq、kafka）、95-105（锁底层）、116-134（JVM）
+还没观看的：48-68（springcloud、rabbitmq、kafka）、95-105（锁底层）、119-134（JVM）
 
 
 
@@ -2084,6 +2084,53 @@ public static void main(String[] args) throws Exception {
 > **ThreadLocalMap中的key是弱引用，值为强引用；当内存不够时，GC会把Key释放内存，但是value的内存不会释放，`所以当我们使用ThreadLocal的时候主动remove释放key、value`**
 
 ![image-20250503164903655](Java面试八股文_images/image-20250503164903655.png)
+
+
+
+
+
+## JVM篇
+
+![image-20260305165457464](./Java面试八股文_images/image-20260305165457464.png)
+
+
+
+
+
+### JVM组成
+
+#### 程序计数器
+
+> **线程私有的，每个线程一份（不存在线程安全的问题），内部保存的是字节码执行的行号，用于记录正在执行的字节码指令的地址。**
+
+eg：两个线程执行同一份代码，线程一执行到10行后，失去CPU时间片；线程2从0行执行到9行后，到线程1继续执行，此时线程一会从第10行开始继续执行，而不会重头开始（因为线程一的程序计数器保存的执行行号是10行）
+
+![image-20260305170702299](./Java面试八股文_images/image-20260305170702299.png)
+
+
+
+
+
+#### 堆内存
+
+> **线程共享的区域：用来保存`对象实例、数组`等，内存不足会抛出OOM异常；由年轻代+老年代组成**
+
+* 年轻代：分为Eden区和两个大小相同的Suivivor区（S0、S1）
+* 老年代：保存声明周期长的对象
+* **流程：新对象创建，首先会进入Eden区，经过GC后如果还存活，它就会被复制移动到S0或者S1幸存区里面，如果挪动次数（Minor GC）多了之后，就会被移动到老年代中**
+
+
+
+
+
+##### 1.7和1.8的堆内存区别
+
+![image-20260305172429919](./Java面试八股文_images/image-20260305172429919.png)
+
+>  **元空间/方法区：保存的类信息、静态常量、变量、编译后的代码**
+
+* **JDK 1.7在堆内存中有永久代**，存储的也是类信息、静态常量、变量、编译后的代码**（如果堆内存小了，随着类信息越来越多，会造成OOM；如果堆内存大了，也会造成内存的浪费）**
+* **JDK 1.8移除了永久代**，把数据存储到了本地内存的元空间中，防止OOM（**主要是解决JDK1.7中堆内存不可控的问题**）
 
 
 
