@@ -4,7 +4,7 @@
 
 > **管理员点击上传商品后，商品模块向rabbitmq中发送一条对应商品id的消息；搜索模块监听消息队列的消息，获取商品id，远程调用获取对应商品信息，上传至ES中**
 
-![image-20230711232603628](RabbitMQ实战_images/image-20230711232603628.png)
+![image-20230711232603628](./RabbitMQ实战_images/image-20230711232603628.png)
 
 
 
@@ -207,7 +207,7 @@ spring:
 
 #### 测试结果
 
-![image-20230712092644528](RabbitMQ实战_images/image-20230712092644528.png)
+![image-20230712092644528](./RabbitMQ实战_images/image-20230712092644528.png)
 
 
 
@@ -298,7 +298,7 @@ public class SkuReceiver {
 
 #### 测试结果
 
-![image-20230711230703543](RabbitMQ实战_images/image-20230711230703543.png)
+![image-20230711230703543](./RabbitMQ实战_images/image-20230711230703543.png)
 
 
 
@@ -624,23 +624,23 @@ public class RabbitService {
 
 * 交换机存在，路由不存在
 
-![image-20250906121957516](RabbitMQ实战_images/image-20250906121957516.png)
+![image-20250906121957516](./RabbitMQ实战_images/image-20250906121957516.png)
 
-![image-20250906122005016](RabbitMQ实战_images/image-20250906122005016.png)
+![image-20250906122005016](./RabbitMQ实战_images/image-20250906122005016.png)
 
-![image-20250906122008263](RabbitMQ实战_images/image-20250906122008263.png)
+![image-20250906122008263](./RabbitMQ实战_images/image-20250906122008263.png)
 
-![image-20250906122011704](RabbitMQ实战_images/image-20250906122011704.png)
+![image-20250906122011704](./RabbitMQ实战_images/image-20250906122011704.png)
 
 
 
 * 交换机不存在
 
-![image-20250906122037444](RabbitMQ实战_images/image-20250906122037444.png)
+![image-20250906122037444](./RabbitMQ实战_images/image-20250906122037444.png)
 
-![image-20250906122041455](RabbitMQ实战_images/image-20250906122041455.png)
+![image-20250906122041455](./RabbitMQ实战_images/image-20250906122041455.png)
 
-![image-20250906122045239](RabbitMQ实战_images/image-20250906122045239.png)
+![image-20250906122045239](./RabbitMQ实战_images/image-20250906122045239.png)
 
 ![image-20250906122051311](RabbitMQ实战_images/image-20250906122051311.png)
 
@@ -648,13 +648,13 @@ public class RabbitService {
 
 * 正常情况
 
-![image-20250906122108118](RabbitMQ实战_images/image-20250906122108118.png)
+![image-20250906122108118](./RabbitMQ实战_images/image-20250906122108118.png)
 
-![image-20250906122114405](RabbitMQ实战_images/image-20250906122114405.png)
+![image-20250906122114405](./RabbitMQ实战_images/image-20250906122114405.png)
 
-![image-20250906122118336](RabbitMQ实战_images/image-20250906122118336.png)
+![image-20250906122118336](./RabbitMQ实战_images/image-20250906122118336.png)
 
-![image-20250906122123420](RabbitMQ实战_images/image-20250906122123420.png)
+![image-20250906122123420](./RabbitMQ实战_images/image-20250906122123420.png)
 
 
 
@@ -726,9 +726,8 @@ public class RabbitService {
           <td><img src="./RabbitMQ实战_images/image-20251030153444175.png" alt="image-20251030153444175" style="zoom:50%;" /></td>
       </tr>
   </table>
-
   
-
+  
 * 使用自定义线程池
 
 ```java
@@ -916,9 +915,9 @@ public void testNormal(Object msg, Message message, Channel channel) throws IOEx
 }
 ```
 
-![image-20250906122326427](RabbitMQ实战_images/image-20250906122326427.png)
+![image-20250906122326427](./RabbitMQ实战_images/image-20250906122326427.png)
 
-![image-20250906122332277](RabbitMQ实战_images/image-20250906122332277.png)
+![image-20250906122332277](./RabbitMQ实战_images/image-20250906122332277.png)
 
 
 
@@ -995,7 +994,7 @@ public void test() {
 }
 ```
 
-![image-20250906122528848](RabbitMQ实战_images/image-20250906122528848.png)
+![image-20250906122528848](./RabbitMQ实战_images/image-20250906122528848.png)
 
 
 
@@ -1095,4 +1094,4 @@ public void test() {
 }
 ```
 
-![image-20250906122742326](RabbitMQ实战_images/image-20250906122742326.png)
+![image-20250906122742326](./RabbitMQ实战_images/image-20250906122742326.png)
