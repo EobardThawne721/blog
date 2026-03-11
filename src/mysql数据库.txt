@@ -1,0 +1,16 @@
+1.去掉完全重复的行 → 用 DISTINCT
+
+id  name
+1   张三
+1   张三
+2   李四
+
+SELECT DISTINCT id, name FROM 表;
+
+2.去掉指定字段的重复 → 用 GROUP BY 指定字段
+
+id  name
+1   张三
+1   张三丰
+
+SELECT id, name FROM 表 GROUP BY id;
