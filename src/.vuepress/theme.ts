@@ -59,6 +59,11 @@ export default hopeTheme({
       ],
     },
     {
+      text: "数据库",
+      icon:"database",
+      link: "/db/",
+    },
+    {
       text: "Python",
       icon: "poo",
       prefix: "/python/",
