@@ -212,11 +212,45 @@ delete from 表名 [where 条件]
 
 ### 查询数据
 
+* **查询模版的编写顺序**
+
+```mysql
+select 
+	字段列表 
+from 
+	表名 
+where 
+	分组前的条件
+group by 
+	分组字段
+having 
+	分组后的过滤条件
+order by 
+	排序字段列表
+limit 
+	分页参数
+```
+
+* **SQL语句的执行顺序**
+
+```tex
+1. from 表名
+2. where 分组前的条件
+3. group by 分组字段 having 分组后的过滤条件
+4. select 字段列表
+5. order by 排序字段
+6. limit 分页参数
+```
+
+
+
+
+
 #### 基本查询
 
 ```mysql
 -- 查询全部记录
-select * from 表名;
+select * from 表名 [别名];
 
 -- 查询指定字段记录
 select 字段1 [as '别名'],.... from 表名;
@@ -228,6 +262,8 @@ select 字段列表 from 表名 where 条件;
 <img src="./MySQL_images/image-20260314215605310.png" alt="image-20260314215605310" style="zoom:50%;" /> 
 
 <img src="./MySQL_images/image-20260314215617160.png" alt="image-20260314215617160" style="zoom:53%;" /> 
+
+**注意：`between 最小值 and 最大值`不能交换最小值和最大值的顺序，否则查询不到**
 
 
 
@@ -263,7 +299,20 @@ SELECT id, name FROM 表 GROUP BY id;
 
 
 
-#### 聚合函数
+#### 分组查询
+
+> * **执行顺序：where>聚合函数>having**
+> * **where语句是分组之前进行过滤，不满足where条件，不参与分组；而having是分组之后对结果过滤**
+> * **where不能对聚合函数判断；而having可以**
+> * 分组之后，查询的字段一般为聚合函数、分组字段，查询其它字段无意义
+
+```mysql
+select 字段列表 from 表名 [where 分组前的条件] group by 分组字段名 [having  分组后的条件]
+```
+
+
+
+##### 聚合函数
 
 > **将一列数据作为一个整体，进行纵向计算，其中某列的null值不参与聚合函数运算**
 
@@ -271,10 +320,116 @@ SELECT id, name FROM 表 GROUP BY id;
 
 
 
+#### 排序
+
+> **如果是多字段排序，当第一个字段值相同时，才会根据第二个字段进行排序，以此类推。**
+>
+> * **asc（默认值，可省略不写）：升序**
+> * **desc：降序**
+
+```mysql
+select 字段列表 from 表名 order by 字段1 排序方式,字段2 排序方式....
+```
+
+
+
+#### 分页查询
+
+> * **起始索引从0开始，`起始索引=(页码-1)*每页显示记录数`**
+> * **如果查询第一页数据，起始索引可以省略，简写为`limit 每页显示记录数`**
+
+```mysql
+select 字段列表 from 表名 limit  起始索引,每页显示记录数;
+```
 
 
 
 
 
+## 用户、权限管理
 
-[18. 基础-SQL-DQL-分组查询_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Kr4y1i7ru?spm_id_from=333.788.player.switch&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c&p=18)
+### 用户管理
+
+#### 查询mysql系统用户
+
+```mysql
+use mysql;
+select * from user;
+```
+
+
+
+#### 创建用户
+
+> **主机名中可以设置当前主机访问或任意主机访问该数据库，`新创建的用户没有任何操作权限`**
+>
+> * **localhost：当前主机下可以访问该数据库**
+> * **%：任意主机下都可以访问该数据库**
+
+```mysql
+create user '用户名'@'主机名' identified by '密码';
+```
+
+
+
+eg：
+
+![image-20260315143421018](./MySQL_images/image-20260315143421018.png) 
+
+![image-20260315143445894](./MySQL_images/image-20260315143445894.png)
+
+<img src="./MySQL_images/image-20260315143521398.png" alt="image-20260315143521398" style="zoom:60%;" /> 
+
+
+
+#### 修改用户密码
+
+```mysql
+alter user '用户名'@'主机名' identified with mysql_native_password by '新密码';
+```
+
+
+
+#### 删除用户
+
+```mysql
+drop user '用户名'@'主机名';
+```
+
+
+
+### 权限管理
+
+> **授权时，数据库名和表名可以使用`*`进行通配，代表所有**
+
+
+
+#### 查询权限
+
+```mysql
+show grants for '用户名'@'主机名';
+```
+
+
+
+#### 授予权限
+
+![image-20260315143804157](MySQL_images/image-20260315143804157.png)
+
+```mysql
+grant 权限列表1,权限列表2,... on 指定数据库名.指定表名 to '用户名'@'主机名';
+```
+
+
+
+#### 撤销权限
+
+```mysql
+revoke 权限列表1,.... on 指定数据库名.指定表名 from '用户名'@'主机名';
+```
+
+
+
+
+
+[27. 基础-函数-字符串函数_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Kr4y1i7ru?spm_id_from=333.788.player.switch&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c&p=27)
