@@ -3,14 +3,15 @@
 ## 导入依赖
 
 ```xml
-   <dependency>
+  <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <version>2.0.8</version>
-        </dependency>
+       		<!--<version>3.0.3</version>-->
+ </dependency>
 ```
 
-
+> 如果是SpringBoot 2.6+版本需要配置全局配置文件`spring.mvc.pathmatch.matching-strategy=ant_path_matcher`
 
 
 
@@ -19,17 +20,19 @@
 ```java
 @Configuration
 @EnableSwagger2WebMvc
-public class Swagger2Config {
+public class Swagger2Config implements ApplicationRunner {
 
     //配置普通用户角色的接口配置
     @Bean
     public Docket webApiConfig(){
         List<Parameter> pars = new ArrayList<>();
+        
+        //可选项：设置token信息,比如使用sa-token这样的权限框架,有些接口需要在header中带上你的token信息来证明你是以登录过的，这里就是使用swagger自带的网页发送请求时默认带上的token信息
         ParameterBuilder tokenPar = new ParameterBuilder();
-        tokenPar.name("userId")
+        tokenPar.name("userId")//这是header中的name
                 .description("用户token")
                 //.defaultValue(JwtHelper.createToken(1L, "admin"))
-                .defaultValue("1")
+                .defaultValue("1")//这是对应的value
                 .modelRef(new ModelRef("string"))
                 .parameterType("header")
                 .required(false)
@@ -43,7 +46,7 @@ public class Swagger2Config {
                 .select()
                 //指定扫描接口的包
                 .apis(RequestHandlerSelectors.basePackage("com.eobard.api"))
-                //根据url路径设置哪些请求加入文档
+                //根据url路径设置哪些请求加入文档,其中PathSelectors.any()表示全部都放进去
                 .paths(PathSelectors.regex("/api/.*"))
                 .build()
                 .globalOperationParameters(pars);
@@ -81,6 +84,8 @@ public class Swagger2Config {
     @Bean
     public Docket adminApiConfig(){
         List<Parameter> pars = new ArrayList<>();
+        
+        //可选项：同上
         ParameterBuilder tokenPar = new ParameterBuilder();
         tokenPar.name("adminId")
                 .description("用户token")
@@ -101,6 +106,16 @@ public class Swagger2Config {
                 .build()
                 .globalOperationParameters(pars);
         return adminApi;
+    }
+    
+    /**
+     * 打印 API 文档地址
+     */
+    @Override
+    public void run(ApplicationArguments args) {
+        System.out.println("========================================");
+        System.out.println("API 文档地址：http://localhost:8080/doc.html");
+        System.out.println("========================================");
     }
 }
 ```
@@ -197,4 +212,6 @@ public class IndexController {
 * **@ApiModelProperty("xxx属性")：用于实体类的属性上面**
 * **@Api(tags = "XXXController")：用于控制器的实体类上面**
 * **@ApiOperation("查询用户方法")：用于控制器的方法上面**
+* **@ApiParam(value = "当前页码大小", defaultValue = "10"，required=True)：用于控制器的方法形参上面**
 * **@ApiIgnore：//忽略类，接口，方法，参数生成swagger文档**		
+
