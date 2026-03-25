@@ -2168,6 +2168,7 @@ public class String2DateConvert implements Converter<String, Date> {
       @Future:日期必须是一个未来的日期
       @Min：输入的值不能小于最小值
       @Max：输入的值不能大于最大值
+      ....
 
 ```
 

@@ -3055,12 +3055,17 @@ admin
 #### 2.14.1 导入依赖
 
 ```xml
-   <dependency>
+  <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <version>2.0.8</version>
-        </dependency>
+       		<!--<version>3.0.3</version>-->
+ </dependency>
 ```
+
+> 如果是SpringBoot 2.6+版本需要配置全局配置文件`spring.mvc.pathmatch.matching-strategy=ant_path_matcher`
+
+
 
 
 
@@ -3069,17 +3074,19 @@ admin
 ```java
 @Configuration
 @EnableSwagger2WebMvc
-public class Swagger2Config {
+public class Swagger2Config implements ApplicationRunner {
 
     //配置普通用户角色的接口配置
     @Bean
     public Docket webApiConfig(){
         List<Parameter> pars = new ArrayList<>();
+        
+        //可选项：设置token信息,比如使用sa-token这样的权限框架,有些接口需要在header中带上你的token信息来证明你是以登录过的，这里就是使用swagger自带的网页发送请求时默认带上的token信息
         ParameterBuilder tokenPar = new ParameterBuilder();
-        tokenPar.name("userId")
+        tokenPar.name("userId")//这是header中的name
                 .description("用户token")
                 //.defaultValue(JwtHelper.createToken(1L, "admin"))
-                .defaultValue("1")
+                .defaultValue("1")//这是对应的value
                 .modelRef(new ModelRef("string"))
                 .parameterType("header")
                 .required(false)
@@ -3093,7 +3100,7 @@ public class Swagger2Config {
                 .select()
                 //指定扫描接口的包
                 .apis(RequestHandlerSelectors.basePackage("com.eobard.api"))
-                //根据url路径设置哪些请求加入文档
+                //根据url路径设置哪些请求加入文档,其中PathSelectors.any()表示全部都放进去
                 .paths(PathSelectors.regex("/api/.*"))
                 .build()
                 .globalOperationParameters(pars);
@@ -3131,6 +3138,8 @@ public class Swagger2Config {
     @Bean
     public Docket adminApiConfig(){
         List<Parameter> pars = new ArrayList<>();
+        
+        //可选项：同上
         ParameterBuilder tokenPar = new ParameterBuilder();
         tokenPar.name("adminId")
                 .description("用户token")
@@ -3151,6 +3160,16 @@ public class Swagger2Config {
                 .build()
                 .globalOperationParameters(pars);
         return adminApi;
+    }
+    
+    /**
+     * 打印 API 文档地址
+     */
+    @Override
+    public void run(ApplicationArguments args) {
+        System.out.println("========================================");
+        System.out.println("API 文档地址：http://localhost:8080/doc.html");
+        System.out.println("========================================");
     }
 }
 ```
@@ -3385,7 +3404,123 @@ public class GlobalWebConfig  implements WebMvcConfigurer{
 
 ### 3.2 数据校验
 
-​		Spring Boot的数据校验与Spring MVC一模一样，使用详见Spring MVC，**但在前端页面显示数据校验错误需要更改写法**
+#### 3.2.1基本校验
+
+1. 导入pom文件
+
+`````xml
+ <!--validation-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+`````
+
+
+
+2. 配置实体类注解
+
+* `@NotNull`：不能为 null，**数字用**
+* `@NotBlank`：**字符串用**，不能 null、不能空、不能全空格
+* `@NotEmpty`：**集合 / 数组用**，不能 null 且长度 > 0
+* `@Length(min,max)`：字符串长度范围
+* `@Email`：邮箱格式
+* `@Pattern(regexp="")`：正则校验（手机号、身份证等）
+* `@Min`：数值 ≥ 指定值
+* `@Max`：数值 ≤ 指定值
+* `@DecimalMin`：小数 / 字符串最小值
+* `@DecimalMax`：小数 / 字符串最大值
+* `@Positive`：正数
+* `@PositiveOrZero`：正数或 0
+* `@Negative`：负数
+* `@NegativeOrZero`：负数或 0
+* `@Past`：必须是过去时间
+* `@PastOrPresent`：过去或当前
+* `@Future`：必须是未来时间
+* `@FutureOrPresent`：未来或当前
+
+
+
+3. 控制器上校验，配合全局异常处理器
+
+```java
+//控制器  
+public Result<String> saveTeacher(@Validated @RequestBody TeacherVO teacherVO) {
+        Teacher teacher = new Teacher();
+        BeanUtils.copyProperties(teacherVO, teacher);
+        boolean flag = teacherService.save(teacher);
+        return flag ? Result.success("保存成功") : Result.error("保存失败");
+}
+
+//全局异常处理器
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    /**
+     * 处理参数校验异常
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("参数校验异常: {}", e.getMessage());
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        if (fieldError != null) {
+            return Result.error(fieldError.getField() + ": " + fieldError.getDefaultMessage());
+        }
+        return Result.error("参数校验失败");
+    }
+}
+```
+
+
+
+#### 3.2.2分组校验
+
+1. 定义分组接口，区分新增还是删除生效
+
+`````java
+// 两个分组接口，分别在新增和修改时校验数据
+ public interface AddGroup extends Default{}
+ public interface UpdateGroup extends Default{}
+`````
+
+
+
+2. 编辑实体类，校验的组
+
+```java
+@Data
+public class CourseVO {
+    @NotNull(groups = UpdateGroup.class)	//修改时会要求不能为空
+    private Long id;
+
+    @NotBlank(groups = AddGroup.class)		//新增时会要求不能为空
+    private String name;
+}
+```
+
+
+
+3. 控制器设置分组校验
+
+`````java
+// 新增
+@PostMapping
+public Result add(@Validated(AddGroup.class) @RequestBody CourseVO vo)
+
+// 更新
+@PutMapping
+public Result update(@Validated(UpdateGroup.class) @RequestBody CourseVO vo)
+`````
+
+
+
+
+
+#### 3.2.3其它
+
+​		Spring Boot的数据校验与Spring MVC一模一样，使用详见Spring MVC，**但在前端thymeleaf页面显示数据校验错误需要更改写法**
 
 ```HTML
 <font color="red" th:errors="${校验实体类类名(首字母小写).属性名}"></font>
@@ -3394,11 +3529,10 @@ public class GlobalWebConfig  implements WebMvcConfigurer{
 ==注意：光这样写了在数据验证的时候会有异常，应该同Spring MVC一样的，在去往数据校验的页面时，要传个对象回去 (属性名应该是实体类的类名，首字母小写)==
 
 ```JAVA
-  @RequestMapping(value = "/addUser")
-    public String addUserCheck(User user){
-        return "register";
-    }
-
+@RequestMapping(value = "/addUser")
+public String addUserCheck(User user){
+    return "register";
+}
 ```
 
 
@@ -3530,12 +3664,15 @@ public class GlobalExceptionHandler {
 
 ```java
 @ControllerAdvice
-@ResponseBody						//返回json数据
+@ResponseBody						//返回json数据，@RestControllerAdvice=上面两个注解
+@Slf4j
 public class GlobalExceptionHandler {
 
     //处理Exception异常,统一返回错误信息
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result error(Exception e){
+        log.error("系统异常: {}", e.getMessage());
         return Result.error();
     }
 
@@ -3543,6 +3680,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public Result error(CustomException e){
         return Result.build(null,e.getCode(),e.getMessage());
+    }
+    
+   
+     //处理参数校验异常
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("参数校验异常: {}", e.getMessage());
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        if (fieldError != null) {
+            return Result.error(fieldError.getField() + ": " + fieldError.getDefaultMessage());
+        }
+        return Result.error("参数校验失败");
     }
 
 
