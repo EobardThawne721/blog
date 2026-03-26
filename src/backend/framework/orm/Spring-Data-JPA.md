@@ -689,6 +689,33 @@ public Result<List<TeachingListVO>> listCoursesByTeacherId(
 
 2. service层
 
+```java
+@Data
+@ApiModel("教师授课VO")
+public class TeachingListVO {
+    @ApiModelProperty("教师授课表主键ID")
+    private Long teachingId;
+
+    @ApiModelProperty("老师名称")
+    private String teacherName;
+
+    @ApiModelProperty("老师编号")
+    private String teacherNo;
+
+    @ApiModelProperty("课程名称")
+    private String courseName;
+
+    @ApiModelProperty("课程编号")
+    private String courseNo;
+
+    @ApiModelProperty("课程学分")
+    private Integer credit;
+
+    @ApiModelProperty("课程描述信息")
+    private String description;
+}
+```
+
 `````java
 Page<TeachingListVO> listCoursesByTeacherId(Pageable pageable, Long teacherId);
 
@@ -794,6 +821,16 @@ Page<TeachingCourseVO> listCoursesByTeacherId(Pageable pageable, Long teacherId)
 
 @Override
 public Page<TeachingCourseVO> listCoursesByTeacherId(Pageable pageable, Long teacherId) {
+    //这里可以把这个接口转换为对应的实体类返回，不用返回TeachingCourseVO这个接口
+    //Page<TeachingCourseVO> teachingCourseVOS = teachingRepository.listCoursesByTeacherId(pageable, teacherId);
+    //List<TeachingListVO> teachingListVOS = teachingCourseVOS.getContent()
+    //.stream()
+    //.map(teachingCourseVO -> {
+    //    TeachingListVO teachingListVO = new TeachingListVO();
+    //    BeanUtils.copyProperties(teachingCourseVO, teachingListVO);
+    //    return teachingListVO;
+    //})
+    //.collect(Collectors.toList());
     return teachingRepository.listCoursesByTeacherId(pageable, teacherId);
 }
 ```
