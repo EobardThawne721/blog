@@ -2603,6 +2603,37 @@ public interface StudentMapper extends BaseMapper<Student> {
 
 
 
+#### 1.2.3 注意
+
+* **自定义SQL想要使用分页，只需要配置`分页插件`，然后将分页对象作为mapper方法的`第一个参数`即可**
+
+  ```java
+  @Mapper
+  public interface TeachingStudentMapper extends BaseMapper<TeachingStudent> {
+      // 根据老师ID获取授课学生信息
+      Page<TeachingStudentVO> listStudents(@Param("page") Page<TeachingStudent> page,
+                                                 @Param("teacherId") Long teacherId,
+                                                 @Param("courseId") Long courseId);
+  }
+  ```
+
+* **自定义SQL有`Wrapper`对象配置和查询条件时，需要使用`${ew.customSqlSegment}`拼接（`3.5+版本后不需要在sql手动添加，只需在mapper接口设置@Param (Constants.WRAPPER)即可`）**
+
+  ```java
+  // Mapper 接口
+  List<TeachingStudent> selectByWrapper(@Param("ew") Wrapper wrapper,@Param("id")Long id);
+  //XML
+  <select id="selectByWrapper" resultType="TeachingStudent">
+      SELECT * FROM t_teaching_student
+      where id=#{id}
+      ${ew.customSqlSegment} //有SQL注入的风险，3.5+版本之前需要手动添加
+  </select>
+  ```
+
+  
+
+
+
 ### 1.3 分页插件
 
 `1.配置分页插件`
