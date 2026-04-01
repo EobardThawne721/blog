@@ -1681,11 +1681,26 @@ logging.level.com.eobard.dao=debug
 
 ### 2.11 整合缓存
 
-​					在没有缓存的情况下，虽然数据库的数据没有发生变化，但是每一次查询操作都会执行一次SQL语句访问数据库。随着时间的积累，用户量不断增加，缓存的使用可以避免服务器宕机。
+> **在没有缓存的情况下，虽然数据库的数据没有发生变化，但是每一次查询操作都会执行一次SQL语句访问数据库。随着时间的积累，用户量不断增加，缓存的使用可以避免服务器宕机。**
+>
+> **==顺序：本地缓存  =>  redis  =>  DB，本地缓存的过期时间要比redis短==**
 
 
 
-#### 2.11.1 SpringBoot默认缓存(了解)
+#### 2.11.1 常用注解
+
+* **@Cacheable**（查询）：先查缓存，如果缓存不存在则执行业务方法，并把对应返回结果缓存起来
+* **@CachePut**（更新）：直接执行业务方法，并把返回结果覆盖缓存
+* **@CacheEvict**（删除）：删除一条或整个缓存（`allEntries = true`）
+* **@Caching**（组合缓存）：同时执行多个缓存操作（查、删、改）
+
+
+
+
+
+#### 2.11.2 整合本地缓存
+
+> **本地内存缓存，通过设置统一的缓存盒子、过期时间来放置缓存数据**
 
 `1.SpringBoot启动器开启默认缓存支持`
 
@@ -1713,13 +1728,145 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    @Cacheable(cacheNames = "findUserById")
-    //保存在内存中,键为findUserById(类似于redis的K),一旦tomcat停掉了,缓存就没有了
+    @Cacheable(cacheNames = "findUserById",key = "#id")
+    //保存在内存中,缓存盒子为findUserById，键为这里的id值(类似于redis的K)，使用SpEL表达式获取形参值,一旦tomcat停掉了,缓存就没有了
     public User findUserById(int id) {
         return userMapper.findUserById(id);
     }
 }
 ```
+
+
+
+#### 2.11.3 高级用法（过期时间）
+
+1. **自定义Cache实现类**
+
+```java
+public class GuavaCache implements org.springframework.cache.Cache {
+
+    private final String name;
+    private final Cache<Object, Object> cache;
+
+    public GuavaCache(String name, Cache<Object, Object> cache) {
+        this.name = name;
+        this.cache = cache;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Object getNativeCache() {
+        return cache;
+    }
+
+    @Override
+    @Nullable
+    public ValueWrapper get(Object key) {
+        Object value = cache.getIfPresent(key);
+        return (value != null ? new SimpleValueWrapper(value) : null);
+    }
+
+    @Override
+    @Nullable
+    public <T> T get(Object key, @Nullable Class<T> type) {
+        Object value = cache.getIfPresent(key);
+        if (value == null) return null;
+        if (type != null && !type.isInstance(value)) {
+            throw new IllegalStateException("Cached value is not of required type [" + type.getName() + "]");
+        }
+        return (T) value;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T get(Object key, Callable<T> valueLoader) {
+        try {
+            Object value = cache.get(key, valueLoader);
+            return (T) value;
+        } catch (Exception e) {
+            throw new ValueRetrievalException(key, valueLoader, e);
+        }
+    }
+
+    @Override
+    public void put(Object key, @Nullable Object value) {
+        cache.put(key, value);
+    }
+
+    @Override
+    @Nullable
+    public ValueWrapper putIfAbsent(Object key, @Nullable Object value) {
+        Object existing = cache.getIfPresent(key);
+        if (existing == null) {
+            cache.put(key, value);
+            return null;
+        }
+        return new SimpleValueWrapper(existing);
+    }
+
+    @Override
+    public void evict(Object key) {
+        cache.invalidate(key);
+    }
+
+    @Override
+    public void clear() {
+        cache.invalidateAll();
+    }
+}
+```
+
+
+
+2. **自定义 CacheManager 实现，设置过期时间**
+
+```java
+public class GuavaCacheManager extends AbstractCacheManager {
+
+    private final ConcurrentMap<String, GuavaCache> cacheMap = new ConcurrentHashMap<>();
+
+    @Override
+    protected Collection<? extends Cache> loadCaches() {
+        return cacheMap.values();
+    }
+
+    @Override
+    protected Cache getMissingCache(String name) {
+        com.google.common.cache.Cache<Object, Object> nativeCache = CacheBuilder.newBuilder()
+                //设置统一的过期时间5分钟
+                .expireAfterWrite(5, TimeUnit.MINUTES)
+                //设置最大1000个缓存容量
+                .maximumSize(1000)
+                .build();
+
+        GuavaCache cache = new GuavaCache(name, nativeCache);
+        cacheMap.put(name, cache);
+        return cache;
+    }
+}
+```
+
+
+
+3. **配置类**
+
+```java
+@Configuration
+@EnableCaching
+public class GuavaCacheConfig {
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new GuavaCacheManager();
+    }
+}
+```
+
+
 
 
 
