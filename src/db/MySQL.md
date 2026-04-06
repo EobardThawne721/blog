@@ -242,6 +242,8 @@ limit
 6. limit 分页参数
 ```
 
+> **注意：如果我们对表取了别名之后，我们不能再where条件或其它位置继续使用`表名.列名`方式了，因为from语句是最先执行的**
+
 
 
 
@@ -346,6 +348,280 @@ select 字段列表 from 表名 limit  起始索引,每页显示记录数;
 
 
 
+## 基础
+
+### 函数
+
+#### 字符串函数
+
+* **concat(str1,str2....strn)：将str1~strn的拼接成一个字符串**
+
+* **lower(str)：将str全部转为小写**
+
+* **upper(str)：将str全部转为大写**
+
+* **trim(str)：将str去除首尾空格**
+
+* **substring(str, start,len)：将str从start索引位置截取len个长度，索引位置从1开始**
+
+* lpad(str,n,pad)：用pad字符串对str的左边进行填充到n个字符
+
+* rpad(str,n,pad)：用pad字符串对str的右边进行填充到n个字符
+
+  ```mysql
+  -- eg:工号统一为5位数,不足5位数，左边用0填充
+      -- id  work_no
+      -- 1   1
+      -- 2   2
+  update t_user set work_no=lpad(work_no,5,"0")
+      -- id  work_no
+      -- 1   00001
+      -- 2   00002
+  ```
+
+  
+
+#### 数值函数
+
+* ceil(x)：向上取整
+
+* floor(x)：向下取整
+
+* mod(x,y)：返回x/y的模
+
+* rand()：返回0~1的随机数
+
+* round(x,y)：将x四舍五入，保留小数点后y位（**eg：round(x,0)保留x后0位小数，即将x取整数部分**）
+
+  
+
+#### 日期函数
+
+* **now()：返回当前日期和时间**
+
+* curdate()：返回当前日期
+
+* curtime()：返回当前时间
+
+* **year(date)：获取指定date的年份**
+
+* **month(date)：获取指定date的月份**
+
+* **day(date)：获取指定date的日期**
+
+* **datediff(date1,date2)：计算date1-date2之间的间隔天数**
+
+* date_add(date, INTERVAL x  type)：在当前date上增加x 类型的时间
+
+  ```sql
+  -- eg:在当前时间上增加30天、年、月
+  select date_add(create_time,INTERVAL 30 DAY)
+  select date_add(create_time,INTERVAL 30 YEAR)
+  select date_add(create_time,INTERVAL 30 MONTH)
+  ```
+
+  
+
+
+
+#### 流程函数
+
+* **case  expr  when  val1 then  res1 [when val2 then res2 ...] else default end：`等于表达式`,当expr等于val1时，返回res1，当expr等于val2时，返回res2..... ，否则默认返回default **
+
+  ```sql
+  -- eg: 如果城市是北京、上海就显示一线城市,重庆就是二线城市,其它的都是三线城市
+  case city when "北京" then "一线城市" 
+  		  when "上海" then "一线城市" 
+  		  when "重庆" then "二线城市" 
+  		  else “三线城市” end
+  ```
+
+* **case  when 表达式1 then res1  [when 表达式2 then res2 ...] else default  end：`条件筛选表达式`，当表达式1满足时，返回res1，当表达式2满足时返回res2，否则默认返回default** 
+
+  ```sql
+  -- eg:成绩大于90为优秀，大于80为合格，否则良
+  case when score>=90 then "优秀"  
+  	 when score>=80 then "合格" 
+  	 else "良" end
+  ```
+
+* if(value,t,f)：如果value为true，则返回t，否则返回f
+
+  ```sql
+  select if(true,"这是真的","这是假的") as test
+  ```
+
+* ifnull(value1,value2)：如果value1不是null值，则返回value1,，否则返回value2
+
+  ```sql
+  select ifnull(null,"不是空的值哦") as test
+  ```
+
+
+
+
+
+### 约束
+
+**概念：约束是作用于表中字段上的规则，用于限制存储在表中的数据**
+
+**目的：保证数据库中数据的正确性、有效性和完整性**
+
+**分类：**
+
+|         名称         |                       描述                       |     关键字      |
+| :------------------: | :----------------------------------------------: | :-------------: |
+|     **非空约束**     |             **限制该字段不能为null**             |  **not null**   |
+|     **唯一约束**     |     **保证该字段在数据库中是唯一、不重复的**     |   **unique**    |
+|     **主键约束**     |        **一行数据的唯一标识，非空且唯一**        | **primary key** |
+|     **默认约束**     | **保存数据时，如果未指定字段的值，则采用默认值** |   **default**   |
+| 检查约束（mysql 8+） |               保证字段满足某个条件               |      check      |
+|       外键约束       |  建立两张表之间的联系，保证数据的一致性和完整性  |   foreign key   |
+
+
+
+```SQL
+-- eg:创建t_user表
+create table t_user(
+	id  	int 			primary key 	auto_increment 		comment "主键id，自增",
+    name 	varchar(10) 	not null 		unique 				comment "姓名",
+    age 	int 			check(age>0 && age<=120)  			comment "年龄",
+    status 	char(1) 		defualt "1" 						comment "状态"
+) comment "用户表";
+```
+
+**`注意：多个约束之间采用空格分隔`**
+
+
+
+
+
+#### 外检约束
+
+##### 逻辑约束
+
+> **如果我们不做外键约束，当主表对应数据删除时，从表还会存在关联主表的外键记录，会造成数据不一致的问题**
+
+```sql
+-- 主表：部门表
+t_dept
+	id
+	name
+
+-- 从表：员工表（拥有外键的表）
+t_user
+	id
+	name
+	-- 外键：关联主表的主键
+	dept_id
+```
+
+
+
+
+
+##### 物理约束
+
+```sql
+-- 创建表添加
+create table 表名(
+	字段1 ...,
+    ...
+    外键1 ... ,
+    
+    constraint 自定义外键名称 foreign key(外键1)  references 主表名(对应主表的字段)
+)
+
+-- 使用命令添加
+alter table 从表名 add constraint 自定义外键名称  foreign key (从表的外键列) references 主表名(对应主表的字段)  [on  update  行为  on delete 行为]
+```
+
+**外键删除、更新行为**
+
+* **restrict（no action，默认行为）：当父表更新、删除对应记录时，首先检查该记录是否有对应外键，如果有则不允许删除、更新**
+* **cascade（两张表同时更新、删除记录）：当父表更新、删除对应记录时，首先检查该记录是否有对应外键，如果有，则也删除、更新外键在子表的记录**
+* **set null：当父表删除记录时，首先检查该记录是否有对应外键，如果有则设置子表中的外键值为null（前提：外键值允许为null）**
+
+```sql
+-- eg：给t_user表添加外键约束，新增和删除时设为级联操作
+alter table t_user add constraint fk_user_dept_id  foreign key (dept_id) references t_dept(id)  on  update  cascade  on delete cascade
+```
+
+
+
+
+
+### 多表查询
+
+#### **概述**
+
+**建表关系：**
+
+* **1对多（多对1）：在`多`的一方添加`一`的外键关系**
+* **多对多：增加中间表保存两张表的外键关系**
+* **1对1：在任意一方添加另一方的外键关系，这个外键通常是`unique`类型的，为了区分1对多**
+
+
+
+**多表查询：**
+
+* **普通多表查询（隐式内连接）：需要使用判断语句消除笛卡尔积，否则查询数量=表A x 表B**
+
+  ```sql
+  -- 普通多表查询,查询的数量为a和b的组合，axb条记录
+  select * from a,b 
+  -- 普通多表查询,消除笛卡尔积
+  select * from a,b  where a.bid=b.id
+  ```
+
+* **连接查询：**
+
+  * **内连接：查询A和B的交集部分数据**
+  * **左外连接：查询左表所有数据、两表交集部分数据**
+  * **右外连接：查询右表所有数据、两表交集部分数据**
+  * **自连接：当前表与自身连接查询，自连接必须使用表别名**
+
+* **子查询**
+
+
+
+#### 内连接
+
+* ```sql
+  -- 隐式内连接（普通多表查询，去除笛卡尔积）
+  select a.* ,b.* from a,b where a.bid=b.id
+  ```
+
+* ```sql
+  -- 显式内连接查询
+  select a.* ,b.* from a  inner join b on  a.bid=b.id
+  select a.* ,b.* from a  join b on  a.bid=b.id
+  ```
+
+  
+
+#### 外连接
+
+
+
+[40. 基础-多表查询-外连接_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Kr4y1i7ru?spm_id_from=333.788.videopod.episodes&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c&p=40)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 用户、权限管理
 
 ### 用户管理
@@ -428,8 +704,3 @@ grant 权限列表1,权限列表2,... on 指定数据库名.指定表名 to '用
 revoke 权限列表1,.... on 指定数据库名.指定表名 from '用户名'@'主机名';
 ```
 
-
-
-
-
-[27. 基础-函数-字符串函数_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Kr4y1i7ru?spm_id_from=333.788.player.switch&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c&p=27)
