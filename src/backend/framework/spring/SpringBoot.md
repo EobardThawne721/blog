@@ -504,7 +504,15 @@ public class SpringbootStudyApplication {
 
 
 
-### 2.2 整合原生过滤器
+### 2.2 整合过滤器
+
+#### 2.2.1 执行时机
+
+> **请求 => 过滤器 => 拦截器 => controller接口**
+
+
+
+#### 2.2.2 使用原生过滤器（了解）
 
 ```JAVA
 @WebFilter(filterName = "myFilter",urlPatterns = "/indexServlet")
@@ -540,6 +548,53 @@ public class SpringbootStudyApplication {
 > ​			调用原生的servlet
 >
 > ​			过滤器放行
+
+
+
+#### 2.2.3 全局过滤器（重要）
+
+> **全局过滤器一般用于全局日志处理、统一请求头处理、跨域CORS、鉴权、黑名单等**
+>
+> * **OncePerRequestFilter：一次请求，只过滤一遍，绝不重复过滤**
+>
+> * **重复过滤情况：转发、异步请求、错误页面跳转**
+
+```java
+@Slf4j
+@Component
+public class GlobalRequestFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+
+        log.info("全局过滤器：请求URL = {}", request.getRequestURI());
+        
+        // 如果是接口文档、图标、监控,直接放行
+         if (requestUrl.startsWith("/doc") || requestUrl.startsWith("/swagger") || requestUrl.startsWith("/favicon") || requestUrl.startsWith("/v3/api-docs") || requestUrl.startsWith("/actuator")) {
+            // 继续过滤链，让请求体被读取
+            chain.doFilter(request, response);
+            return;
+        }
+        
+        
+        try {
+            // 放行，让请求继续走到 拦截器 → Controller 的逻辑
+            filterChain.doFilter(request, response);
+        } finally {
+ //当try中走完之后，最终可以返回到finally块执行日志打印：请求方法、url、请求参数、所有的header参数
+            log.info("全局过滤器：请求处理完成");
+        }
+    }
+}
+```
+
+
+
+
 
 
 
