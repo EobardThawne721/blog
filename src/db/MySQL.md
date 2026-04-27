@@ -56,6 +56,29 @@ select database();
 
 
 
+
+
+### 导入外部数据库
+
+> **如果将一个数据库`转储SQL文件-结构和数据`，如果这个SQL文件很大（eg：45MB），使用GUI界面导入会导致卡死，此时可以使用原生命令行导入数据**
+
+```bash
+# 在cmd或命令行中执行
+mysql -u root -p
+
+# 选择需要导入的数据库
+use xxx;
+
+# 导入sql文件
+source F:\4.27\jieyakj_db_auth.sql
+```
+
+
+
+
+
+
+
 ## 表操作
 
 ### 查询所有表
