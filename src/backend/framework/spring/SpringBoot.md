@@ -3434,6 +3434,263 @@ public class IndexController {
 
 
 
+
+
+### 2.15 整合MQTT
+
+1. 导入依赖
+
+```xml-dtd
+   <!--MQTT相关依赖-->
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.2.5</version> <!-- 指定版本 -->
+        </dependency>
+```
+
+
+
+2. 配置连接信息
+
+```yaml
+mqtt:
+  brokerUrl: tcp://127.0.0.1:1883
+  username: admin
+  password: public
+```
+
+```java
+@Configuration
+public class MqttConfig {
+    @Value("${mqtt.brokerUrl}")		//tcp://127.0.0.1:1883
+    private String brokerUrl;
+
+    @Value("${mqtt.username}")		//默认admin
+    private String username;
+
+    @Value("${mqtt.password}")		//默认public
+    private String password;
+
+    //注入自定义的消息处理器
+    @Autowired
+    @Lazy 		//使用@lazy解决循环依赖问题
+    private MqttMessageProcessor mqttMessageProcessor;
+
+
+
+    // 创建 MqttConnectOptions连接配置类
+    @Bean
+    public MqttConnectOptions mqttConnectOptions() {
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(true);
+        options.setServerURIs(new String[]{brokerUrl});
+        options.setUserName(username);
+        options.setPassword(password.toCharArray());
+        return options;
+    }
+
+    // 创建 MqttPahoClientFactory工厂类
+    @Bean
+    public MqttPahoClientFactory mqttPahoClientFactory(MqttConnectOptions mqttConnectOptions) {
+        DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+        factory.setConnectionOptions(mqttConnectOptions);           // 设置连接选项
+        return factory;
+    }
+
+    //创建输入通道
+    @Bean
+    public MessageChannel mqttInputChannel() {
+        return new DirectChannel();
+    }
+
+    // 创建 MqttPahoMessageDrivenChannelAdapter 来监听多个主题
+    @Bean
+    public MqttPahoMessageDrivenChannelAdapter mqttInbound(MqttPahoClientFactory mqttPahoClientFactory) {
+        String[] topics = MqttTopicKeys.getTopics();
+        //TODO:Java应用程序的clientID不能和GUI的软件一致,不然会出现断开的问题
+        String clientId = UUID.randomUUID().toString();
+        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(clientId, mqttPahoClientFactory, topics);
+        adapter.setOutputChannel(mqttInputChannel());
+        return adapter;
+    }
+
+
+    // 设置处理收到消息的方法
+    @ServiceActivator(inputChannel = "mqttInputChannel")
+    public void handleMqttMessage(Message<String> message) {
+        String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC, String.class);
+        //用反射的形式执行消息处理
+        mqttMessageProcessor.handleMessage(topic, message);
+    }
+    
+    // 创建 MqttPahoMessageHandler 用于发送消息
+    @Bean
+    public MqttPahoMessageHandler mqttPahoMessageHandler(MqttPahoClientFactory mqttPahoClientFactory) {
+        MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler(UUID.randomUUID().toString(), mqttPahoClientFactory);
+        messageHandler.setAsync(true);  // 设置异步发送
+        return messageHandler;
+    }
+```
+
+
+
+3. 多主题消息监听的反射配置类
+
+```java
+@Component
+public class MqttMessageProcessor {
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    // 将主题和方法进行映射,K是监听的topic主题名,V是对应的方法名字,方便后面用反射去处理他
+    //eg：K=get/status,V=com.xxx.handler.PlatformHandler.getStatus
+    private Map<String, Method> topicReceiveMethodMap = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        //只要是在IOC容器中,存在自定义的接受MQTT的注解类
+        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(MqttReceiveHandler.class);
+        // 遍历所有这些自定义的消息注解类
+        for (Object bean : beansWithAnnotation.values()) {
+            Method[] methods = bean.getClass().getDeclaredMethods();
+            for (Method method : methods) {
+                //如果这个方法有自定义监听的注解,则加入到map中
+                if (method.isAnnotationPresent(MqttTopicListener.class)) {
+                    MqttTopicListener annotation = method.getAnnotation(MqttTopicListener.class);
+                    String topic = annotation.topic();
+                    topicReceiveMethodMap.put(topic, method);
+                }
+            }
+        }
+    }
+
+    // 通过反射调用方法来处理消息
+    public void handleMessage(String topic, Message<String> message) {
+        //通过刚刚上面的K获取对应的V,然后去执行反射
+        Method method = topicReceiveMethodMap.get(topic);
+        if (method != null) {
+            try {
+                Object targetBean = applicationContext.getBean(method.getDeclaringClass());
+                method.invoke(targetBean, message);  // 调用对应的方法
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("没有找到对应：" + topic + "的处理方法");
+        }
+    }
+}
+```
+
+
+
+4. 自定义注解类
+
+```java
+//自定义注解：作用于类上,将该类标记为一个专门用于接收消息的类
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MqttReceiveHandler {
+}
+
+==============================================================================
+//自定义的注解：只能作用于方法上
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MqttTopicListener {
+    String topic();  //订阅主题的名称
+}
+```
+
+
+
+
+
+5. 消息发送类
+
+```java
+@Component
+public class MqttMessageSender {
+
+    private final MqttPahoMessageHandler mqttPahoMessageHandler;
+
+    //使用构造注入,解决循环依赖问题
+    @Autowired
+    public MqttMessageSender(MqttPahoMessageHandler mqttPahoMessageHandler) {
+        this.mqttPahoMessageHandler = mqttPahoMessageHandler;
+    }
+
+    // 发送其他类型的消息
+    public void sendMessage(String topic, String payload) {
+        // 构建消息
+        Message<String> message = MessageBuilder.withPayload(payload)
+                .setHeader(MqttHeaders.TOPIC, topic)
+                .build();
+        // 发送消息
+        mqttPahoMessageHandler.handleMessage(message);
+    }
+}
+```
+
+
+
+6. 主题处理业务类
+
+```java
+@Component
+@MqttReceiveHandler
+public class PlatformCallbackHandler {
+
+    @Autowired
+    private MqttMessageSender mqttMessageSender;
+
+    //平台数据校验监听方法
+    @MqttTopicListener(topic = MqttTopicKeys.DEVICE_DATA_VALIDATE)
+    public void validate(Message<String> message) throws JsonProcessingException {
+        //获取消息json数据
+        String payload = message.getPayload();
+        ObjectMapper objectMapper = new ObjectMapper();
+        //将其转换为DataValidateResult类
+        DataValidateResult result = objectMapper.readValue(payload, DataValidateResult.class);
+        //创建返回结果
+        Map<String, Object> jsonObject = new HashMap();
+        jsonObject.put("type", result.getType().getTypeValue());
+
+        switch (result.getType()) {
+            //NFC的处理逻辑
+            case NFC:
+                System.out.println(result);
+                break;
+            //人脸的处理逻辑
+            case FACE:
+                System.out.println(result);
+                break;
+            //二维码的处理逻辑
+            case QR_CODE:
+                System.out.println(result);
+                jsonObject.put("data", "检验通过");
+                //发送消息
+                mqttMessageSender.sendMessage(MqttTopicKeys.DEVICE_DATA_VALIDATE_RETURN + result.getDeviceId(), JSONUtil.toJsonStr(jsonObject));
+                break;
+        }
+    }
+}
+```
+
+![image-20250418102936779](./SpringBoot_images/image-20250418102936779-17781166357732.png)
+
+![image-20250418114516656](./SpringBoot_images/image-20250418114516656.png)
+
+
+
+
+
 ---
 
 ## 三. 应用

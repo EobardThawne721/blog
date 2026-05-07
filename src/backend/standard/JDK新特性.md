@@ -1,6 +1,6 @@
-## JDK8
+# JDK8
 
-### 一.lambda表达式
+## 一.lambda表达式
 
 ### 1.1 语法
 
@@ -47,7 +47,7 @@
 
 
 
-### 二.Stream流
+## 二.Stream流
 
 ### 2.1 创建流(三种方式)
 
@@ -301,7 +301,7 @@ IntStream.rangeClosed(0,3).forEach(System.out::print);
 
 
 
-### 三. 接口的改动
+## 三. 接口的改动
 
 ### 3.1 区别
 
@@ -322,7 +322,7 @@ IntStream.rangeClosed(0,3).forEach(System.out::print);
 
 
 
-### 四. 新时间API
+## 四. 新时间API
 
 ​					**全是不可变对象,线程安全,使用ISO-8601日期标准**
 
@@ -408,7 +408,7 @@ String str=dtf.format(ldt);
 
 
 
-### 五. Optional类
+## 五. Optional类
 
 ### 5.1 常用方法
 
@@ -453,8 +453,11 @@ Object returned3 = Optional.ofNullable(obj)
 ```JAVA
 Object object=new Object();
 
-//如果object存在则执行Consumer函数型接口
+//如果object存在则执行Consumer函数型接口，这里不返回值
 Optional.ofNullable(object).ifPresent(System.out::println);	//打印object的内存地址
+
+//如果object存在则执行Consumer函数型接口，需要返回值
+int address=Optional.ofNullable(object).map(obj->return obj.hashCode()).orElse(-1);// 返回hashCode地址
 
 Object obj = null;
 //如果obj存在则执行Consumer函数型接口;否则执行Runnable函数型接口
@@ -472,9 +475,9 @@ Optional.ofNullable(obj).ifPresentOrElse(System.out::println,
 
 
 
-## JDK10
+# JDK10
 
-### 一.局部变量类型自动推断
+## 一.局部变量类型自动推断
 
 ```JAVA
 var s=10;
@@ -494,9 +497,9 @@ var s = List.of(1, 2, 3);
 
 
 
-## JDK12
+# JDK12
 
-### 一.switch语法糖 
+## 一.switch语法糖 
 
 ```JAVA
 var id=10;
@@ -518,9 +521,9 @@ switch (id){
 
 
 
-## JDK13
+# JDK13
 
-### 一.字符串文本块
+## 一.字符串文本块
 
 ```java
 var s = """
@@ -538,7 +541,7 @@ var s = """
 
 
 
-### 二.switch返回值
+## 二.switch返回值
 
 > **jdk13之前想要拿到switch的结果，需要定义一个变量,然后为其赋值,现在可以使用`yield`关键字返回**
 
@@ -560,9 +563,9 @@ var s = """
 
 
 
-## JDK14
+# JDK14
 
-### 一.Record
+## 一.Record
 
 > 本质是一个`final`类，所有属性都会用`final`修饰，会自动编译出get、hashCode 、equals、toString 等方法，==**Record只会根据形参生成一个全参构造但可以使用紧凑构造器进行容错处理**==。使用Record可以更方便的创建一个常量类。==可用于Dto（接收前端json数据）或Vo类（返回前端对象值）==
 
