@@ -1909,15 +1909,15 @@ export default {
 </script>
 ```
 
-![image-20240622223052954](Vue_images/image-20240622223052954.png)
+![image-20240622223052954](./Vue_images/image-20240622223052954.png)
 
 ##### 注意
 
 > **需要被模板使用的数据和方法，需要return出去，如果不return出去却在模板上使用了，会在控制台报错**
 
-![image-20240622223233424](Vue_images/image-20240622223233424.png)
+![image-20240622223233424](./Vue_images/image-20240622223233424.png)
 
-![image-20240622223254847](Vue_images/image-20240622223254847.png)
+![image-20240622223254847](./Vue_images/image-20240622223254847.png)
 
 
 
