@@ -3008,19 +3008,21 @@ export default {
 
 
 
-#### 局部组件传值
+#### FastCrud框架的局部组件传值
 
-以下是vue2的写法
+**父组件**
 
 ![image-20240705202418661](Vue_images/image-20240705202418661.png)
 
 ![image-20240705202517429](Vue_images/image-20240705202517429.png) 
 
-
-
 ![image-20240705202531295](Vue_images/image-20240705202531295.png) 
 
 
+
+
+
+**子组件**
 
 ![image-20240705202632082](Vue_images/image-20240705202632082.png)
 
@@ -3028,9 +3030,21 @@ export default {
 
 
 
-![image-20240705202714390](Vue_images/image-20240705202714390.png)
+> **具体的监听代码写到setup里面**
 
-![image-20240705202726160](Vue_images/image-20240705202726160.png)
+![image-20240705202714390](Vue_images/image-20240705202714390.png) 
+
+![image-20240705202726160](Vue_images/image-20240705202726160.png) 
+
+
+
+##### 总结
+
+![image-20260509204228751](Vue_images/image-20260509204228751.png)
+
+
+
+
 
 
 
