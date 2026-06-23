@@ -207,14 +207,18 @@ docker ps -a		#查看所有容器信息
 #### 3.3.2 创建并运行容器
 
 ```nginx
-docker run -it/id --name=自定义容器名 REPOSITORY(镜像名):TAG(版本名)
+docker run -it/-id/-d --name=自定义容器名 --cpus 2 --memory 2g -p 48080:48080 REPOSITORY(镜像名):TAG(版本名)  
 #可以通过docker images查看
 ```
 
 ![](Docker容器化技术_images/image-20220214183554713.png) 
 
+* **-d：后台静默运行容器，不占用终端**
 * -it：`交互式容器`；保持容器运行，容器创建后自动加入容器中，退出容器后，容器自动关闭
 * -id：`守护式容器`；**后台模式运行容器**，创建一个容器后，**需要通过命令进入容器；退出容器后，容器不会关闭**
+* **--cpus：限制容器最多使用 2 个 CPU 核心**
+* **--memory：限制容器最大内存 2GB，和 JVM 参数匹配**
+*  **-p：端口映射：本机 48080 ↔ 容器内 48080**
 * **/bin/bash**：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 /bin/bash。
 
 
@@ -280,7 +284,7 @@ docker rm 自定义容器名
 
 
 
-#### 3.3.7 查看容器信息
+#### 3.3.7 查看容器信息、配置
 
 ```nginx
 docker inspect 自定义容器名
@@ -288,13 +292,19 @@ docker inspect 自定义容器名
 
 > 该命令可以查看容器挂载数据卷配置
 
-![](Docker容器化技术_images/image-20220214200608533.png) 
+![](Docker容器化技术_images/image-20220214200608533.png) ![image-20260623164414185](Docker%E5%AE%B9%E5%99%A8%E5%8C%96%E6%8A%80%E6%9C%AF_images/image-20260623164414185.png)
+
+![image-20260623164502689](Docker%E5%AE%B9%E5%99%A8%E5%8C%96%E6%8A%80%E6%9C%AF_images/image-20260623164502689.png) 
 
 
 
 #### 3.3.8 容器运行日志
 
 ```nginx
+# 实时查看容器的日志
+docker logs -f 容器名称/id
+
+# 一次性打印全部日志
 docker logs 容器名称/id
 ```
 
@@ -779,14 +789,14 @@ docker images
 
 ### 7.1 Dockerfile概述
 
-​		Dockerfile是用来**`构建镜像的文本文件`**，文本内容**`包含了一条条构建镜像所需的指令和说明`**。相当于是一个脚本，可以在这个脚本文件里使用一些特定的命令(关键字)完成一些自动化任务。**Dockerfile由四部分构成：基础镜像信息、维护者信息、镜像操作指令、容器启动时指令。**
+​		Dockerfile是用来**`构建镜像的文本文件`**，文本内容**`包含了一条条构建镜像所需的指令和说明`**。相当于是一个脚本，可以在这个脚本文件里使用一些特定的命令(关键字)完成一些自动化任务。**Dockerfile由四部分构成：基础镜像信息、工作目录、镜像操作指令、容器启动时指令。**
 
 ```BASH
-#指定父镜像,若没有版本号,则可省略版本号
+#指定父镜像（本地或远程）,若没有版本号,则可省略版本号
 FROM 镜像名称:版本号
 
-#定义维护者信息
-MAINTAINER 自定义作者名 <xxxx@email.com>
+# 定义容器工作目录
+WORKDIR /xxx
 
 #一些镜像操作指令
 RUN 指令
@@ -802,7 +812,7 @@ docker build -f Dockerfile名称 -t 镜像名称:版本号 .
 
 - **`FROM`**： 指定父镜像，由那个image构建
 
-- **`MAINTAINER`**： 作者信息，标明当前dockerfile谁写的
+- `MAINTAINER`： 作者信息，标明当前dockerfile谁写的
 
 - **`RUN`**：构建镜像执行的命令
 
@@ -813,15 +823,15 @@ docker build -f Dockerfile名称 -t 镜像名称:版本号 .
 
 - USER：指定后续执行的用户组和用户
 
-- WORKDIR：指定容器内部的工作目录；如果没有则自动创建，如果指定为/就使用绝对地址否则使用相对地址
+- **WORKDIR：指定容器内部的工作目录；如果没有则自动创建，如果指定为/就使用绝对地址否则使用相对地址**
 
 - ENV：环境变量属性值，容器内部也会起作用
 
 - ADD：添加文件，将主机的文件复制到镜像中；如果是压缩文件也解压
 
-- COPY：复制文件
+- **COPY：复制文件，`纯文件直接用copy，压缩包或下载网络文件用ADD`**
 
-- ENTRYPOINT：容器进入时执行的命令
+- **ENTRYPOINT：容器进入时执行的命令**
 
 
 
@@ -848,6 +858,76 @@ docker build -f ./centos_dockerfile -t centos:centos8 .
 
 ### 7.2 部署SpringBoot项目
 
+#### 示例1（重点）
+
+**目录结构**
+
+* 项目根路径
+  * 模块名
+    * src
+    * target
+      * .....
+      * test.jar
+    * Dockerfile
+
+（1）编写Dockerfile文件
+
+```dockerfile
+# 指定基础镜像
+FROM eclipse-temurin:21-jre
+
+# 创建目录，并使用它作为工作目录
+RUN mkdir -p /app
+WORKDIR /app
+
+# 将当前Dockerfile的根路径下的target里面的Jar文件，复制到镜像中
+COPY ./target/test.jar app.jar
+
+
+# 可通过 docker run -e "JAVA_OPTS=" 、docker run -e "ARGS=--spring.profiles.active=prod" 进行覆盖默认配置
+
+# 定义全局环境变量
+ENV TZ=Asia/Shanghai
+# 设置 JAVA_OPTS 环境变量，JVM初始堆内存、最大堆内存为512M
+ENV JAVA_OPTS="-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
+# 应用参数，存放SpringBoot启动参数（如环境、配置文件）
+ENV ARGS=""
+
+
+
+# 暴露后端项目的 48080 端口
+EXPOSE 48080
+
+# 启动后端项目
+CMD java ${JAVA_OPTS} -jar app.jar $ARGS
+```
+
+
+
+（2）构建镜像
+
+```bash
+docker build -t test:1.0 .
+```
+
+1. **默认情况下，会读取当前路径下的Dockerfile文件内容，如果不存在，则需要通过`-f`手动指定名称**
+
+2. **末尾的`.`是简写，等价于当前终端所在的目录`项目根路径/模块名/`，将当前这个路径作为构建上下文**
+
+
+
+（3）启动
+
+```bash
+docker run -d --name test-server-prod -p 48080:48080 -e "JAVA_OPTS=-Xms1024m -Xmx1024m" -e "ARGS=--spring.profiles.active=prod"  test:1.0
+```
+
+
+
+
+
+#### 示例2
+
 （1.）将SpringBoot项目打包成jar包，上传到docker_files文件夹
 
 ![](Docker容器化技术_images/image-20220216201721174.png) 
@@ -856,13 +936,13 @@ docker build -f ./centos_dockerfile -t centos:centos8 .
 
 （2.）创建并编写Dockerfile文件
 
-```bash
-vim springboot_dockerfile
+> **vim springboot_dockerfile**
 
+```dockerfile
 FROM java:8
 MAINTAINER Eobard_Thawne <2209473452@qq.com>
 #将宿主机的blog.jar复制到镜像中并重命名为docker_blog.jar
-ADD blog.jar docker_blog.jar
+COPY blog.jar docker_blog.jar
 #容器启动就执行命令
 CMD java -jar docker_blog.jar
 ```
@@ -873,7 +953,7 @@ CMD java -jar docker_blog.jar
 
 ```bash
 #指定镜像名称为my_docker_blog 
-docker build -f docker_blog.jar -t my_docker_blog .
+docker build -f springboot_dockerfile  -t my_docker_blog .
 ```
 
 
