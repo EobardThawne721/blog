@@ -328,7 +328,7 @@ SELECT id, name FROM 表 GROUP BY id;
 
 > * **执行顺序：where>聚合函数>having**
 > * **where语句是分组之前进行过滤，不满足where条件，不参与分组；而having是分组之后对结果过滤**
-> * **where不能对聚合函数判断；而having可以**
+> * **`where不能对聚合函数判断；而having可以`**
 > * 分组之后，查询的字段一般为聚合函数、分组字段，查询其它字段无意义
 
 ```mysql
@@ -449,7 +449,7 @@ select 字段列表 from 表名 limit  起始索引,每页显示记录数;
 
 #### 流程函数
 
-* **case  expr  when  val1 then  res1 [when val2 then res2 ...] else default end：`等于表达式`,当expr等于val1时，返回res1，当expr等于val2时，返回res2..... ，否则默认返回default **
+* **case  `expr  when` val1 then  res1 [when val2 then res2 ...] else default end：`等于表达式`,当expr等于val1时，返回res1，当expr等于val2时，返回res2..... ，否则默认返回default **
 
   ```sql
   -- eg: 如果城市是北京、上海就显示一线城市,重庆就是二线城市,其它的都是三线城市
@@ -459,7 +459,7 @@ select 字段列表 from 表名 limit  起始索引,每页显示记录数;
   		  else “三线城市” end
   ```
 
-* **case  when 表达式1 then res1  [when 表达式2 then res2 ...] else default  end：`条件筛选表达式`，当表达式1满足时，返回res1，当表达式2满足时返回res2，否则默认返回default** 
+* **case  `when` 表达式1 then res1  [when 表达式2 then res2 ...] else default  end：`条件筛选表达式`，当表达式1满足时，返回res1，当表达式2满足时返回res2，否则默认返回default** 
 
   ```sql
   -- eg:成绩大于90为优秀，大于80为合格，否则良
@@ -468,13 +468,13 @@ select 字段列表 from 表名 limit  起始索引,每页显示记录数;
   	 else "良" end
   ```
 
-* if(value,t,f)：如果value为true，则返回t，否则返回f
+* **if(value,t,f)：如果value为true，则返回t，否则返回f**
 
   ```sql
   select if(true,"这是真的","这是假的") as test
   ```
 
-* ifnull(value1,value2)：如果value1不是null值，则返回value1,，否则返回value2
+* **ifnull(value1,value2)：如果value1不是null值，则返回value1，否则返回value2**
 
   ```sql
   select ifnull(null,"不是空的值哦") as test
@@ -588,7 +588,7 @@ alter table t_user add constraint fk_user_dept_id  foreign key (dept_id) referen
 
 **多表查询：**
 
-* **普通多表查询（隐式内连接）：需要使用判断语句消除笛卡尔积，否则查询数量=表A x 表B**
+* **普通多表查询（`隐式内连接`）：需要使用判断语句消除笛卡尔积，否则查询数量=表A x 表B**
 
   ```sql
   -- 普通多表查询,查询的数量为a和b的组合，axb条记录
@@ -608,7 +608,24 @@ alter table t_user add constraint fk_user_dept_id  foreign key (dept_id) referen
 
 
 
+
+
+#### 注意事项
+
+> **`编写关联关系查询的时候，一定要提前想好返回的数据到底是什么`（eg：交集、并集、某表基础+其它信息、自己和自己的关系）**
+
+1. **如果只想查询多个表的交集部分，只能使用内连接**
+2. **如果想查询以某个表为基础，含有其它表的信息，用外连接**
+3. **如果想查询多个表的并集部分，用联合查询**
+4. **如果想查询自己和自己的关系，用自连接**
+
+
+
+
+
 #### 内连接
+
+> **内连接查询的是两个表的`交集部分`**
 
 * ```sql
   -- 隐式内连接（普通多表查询，去除笛卡尔积）
@@ -617,27 +634,107 @@ alter table t_user add constraint fk_user_dept_id  foreign key (dept_id) referen
 
 * ```sql
   -- 显式内连接查询
-  select a.* ,b.* from a  inner join b on  a.bid=b.id
   select a.* ,b.* from a  join b on  a.bid=b.id
+  
+  select a.* ,b.* from a  inner join b on  a.bid=b.id
+  ```
+  
+
+
+
+
+
+#### 自连接
+
+1. **如果自连接的表对象是本身，那么就把自己的这张表拆成两个表来看，根据条件来组合查询**
+
+2. **自连接查询的表必须起别名**
+
+```mysql
+# 隐式内自连接(特殊的内连接)
+select a.* ,b.* from t_self a, t_self b where a.self_id=b.id
+
+# 显式内自连接（特殊的内连接）
+select a.* ,b.* from t_self a join t_self b on a.self_id=b.id
+
+# 显式外自连接（特殊的左连接）
+select a.* ,b.* from t_self a left join t_self b on a.self_id=b.id
+```
+
+
+
+
+
+
+
+#### 外连接
+
+> **左右连接查询的是`某个表为基础，包含交集`的部分**
+
+* **左连接：查询以左表（a）为基础，包含左表、左右表交集的部分**
+
+  ```mysql
+  select a.*,b.* from a left [outer] join b on a.id=b.aid
+  ```
+
+* 右连接：查询以右表（b）为基础，包含右表、左右表交集的部分（可以改写为左连接）
+
+  ```mysql
+  select a.*,b.* from a right [outer] join b on a.id=b.aid
+  ```
+
+
+
+
+
+
+
+#### 联合查询
+
+1. **联合查询的多张表列数、查询对应位置字段类型必须一致，且可以合并多张表（无限拼接）**
+2. **union会对合并后的数据去重+排序，union all直接拼接合并的数据（不去重、不排序、速度快于union）**
+
+```mysql
+# 合并相同表的不同条件查询结果并自动去重
+select id,name from a where ...
+union 
+select id,name from a where ...
+
+# 合并相同表的不同条件查询结果（没有去重处理）
+select id,name from a where ...
+union all
+select id,name from a where ...
+
+# 合并不同两个表的查询结果（不去重、对应位置字段类型一样，但字段名称不一样）
+# => 合并的结果返回列以第一张表的列名为准，即id、name
+select id,name from a where ...
+union all
+select uid,username from b where ...
+```
+
+
+
+#### 子查询
+
+* 普通子查询（返回单列、多行单列）
+
+* **行、表子查询（返回一行多列、多行多列）**
+
+  ```mysql
+  # 查询表a中，(a1,a2)的组合 等于  表b满足查询条件的唯一一行(b1,b2)组合的全部记录
+  select a.* from a where (a1,a2)=(select b1, b2 from b where xxx)
+  
+  # 查询表a中，(a1,a2)的组合 存在于 表b满足查询条件的(b1,b2)组合中的全部记录
+  select a.* from a where (a1,a2) in (select b1, b2 from b where xxx)
   ```
 
   
 
-#### 外连接
 
 
+## 事务
 
-[40. 基础-多表查询-外连接_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Kr4y1i7ru?spm_id_from=333.788.videopod.episodes&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c&p=40)
-
-
-
-
-
-
-
-
-
-
+[51. 基础-事务-简介_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Kr4y1i7ru?spm_id_from=333.788.videopod.episodes&vd_source=6ce2a6eb6cbcb840f00c1778af71ce3c&p=51)
 
 
 
