@@ -304,6 +304,9 @@ docker inspect 自定义容器名
 # 实时查看容器的日志
 docker logs -f 容器名称/id
 
+# 实时查看容器的日志的最后100行
+docker logs -f --tail=100  容器名称/id
+
 # 一次性打印全部日志
 docker logs 容器名称/id
 ```
