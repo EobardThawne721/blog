@@ -721,11 +721,14 @@ public class RabbitService {
   ```
 
   <table>
+      <tbody>
       <tr>
-          <td><img src="./RabbitMQ实战_images/image-20251030153620451.png" alt="image-20251030153620451" style="zoom:50%;" /></td>
-          <td><img src="./RabbitMQ实战_images/image-20251030153444175.png" alt="image-20251030153444175" style="zoom:50%;" /></td>
+          <td><img src="RabbitMQ实战_images/image-20251030153620451.png" alt="image-20251030153620451" style="zoom:50%;" /></td>
+          <td><img src="RabbitMQ实战_images/image-20251030153444175.png" alt="image-20251030153444175" style="zoom:50%;" /></td>
       </tr>
+      </tbody>
   </table>
+  
   
   
 * 使用自定义线程池
